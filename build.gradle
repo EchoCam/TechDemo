@@ -10,21 +10,24 @@ if(JavaVersion.current() != JavaVersion.VERSION_1_8){
 
 repositories {
   mavenCentral()
-  maven {
-    url 'http://updates.jmonkeyengine.org/maven'
-  }
+  maven { url 'http://updates.jmonkeyengine.org/maven' } //for JMonkey dependencies
+  //maven { url "https://jitpack.io" } //for our engine as a dependency, TODO(tr395): Get this to properly work.
 }
 
 dependencies {
-    compile "com.jme3:jme3-core:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-effects:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-networking:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-plugins:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-jogg:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-terrain:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-blender:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-jbullet:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-niftygui:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-desktop:$jmonkeyengine_version.+"
-    compile "com.jme3:jme3-lwjgl:$jmonkeyengine_version.+"
+  //JMonkey Dependencies
+  compile "com.jme3:jme3-core:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-effects:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-networking:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-plugins:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-jogg:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-terrain:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-blender:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-jbullet:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-niftygui:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-desktop:$jmonkeyengine_version.+"
+  compile "com.jme3:jme3-lwjgl:$jmonkeyengine_version.+"
+
+  //Dynamic Narrative as a dependency :)
+  //compile 'com.github.EchoCam:DynamicNarrative:Tag' //TODO(tr395): Add working tag! :)
 }
