@@ -1,3 +1,6 @@
-/BasicGame/nbproject/private/
-/BasicGame/build/
+#jMonkey Engine ignores
 /DyNaDeMo/nbproject/private/
+/DyNaDeMo/build/
+
+#ignore gedit temp files
+*~
