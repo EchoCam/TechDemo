@@ -1,4 +1,4 @@
-package mygame;
+package uk.ac.cam.echo2016.dynademo;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
