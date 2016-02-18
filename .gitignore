@@ -4,3 +4,7 @@
 
 #ignore gedit temp files
 *~
+
+/DyNaDeMo/OpenAL64.dll
+/DyNaDeMo/dist/
+/DyNaDeMo/lwjgl64.dll
