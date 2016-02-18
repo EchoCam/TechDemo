@@ -1,0 +1,118 @@
+<scene export_time="1455418001.751572" formatVersion="1.0.1" previous_export_time="1455417971.675479" exported_by="Tim" >
+  <nodes >
+    <node name="Point.001" >
+      <position x="0.618851" y="0.928397" z="-0.120387" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light name="Point.001" powerScale="1.0" type="point" >
+        <position x="0.618851" y="0.928397" z="-0.120387" />
+        <lightAttenuation linear="0.04" constant="1.0" quadratic="0.0" range="5000" />
+        <colourDiffuse g="1.0" b="1.0" r="1.0" />
+        <colourSpecular g="1.0" b="1.0" r="1.0" />
+      </light>
+    </node>
+    <node name="Point" >
+      <position x="0.618851" y="0.928397" z="-0.612275" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light name="Point" powerScale="1.0" type="point" >
+        <position x="0.618851" y="0.928397" z="-0.612275" />
+        <lightAttenuation linear="0.04" constant="1.0" quadratic="0.0" range="5000" />
+        <colourDiffuse g="1.0" b="1.0" r="1.0" />
+        <colourSpecular g="1.0" b="1.0" r="1.0" />
+      </light>
+    </node>
+    <node name="Table" >
+      <position x="0.800000" y="0.455012" z="-0.800000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale x="0.200000" y="0.200000" z="0.200000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" inertia_tensor="0.4000000059604645" name="Table" actor="False" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" velocity_min="0.0" friction_x="1.0" friction_y="1.0" friction_z="1.0" lock_rot_y="False" lock_rot_x="False" lock_rot_z="False" ghost="False" mass_radius="1.0" mass="1.0" velocity_max="0.0" meshFile="Table.mesh" anisotropic_friction="False" physics_type="STATIC" />
+    </node>
+    <node name="Room" >
+      <position x="0.000000" y="0.100000" z="-0.000000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" inertia_tensor="0.4000000059604645" name="Room" actor="False" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" velocity_min="0.0" friction_x="1.0" friction_y="1.0" friction_z="1.0" lock_rot_y="False" lock_rot_x="False" lock_rot_z="False" ghost="False" mass_radius="1.0" mass="1.0" velocity_max="0.0" meshFile="Room.mesh" anisotropic_friction="False" physics_type="STATIC" />
+    </node>
+    <node name="Ground" >
+      <position x="0.000000" y="0.000000" z="-0.000000" />
+      <rotation qw="-0.000001" qx="0.000000" qy="0.000000" qz="-1.000000" />
+      <scale x="40.000000" y="40.000000" z="40.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" inertia_tensor="0.4000000059604645" name="Ground" actor="False" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" velocity_min="0.0" friction_x="1.0" friction_y="1.0" friction_z="1.0" lock_rot_y="False" lock_rot_x="False" lock_rot_z="False" ghost="False" mass_radius="1.0" mass="1.0" velocity_max="0.0" meshFile="Ground.mesh" anisotropic_friction="False" physics_type="STATIC" />
+    </node>
+    <node name="Camera" >
+      <position x="0.840515" y="0.920019" z="0.188129" />
+      <rotation qw="0.818982" qx="0.530360" qy="0.181301" qz="-0.122948" />
+      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera name="Camera" fov="0.5033799435163735" projectionType="perspective" >
+        <clipping far="100.0" nearPlaneDist="0.10000000149011612" farPlaneDist="100.0" near="0.10000000149011612" />
+      </camera>
+    </node>
+    <node name="HeadBase" >
+      <position x="0.747724" y="0.470204" z="-0.790707" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale x="0.053005" y="0.053005" z="0.053005" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity damping_rot="0.1589999943971634" damping_trans="0.02539999969303608" inertia_tensor="0.4000000059604645" name="HeadBase" actor="False" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" velocity_min="0.0" friction_x="1.0" friction_y="1.0" friction_z="1.0" lock_rot_y="False" lock_rot_x="False" lock_rot_z="False" ghost="False" mass_radius="1.0" mass="1.0" velocity_max="0.0" meshFile="HeadBase.mesh" anisotropic_friction="False" physics_type="STATIC" />
+    </node>
+    <node name="Head" >
+      <position x="0.743738" y="0.651903" z="-0.736655" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale x="0.053005" y="0.053005" z="0.053005" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity damping_rot="0.1589999943971634" damping_trans="0.02539999969303608" inertia_tensor="0.4000000059604645" name="Head" actor="False" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" velocity_min="0.0" friction_x="1.0" friction_y="1.0" friction_z="1.0" lock_rot_y="False" lock_rot_x="False" lock_rot_z="False" ghost="False" mass_radius="1.0" mass="1.0" velocity_max="0.0" meshFile="Head.mesh" anisotropic_friction="False" physics_type="STATIC" />
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyWorkspace\DynamicNarrative\assets\Models\Table.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyWorkspace\DynamicNarrative\assets\Models\Room.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyWorkspace\DynamicNarrative\assets\Models\Ground.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyWorkspace\DynamicNarrative\assets\Models\HeadBase.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyWorkspace\DynamicNarrative\assets\Models\Head.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourAmbient g="0.0" b="0.0" r="0.0" />
+    <colourBackground g="0.05087608844041824" b="0.05087608844041824" r="0.05087608844041824" />
+    <colourDiffuse g="0.05087608844041824" b="0.05087608844041824" r="0.05087608844041824" />
+  </environment>
+</scene>
