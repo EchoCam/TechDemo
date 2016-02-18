@@ -1,12 +1,14 @@
-package mygame;
+package uk.ac.cam.echo2016.dynademo;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
+import de.lessvoid.nifty.Nifty;
 
 /**
  * test
@@ -29,6 +31,17 @@ public class Main extends SimpleApplication {
         geom.setMaterial(mat);
 
         rootNode.attachChild(geom);
+        
+        /**
+         * Åctivate the Nifty-JME integration: 
+         */
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
+                assetManager, inputManager, audioRenderer, guiViewPort);
+        Nifty nifty = niftyDisplay.getNifty();
+        guiViewPort.addProcessor(niftyDisplay);
+        flyCam.setDragToRotate(true); // you need the mouse for clicking now    
+        //nifty.setDebugOptionPanelColors(true);
+        nifty.fromXml("Interface/tutorial/screen2.xml", "start");
     }
 
     @Override

@@ -11,4 +11,4 @@ This application is in development by James Riordan, Angus Hammond, Elise Xue, R
 Building, Running and Testing
 =============================
 
-TODO:
+At the moment, to build, run and test the package, open the DyNaDeMo folder using the [jMonkeyEngine3 SDK](http://jmonkeyengine.org/downloads/).
