@@ -58,16 +58,16 @@ public class Main extends SimpleApplication implements ActionListener {
     
     @Override
     public void simpleInitApp() {
-        /**
-         * Activate the Nifty-JME integration: 
-         */
-        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
-                assetManager, inputManager, audioRenderer, guiViewPort);
-        Nifty nifty = niftyDisplay.getNifty();
-        guiViewPort.addProcessor(niftyDisplay);
-        flyCam.setDragToRotate(true); // you need the mouse for clicking now    
-        //nifty.setDebugOptionPanelColors(true);
-        nifty.fromXml("Interface/tutorial/screen2.xml", "start");
+//        /**
+//         * Activate the Nifty-JME integration: 
+//         */
+//        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
+//                assetManager, inputManager, audioRenderer, guiViewPort);
+//        Nifty nifty = niftyDisplay.getNifty();
+//        guiViewPort.addProcessor(niftyDisplay);
+//        flyCam.setDragToRotate(true); // you need the mouse for clicking now    
+//        //nifty.setDebugOptionPanelColors(true);
+//        nifty.fromXml("Interface/tutorial/screen2.xml", "start");
         
         
         
@@ -83,7 +83,7 @@ public class Main extends SimpleApplication implements ActionListener {
 //        rootNode.attachChild(scene);
 
 //        Spatial scene = assetManager.loadModel("Models/Table.material.scene");
-        Spatial scene = assetManager.loadModel("Models/Table.material.j3o");
+        Spatial scene = assetManager.loadModel("Models/Scene_v102.j3o");
         scene.scale(15f);
         rootNode.attachChild(scene);
         

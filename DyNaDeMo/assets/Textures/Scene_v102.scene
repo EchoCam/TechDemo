@@ -1,0 +1,148 @@
+<scene previous_export_time="1455417477.352342" formatVersion="1.0.1" export_time="1455832947.925073" exported_by="Tim" >
+  <nodes >
+    <node name="Room.003" >
+      <position z="-1.000000" x="-0.500000" y="0.100000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="1.000000" x="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_y="False" lock_rot_x="False" velocity_max="0.0" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" damping_rot="0.10000000149011612" anisotropic_friction="False" physics_type="STATIC" damping_trans="0.03999999910593033" mass="1.0" actor="False" name="Room.003" mass_radius="1.0" inertia_tensor="0.4000000059604645" friction_x="1.0" friction_y="1.0" friction_z="1.0" meshFile="Room.003.mesh" velocity_min="0.0" lock_rot_z="False" ghost="False" />
+    </node>
+    <node name="Room.002" >
+      <position z="-3.000000" x="0.000000" y="0.000000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="1.000000" x="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_y="False" lock_rot_x="False" velocity_max="0.0" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" damping_rot="0.10000000149011612" anisotropic_friction="False" physics_type="STATIC" damping_trans="0.03999999910593033" mass="1.0" actor="False" name="Room.002" mass_radius="1.0" inertia_tensor="0.4000000059604645" friction_x="1.0" friction_y="1.0" friction_z="1.0" meshFile="Room.002.mesh" velocity_min="0.0" lock_rot_z="False" ghost="False" />
+    </node>
+    <node name="Room.001" >
+      <position z="-1.000000" x="-0.500000" y="0.100000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="1.000000" x="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_y="False" lock_rot_x="False" velocity_max="0.0" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" damping_rot="0.10000000149011612" anisotropic_friction="False" physics_type="STATIC" damping_trans="0.03999999910593033" mass="1.0" actor="False" name="Room.001" mass_radius="1.0" inertia_tensor="0.4000000059604645" friction_x="1.0" friction_y="1.0" friction_z="1.0" meshFile="Room.001.mesh" velocity_min="0.0" lock_rot_z="False" ghost="False" />
+    </node>
+    <node name="Point.001" >
+      <position z="-0.120387" x="0.618851" y="0.928397" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="1.000000" x="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light powerScale="1.0" type="point" name="Point.001" >
+        <position z="-0.120387" x="0.618851" y="0.928397" />
+        <lightAttenuation quadratic="0.0" range="5000" linear="0.04" constant="1.0" />
+        <colourDiffuse g="1.0" b="1.0" r="1.0" />
+        <colourSpecular g="1.0" b="1.0" r="1.0" />
+      </light>
+    </node>
+    <node name="Point" >
+      <position z="-0.612275" x="0.618851" y="0.928397" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="1.000000" x="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light powerScale="1.0" type="point" name="Point" >
+        <position z="-0.612275" x="0.618851" y="0.928397" />
+        <lightAttenuation quadratic="0.0" range="5000" linear="0.04" constant="1.0" />
+        <colourDiffuse g="1.0" b="1.0" r="1.0" />
+        <colourSpecular g="1.0" b="1.0" r="1.0" />
+      </light>
+    </node>
+    <node name="Table" >
+      <position z="-0.800000" x="0.800000" y="0.455012" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="0.200000" x="0.200000" y="0.200000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_y="False" lock_rot_x="False" velocity_max="0.0" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" damping_rot="0.10000000149011612" anisotropic_friction="False" physics_type="STATIC" damping_trans="0.03999999910593033" mass="1.0" actor="False" name="Table" mass_radius="1.0" inertia_tensor="0.4000000059604645" friction_x="1.0" friction_y="1.0" friction_z="1.0" meshFile="Table.mesh" velocity_min="0.0" lock_rot_z="False" ghost="False" />
+    </node>
+    <node name="Room" >
+      <position z="-0.000000" x="0.000000" y="0.000000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="1.000000" x="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_y="False" lock_rot_x="False" velocity_max="0.0" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" damping_rot="0.10000000149011612" anisotropic_friction="False" physics_type="STATIC" damping_trans="0.03999999910593033" mass="1.0" actor="False" name="Room" mass_radius="1.0" inertia_tensor="0.4000000059604645" friction_x="1.0" friction_y="1.0" friction_z="1.0" meshFile="Room.mesh" velocity_min="0.0" lock_rot_z="False" ghost="False" />
+    </node>
+    <node name="Ground" >
+      <position z="-0.000000" x="0.000000" y="0.000000" />
+      <rotation qw="-0.000001" qx="0.000000" qy="0.000000" qz="-1.000000" />
+      <scale z="40.000000" x="40.000000" y="40.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_y="False" lock_rot_x="False" velocity_max="0.0" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" damping_rot="0.10000000149011612" anisotropic_friction="False" physics_type="STATIC" damping_trans="0.03999999910593033" mass="1.0" actor="False" name="Ground" mass_radius="1.0" inertia_tensor="0.4000000059604645" friction_x="1.0" friction_y="1.0" friction_z="1.0" meshFile="Ground.mesh" velocity_min="0.0" lock_rot_z="False" ghost="False" />
+    </node>
+    <node name="Camera" >
+      <position z="0.188129" x="0.840515" y="0.920019" />
+      <rotation qw="0.818982" qx="0.530360" qy="0.181301" qz="-0.122948" />
+      <scale z="1.000000" x="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera projectionType="perspective" name="Camera" fov="0.5033799435163735" >
+        <clipping nearPlaneDist="0.10000000149011612" near="0.10000000149011612" far="100.0" farPlaneDist="100.0" />
+      </camera>
+    </node>
+    <node name="HeadBase" >
+      <position z="-0.790707" x="0.747724" y="0.470204" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="0.053005" x="0.053005" y="0.053005" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_y="False" lock_rot_x="False" velocity_max="0.0" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" damping_rot="0.1589999943971634" anisotropic_friction="False" physics_type="STATIC" damping_trans="0.02539999969303608" mass="1.0" actor="False" name="HeadBase" mass_radius="1.0" inertia_tensor="0.4000000059604645" friction_x="1.0" friction_y="1.0" friction_z="1.0" meshFile="HeadBase.mesh" velocity_min="0.0" lock_rot_z="False" ghost="False" />
+    </node>
+    <node name="Head" >
+      <position z="-0.736655" x="0.743738" y="0.651903" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="0.053005" x="0.053005" y="0.053005" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_y="False" lock_rot_x="False" velocity_max="0.0" lock_trans_z="False" lock_trans_x="False" lock_trans_y="False" damping_rot="0.1589999943971634" anisotropic_friction="False" physics_type="STATIC" damping_trans="0.02539999969303608" mass="1.0" actor="False" name="Head" mass_radius="1.0" inertia_tensor="0.4000000059604645" friction_x="1.0" friction_y="1.0" friction_z="1.0" meshFile="Head.mesh" velocity_min="0.0" lock_rot_z="False" ghost="False" />
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyBlender\Scene102\Room.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyBlender\Scene102\Table.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyBlender\Scene102\Ground.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyBlender\Scene102\HeadBase.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\Tim\Documents\Coding\Java Coding\JMonkeyBlender\Scene102\Head.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourDiffuse g="0.05087608844041824" b="0.05087608844041824" r="0.05087608844041824" />
+    <colourBackground g="0.05087608844041824" b="0.05087608844041824" r="0.05087608844041824" />
+    <colourAmbient g="0.0" b="0.0" r="0.0" />
+  </environment>
+</scene>
