@@ -10,12 +10,11 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.scene.Spatial;
-import de.lessvoid.nifty.Nifty;
 
 /**
  * test
@@ -75,7 +74,7 @@ public class Main extends SimpleApplication implements ActionListener {
         stateManager.attach(bulletAppState);
         
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-        flyCam.setMoveSpeed(40f);
+//        flyCam.setMoveSpeed(40f);
         
         setupKeys();
 //        Spatial scene = assetManager.loadModel("Models/Scene1.j3o");
@@ -88,9 +87,9 @@ public class Main extends SimpleApplication implements ActionListener {
         rootNode.attachChild(scene);
         
         
-//        AmbientLight al = new AmbientLight();
-//        al.setColor(ColorRGBA.White.mult(1.3f));
-//        rootNode.addLight(al);
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White.mult(1.3f));
+        rootNode.addLight(al);
 
         DirectionalLight dl = new DirectionalLight();
         dl.setColor(ColorRGBA.White);
@@ -108,13 +107,12 @@ public class Main extends SimpleApplication implements ActionListener {
         landscape = new RigidBodyControl(sceneShape, 0f);
         scene.addControl(landscape);
         
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 1f, 1);
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(2f, 4f, 1);
         playerControl = new CharacterControl(capsuleShape, 0.2f);
         playerControl.setJumpSpeed(20);
         playerControl.setFallSpeed(30);
         playerControl.setGravity(30);
-        playerControl.setPhysicsLocation(new Vector3f(0, 10, 0));
-        
+        playerControl.setPhysicsLocation(new Vector3f(0, 3f, 0));
         bulletAppState.getPhysicsSpace().add(landscape);
         bulletAppState.getPhysicsSpace().add(playerControl);
         
@@ -138,7 +136,7 @@ public class Main extends SimpleApplication implements ActionListener {
             walkDirection.addLocal(-camDir.x, 0, -camDir.z);
         }
         playerControl.setWalkDirection(walkDirection);
-        cam.setLocation(playerControl.getPhysicsLocation());
+        cam.setLocation(playerControl.getPhysicsLocation().add(0, 4f, 0));
     }
     
     @Override
