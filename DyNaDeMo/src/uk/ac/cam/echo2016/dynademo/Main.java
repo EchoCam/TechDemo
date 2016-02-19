@@ -10,10 +10,12 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
+import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
+import com.jme3.shadow.PointLightShadowRenderer;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
@@ -73,17 +75,16 @@ public class Main extends SimpleApplication implements DemoListener {
         al.setColor(ColorRGBA.White.mult(1.3f));
         rootNode.addLight(al);
 
-        DirectionalLight dl = new DirectionalLight();
-        dl.setColor(ColorRGBA.White);
-        dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
-        rootNode.addLight(dl);
+        PointLight light2 = new PointLight();
+        light2.setColor(ColorRGBA.White);
+        light2.setPosition(new Vector3f(10f,10f,10f));
+        rootNode.addLight(light2);
         
-        DirectionalLight d2 = new DirectionalLight();
-        d2.setColor(ColorRGBA.White);
-        
-        d2.setDirection(new Vector3f(0f, -2.8f, 0f).normalizeLocal());
-        rootNode.addLight(d2);
-
+        // Add shadow renderer
+        PointLightShadowRenderer r = new PointLightShadowRenderer(assetManager, 1024);
+        r.setLight(light2);
+        viewPort.addProcessor(r);
+        rootNode.setShadowMode(ShadowMode.CastAndReceive);
         
         // Load World
         Spatial scene = assetManager.loadModel("Scenes/Scene_v102.j3o");
@@ -105,6 +106,7 @@ public class Main extends SimpleApplication implements DemoListener {
         bulletAppState.getPhysicsSpace().add(landscape);
         bulletAppState.getPhysicsSpace().add(playerControl);
         
+        // Start at Area 0
         enterLocation(areas.get(0));
     }
     
@@ -171,10 +173,11 @@ public class Main extends SimpleApplication implements DemoListener {
         playerControl.setWalkDirection(walkDirection);
         cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT/2 + 1f, 0));
         
-        System.out.println(playerControl.getPhysicsLocation().x);
-        System.out.println(playerControl.getPhysicsLocation().y);
-        System.out.println(playerControl.getPhysicsLocation().z);
-        System.out.println();
+//        System.out.println(playerControl.getPhysicsLocation().x);
+//        System.out.println(playerControl.getPhysicsLocation().y);
+//        System.out.println(playerControl.getPhysicsLocation().z);
+//        System.out.println();
+        
         for(DemoLocEvent e : locEventQueue) {
             if (e.checkCondition(playerControl.getPhysicsLocation())) e.fireEvent();
         }
