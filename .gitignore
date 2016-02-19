@@ -8,3 +8,6 @@
 /DyNaDeMo/OpenAL64.dll
 /DyNaDeMo/dist/
 /DyNaDeMo/lwjgl64.dll
+
+/DyNaDeMo/assets/Textures/*.blend1
+/DyNaDeMo/assets/Textures/*.blend2
