@@ -17,8 +17,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 /**
- * test
- * @author normenhansen
+ * @author tr93
  */
 public class Main extends SimpleApplication implements ActionListener {
     
@@ -81,8 +80,8 @@ public class Main extends SimpleApplication implements ActionListener {
 //        scene.scale(10f);
 //        rootNode.attachChild(scene);
 
-//        Spatial scene = assetManager.loadModel("Models/Table.material.scene");
-        Spatial scene = assetManager.loadModel("Models/Scene_v102.j3o");
+//        Spatial scene = assetManager.loadModel("Models/Scene_v102.j3o");
+        Spatial scene = assetManager.loadModel("Textures/Table.mesh.xml.scene");
         scene.scale(15f);
         rootNode.attachChild(scene);
         

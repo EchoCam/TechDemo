@@ -5,9 +5,20 @@
 #ignore gedit temp files
 *~
 
+#ignore operating specific libraries
 /DyNaDeMo/OpenAL64.dll
-/DyNaDeMo/dist/
 /DyNaDeMo/lwjgl64.dll
+liblwjgl64.so
+libopenal64.so
+
+#ignore eclipse project files
+.classpath
+.project
+.settings
 
 /DyNaDeMo/assets/Textures/*.blend1
 /DyNaDeMo/assets/Textures/*.blend2
+
+
+/bin/
+/DyNaDeMo/dist/
