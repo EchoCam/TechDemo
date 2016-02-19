@@ -86,7 +86,7 @@ public class Main extends SimpleApplication implements DemoListener {
 
         
         // Load World
-        Spatial scene = assetManager.loadModel("Models/Scene_v102.j3o");
+        Spatial scene = assetManager.loadModel("Scenes/Scene_v102.j3o");
 //        Spatial scene = assetManager.loadModel("Textures/Table.mesh.xml.scene");
         scene.scale(10f);
         rootNode.attachChild(scene);

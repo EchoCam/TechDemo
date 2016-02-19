@@ -21,7 +21,7 @@ With JMonkeyEngine SDK
 ----------------------
 
 Save the .blend file to the DyNaDeMo/assets/Textures folder along with any dependant files. (Note texture paths may need to be updated).
-Right click the .blend file and click "convert to j3o". Move the created file to the DyNaDeMo/assets/Models folder and make sure that file is loaded correctly by the asset manager.
+Right click the .blend file and click "convert to j3o". Move the created file to the DyNaDeMo/assets/Scenes folder and make sure that file is loaded correctly by the asset manager.
 
 With Eclipse
 --------------
@@ -33,4 +33,4 @@ Download the correct version of blender2ogre from https://code.google.com/archiv
 Exporting mesh data:
 
 To export the data, select all objects you wish to export then go to file->Export->Ogre3d. Navigate to the DyNaDeMo/assets/Textures folder and export the various files.
-Move the .scene file to the DyNaDeMo/assets/Models folder and make sure that the file is loaded correctly by the asset manager.
+Move the .scene file to the DyNaDeMo/assets/Scenes folder and make sure that the file is loaded correctly by the asset manager.
