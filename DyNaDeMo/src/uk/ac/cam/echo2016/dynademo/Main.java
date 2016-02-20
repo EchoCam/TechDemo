@@ -10,6 +10,7 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -36,7 +37,7 @@ public class Main extends SimpleApplication implements DemoListener {
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     
     private ArrayDeque<DemoLocEvent> locEventQueue = new ArrayDeque<DemoLocEvent>();
-    private DemoRoute currentArea;
+    private DemoRoute currentRoute;
     //private currentRoute/Character
     
     public static void main(String[] args) {
@@ -58,41 +59,56 @@ public class Main extends SimpleApplication implements DemoListener {
 //        nifty.fromXml("Interface/tutorial/screen2.xml", "start");
         
 
-        // Application related setup
+        // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
 //        flyCam.setMoveSpeed(40f);
         setupKeys();
         
-        // Setup world and locEvents
+        // Setup world and locEvents //
         initializeAreas();
         
-        // initialize physics engine
+        // initialize physics engine //
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         
-        // Add global Lights
-        AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(1.3f));
-        rootNode.addLight(al);
+        // Add global Lights //
+//        AmbientLight al = new AmbientLight(); // No current effect on blender scene
+//        al.setColor(ColorRGBA.White.mult(1.3f));
+//        rootNode.addLight(al);
+        
+//        DirectionalLight light1 = new DirectionalLight();
+//        light1.setDirection(new Vector3f(0f,-1f, -1f));
+//        light1.setColor(ColorRGBA.White);
+//        rootNode.addLight(light1);
 
         PointLight light2 = new PointLight();
         light2.setColor(ColorRGBA.White);
-        light2.setPosition(new Vector3f(10f,10f,10f));
+        light2.setPosition(new Vector3f(0,5,0));
+        light2.setRadius(1000f);
         rootNode.addLight(light2);
         
-        // Add shadow renderer
-        PointLightShadowRenderer r = new PointLightShadowRenderer(assetManager, 1024);
-        r.setLight(light2);
-        viewPort.addProcessor(r);
+//        PointLight light3 = new PointLight();
+//        light3.setColor(ColorRGBA.White);
+//        light3.setPosition(new Vector3f(10,20,-50));
+//        light3.setRadius(1000f);
+//        rootNode.addLight(light3);
+        // TODO add more lights
+        
+        // Add shadow renderer //
+        PointLightShadowRenderer plsr = new PointLightShadowRenderer(assetManager, 1024);
+        plsr.setLight(light2);
+        // bit dodgy - TODO fix walls and textures affected by this
+        
+        viewPort.addProcessor(plsr);
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
         
-        // Load World
+        // Load World //
         Spatial scene = assetManager.loadModel("Scenes/Scene_v102.j3o");
 //        Spatial scene = assetManager.loadModel("Textures/Table.mesh.xml.scene");
         scene.scale(10f);
         rootNode.attachChild(scene);
         
-        // Load Character into world
+        // Load Character into world //
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(scene);
         landscape = new RigidBodyControl(sceneShape, 0f);
         scene.addControl(landscape);
@@ -106,14 +122,14 @@ public class Main extends SimpleApplication implements DemoListener {
         bulletAppState.getPhysicsSpace().add(landscape);
         bulletAppState.getPhysicsSpace().add(playerControl);
         
-        // Start at Area 0
+        // Start at Area 0 //
         enterLocation(areas.get(0));
     }
     
     private void initializeAreas() { // this is event source and listener
         DemoRoute area;
         DemoLocEvent e;
-        area = new DemoRoute(new Vector3f(0,0,0));
+        area = new DemoRoute("StartRoute", new Vector3f(0,(CHARHEIGHT/2)+2.5f,0), new Vector3f(1,0,0));
         // Starting meeting Event
         e = new DemoLocEvent(0, new Vector3f(-80,1,-40), 40, 14, 50);
         e.listeners.add(this);
@@ -122,16 +138,19 @@ public class Main extends SimpleApplication implements DemoListener {
     }
     
     
-    private void enterLocation(DemoRoute area) {
+    private void enterLocation(DemoRoute route) {
         
-        for(DemoLocEvent oldEvent  : area.events) {
+        for(DemoLocEvent oldEvent  : route.events) {
             locEventQueue.remove(oldEvent);
         }
-        this.currentArea = area;
-        for(DemoLocEvent newEvent  : area.events) {
+        this.currentRoute = route;
+        for(DemoLocEvent newEvent  : route.events) {
             locEventQueue.add(newEvent);
         }
-        // TODO move player and stuff
+        // TODO freeze for a second
+        playerControl.setPhysicsLocation(route.getStartLoc());
+        cam.lookAtDirection(route.getStartDir(), Vector3f.UNIT_Y);
+        // TODO other initializations
     }
     
     private void setupKeys() {
@@ -201,8 +220,16 @@ public class Main extends SimpleApplication implements DemoListener {
     public void locEventAction(DemoLocEvent e) {
         switch (e.getId()) {
             case 0:
-                throw new UnsupportedOperationException("First event goes here!");
+                enterLocation(currentRoute);
+//                throw new UnsupportedOperationException("First event goes here!");
                 // TODO first meeting
         }
+    }
+    
+    public void chooseRoute() {
+        // TODO add calls to our tools here
+        
+        //currentRoute = ...
+        //enterLocation(...)
     }
 }

@@ -12,13 +12,23 @@ import java.util.ArrayList;
  * @author Tim
  */
 public class DemoRoute {
+    private String id;
     public ArrayList<DemoLocEvent> events = new ArrayList<DemoLocEvent>();
-    private Vector3f startCoord;
+    private Vector3f startLoc;
+    private Vector3f startDir;
     
-    public DemoRoute(Vector3f startCoord) {
-        this.startCoord = startCoord;
+    public DemoRoute(String id, Vector3f startLoc, Vector3f startDir) {
+        this.id = id;
+        this.startLoc = startLoc;
+        this.startDir = startDir;
     }
-    public Vector3f getStartCoord() {
-        return startCoord;
+    public String getId() {
+        return id;
+    }
+    public Vector3f getStartLoc() {
+        return startLoc;
+    }
+    public Vector3f getStartDir() {
+        return startDir;
     }
 }
