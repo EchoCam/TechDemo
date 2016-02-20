@@ -10,10 +10,10 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
@@ -24,16 +24,19 @@ import java.util.ArrayList;
  * @author tr93
  */
 public class Main extends SimpleApplication implements DemoListener {
-
     private final static float CHARHEIGHT = 3;
     public ArrayList<DemoRoute> routes = new ArrayList<DemoRoute>();
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
     private CharacterControl playerControl;
+    
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
+    private boolean isPaused = false;
+    NiftyJmeDisplay pauseDisplay;
+    
     private ArrayDeque<DemoLocEvent> locEventQueue = new ArrayDeque<DemoLocEvent>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
@@ -46,9 +49,7 @@ public class Main extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleInitApp() {
-//        /**
-//         * Activate the Nifty-JME integration: 
-//         */
+
 //        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
 //                assetManager, inputManager, audioRenderer, guiViewPort);
 //        Nifty nifty = niftyDisplay.getNifty();
@@ -56,11 +57,12 @@ public class Main extends SimpleApplication implements DemoListener {
 //        flyCam.setDragToRotate(true); // you need the mouse for clicking now    
 //        //nifty.setDebugOptionPanelColors(true);
 //        nifty.fromXml("Interface/tutorial/screen2.xml", "start");
-
+        
+//        pauseDisplay = new NiftyJmeDisplay(
+//            assetManager, inputManager, audioRenderer, guiViewPort);   
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-//        flyCam.setMoveSpeed(40f);
         setupKeys();
 
         // Setup world and locEvents //
@@ -71,13 +73,18 @@ public class Main extends SimpleApplication implements DemoListener {
         stateManager.attach(bulletAppState);
 
         // Add global Lights //
+        
 //        AmbientLight al = new AmbientLight(); // No current effect on blender scene
-//        al.setColor(ColorRGBA.White.mult(1.3f));
+//        al.setColor(ColorRGBA.Blue);
 //        rootNode.addLight(al);
 
-//        DirectionalLight light1 = new DirectionalLight();
-//        light1.setDirection(new Vector3f(0f,-1f, -1f));
-//        light1.setColor(ColorRGBA.White);
+//        SpotLight light1 = new SpotLight();
+//        light1.setDirection(new Vector3f(0f,-3f, 0f));
+//        light1.setColor(ColorRGBA.White.mult(5f));
+//        light1.setPosition(new Vector3f(0, 500, 0));
+//        light1.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD); // inner light cone (central beam)
+//        light1.setSpotOuterAngle(120f * FastMath.DEG_TO_RAD);
+//        light1.setSpotRange(1000f);
 //        rootNode.addLight(light1);
 
         PointLight light2 = new PointLight();
@@ -86,11 +93,11 @@ public class Main extends SimpleApplication implements DemoListener {
         light2.setRadius(1000f);
         rootNode.addLight(light2);
 
-//        PointLight light3 = new PointLight();
+//        DirectionalLight light3 = new DirectionalLight();
+//        light3.setDirection(Vector3f.UNIT_Y.negate());
 //        light3.setColor(ColorRGBA.White);
-//        light3.setPosition(new Vector3f(10,20,-50));
-//        light3.setRadius(1000f);
 //        rootNode.addLight(light3);
+        
         // TODO add more lights
 
         // Add shadow renderer //
@@ -105,6 +112,8 @@ public class Main extends SimpleApplication implements DemoListener {
         currentWorld = assetManager.loadModel("Scenes/Scene1.j3o");
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
+        
+//        currentWorld.setMaterial(assetManager.loadMaterial("Common/Materials/WhiteColor.j3m").);
 
         // Make a rigid body from the scene //
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
@@ -187,41 +196,48 @@ public class Main extends SimpleApplication implements DemoListener {
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_DOWN));
 
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+//        inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
+        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_ESCAPE));
+
+        
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
         inputManager.addListener(this, "Jump");
+        inputManager.addListener(this, "Pause");
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-        camDir.set(cam.getDirection().multLocal(.4f));
-        camLeft.set(cam.getLeft().multLocal(.4f));
-        walkDirection.set(0, 0, 0);
-        if (keyLeft) {
-            walkDirection.addLocal(camLeft);
-        }
-        if (keyRight) {
-            walkDirection.addLocal(camLeft.negate());
-        }
-        if (keyUp) {
-            walkDirection.addLocal(camDir.x, 0, camDir.z);
-        }
-        if (keyDown) {
-            walkDirection.addLocal(-camDir.x, 0, -camDir.z);
-        }
-        playerControl.setWalkDirection(walkDirection);
-        cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
+        if (!isPaused) {
+            camDir.set(cam.getDirection().multLocal(.4f));
+            camLeft.set(cam.getLeft().multLocal(.4f));
+            walkDirection.set(0, 0, 0);
+            if (keyLeft) {
+                walkDirection.addLocal(camLeft);
+            }
+            if (keyRight) {
+                walkDirection.addLocal(camLeft.negate());
+            }
+            if (keyUp) {
+                walkDirection.addLocal(camDir.x, 0, camDir.z);
+            }
+            if (keyDown) {
+                walkDirection.addLocal(-camDir.x, 0, -camDir.z);
+            }
+            playerControl.setWalkDirection(walkDirection);
+            cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
 
-//        System.out.println(playerControl.getPhysicsLocation().x);
-//        System.out.println(playerControl.getPhysicsLocation().y);
-//        System.out.println(playerControl.getPhysicsLocation().z);
-//        System.out.println();
+    //        System.out.println(playerControl.getPhysicsLocation().x);
+    //        System.out.println(playerControl.getPhysicsLocation().y);
+    //        System.out.println(playerControl.getPhysicsLocation().z);
+    //        System.out.println();
 
-        for (DemoLocEvent e : locEventQueue) {
-            if (e.checkCondition(playerControl.getPhysicsLocation())) {
-                e.fireEvent();
+            for (DemoLocEvent e : locEventQueue) {
+                if (e.checkCondition(playerControl.getPhysicsLocation())) {
+                    e.fireEvent();
+                }
             }
         }
     }
@@ -240,15 +256,23 @@ public class Main extends SimpleApplication implements DemoListener {
             if (isPressed) {
                 playerControl.jump();
             }
+        } else if (keyName.equals("Pause")) {
+            if (isPressed) {
+                if (!isPaused) {
+                    // Bring up pause menu //
+                }
+                else {
+                    // Close pause menu
+                }
+                isPaused = !isPaused;
+            }
         }
     }
 
     public void locEventAction(DemoLocEvent e) {
         switch (e.getId()) {
-            case 0:
-                enterLocation(routes.get(1));
-//                throw new UnsupportedOperationException("First event goes here!");
-            // TODO first meeting
+            case 0: // TODO first meeting
+                enterLocation(routes.get(1)); // temp functionality
         }
     }
 
