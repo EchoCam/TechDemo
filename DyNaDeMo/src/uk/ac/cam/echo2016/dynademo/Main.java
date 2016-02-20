@@ -74,9 +74,9 @@ public class Main extends SimpleApplication implements DemoListener {
 
         // Add global Lights //
         
-//        AmbientLight al = new AmbientLight(); // No current effect on blender scene
-//        al.setColor(ColorRGBA.Blue);
-//        rootNode.addLight(al);
+        AmbientLight al = new AmbientLight(); // No current effect on blender scene
+        al.setColor(ColorRGBA.White);
+        rootNode.addLight(al);
 
 //        SpotLight light1 = new SpotLight();
 //        light1.setDirection(new Vector3f(0f,-3f, 0f));
@@ -109,11 +109,9 @@ public class Main extends SimpleApplication implements DemoListener {
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
 
         // Initialize World //
-        currentWorld = assetManager.loadModel("Scenes/Scene1.j3o");
+        currentWorld = assetManager.loadModel("Scenes/Scene1.j3o"); // Not used - reloaded later
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
-        
-//        currentWorld.setMaterial(assetManager.loadMaterial("Common/Materials/WhiteColor.j3m").);
 
         // Make a rigid body from the scene //
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
