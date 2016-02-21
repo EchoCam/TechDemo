@@ -62,8 +62,7 @@ public class Main extends SimpleApplication implements DemoListener {
         flyCam.setDragToRotate(true); // you need the mouse for clicking now    
         //mainMenuNifty.setDebugOptionPanelColors(true);
 
-        mainMenuNifty.fromXml("Interface/Nifty/mainMenu/screen.xml", "start"); 
-
+        mainMenuNifty.fromXml("Interface/Nifty/mainMenu/screen.xml", "start",new MainMenuScreen(this)); 
         
         
         // Application related setup //

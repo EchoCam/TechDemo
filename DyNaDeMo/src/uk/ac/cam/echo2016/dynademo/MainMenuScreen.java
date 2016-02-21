@@ -12,19 +12,22 @@ import de.lessvoid.nifty.screen.ScreenController;
 /**
  *
  */
-public class StartScreen extends AbstractAppState implements ScreenController {
+public class MainMenuScreen extends AbstractAppState implements ScreenController {
 
   private Nifty nifty;
-  private Application app;
   private Screen screen;
+  
+  private Application app;
+
 
   /** custom methods */
-  public StartScreen() {
+  public MainMenuScreen(Application a) {
     /** You custom constructor, can accept arguments */
+    app = a;
   }
 
-  public void startGame(String nextScreen) {
-    nifty.gotoScreen(nextScreen);  // switch to another screen
+  public void startGame() {
+    System.out.println("Start the game!");
   }
 
   public void quitGame() {
