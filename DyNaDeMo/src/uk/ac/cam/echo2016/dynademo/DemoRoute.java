@@ -4,6 +4,7 @@
  */
 package uk.ac.cam.echo2016.dynademo;
 
+import com.jme3.light.Light;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ public class DemoRoute {
     private Vector3f startLoc;
     private Vector3f startDir;
     public ArrayList<DemoLocEvent> events = new ArrayList<DemoLocEvent>();
+    public ArrayList<Light> lights = new ArrayList<Light>();
     
     public DemoRoute(String id, String sceneFile, Vector3f startLoc, Vector3f startDir) {
         this.id = id;

@@ -112,7 +112,6 @@ public class Main extends SimpleApplication implements DemoListener {
         currentWorld = assetManager.loadModel("Scenes/Scene1.j3o"); // Not used - reloaded later
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
-
         // Make a rigid body from the scene //
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
         landscape = new RigidBodyControl(sceneShape, 0f);
