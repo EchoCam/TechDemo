@@ -230,6 +230,5 @@ public class TestScreen extends SimpleApplication {
     }}.build(nifty));
     
     nifty.gotoScreen("start"); // start the screen
-    //nifty.gotoScreen("hud"); // start the screen
   }
 }
