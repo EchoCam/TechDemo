@@ -27,7 +27,7 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
   }
 
   public void startGame() {
-    System.out.println("Start the game!");
+    nifty.gotoScreen("game");
   }
 
   public void quitGame() {

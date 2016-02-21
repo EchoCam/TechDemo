@@ -43,26 +43,8 @@
   <!-- +++++++++++++++++++++++++++++++++++++++ -->
   <!-- lay out the HUD screen/layers/panels -->
   <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <screen id="hud">
-    <layer id="background" childLayout="center" backgroundColor="#000f">
-      <image filename="Interface/Nifty/mainMenu/hud-frame.png"></image>
-    </layer>
-    <layer id="foreground" backgroundColor="#0000" childLayout="horizontal">
-      <panel id="panel_left" width="80%" height="100%" childLayout="vertical" >  
-        <!-- spacer -->
-      </panel>
-      <panel id="panel_right" width="20%" height="100%" childLayout="vertical" >  
-        <panel id="panel_top_right1" width="100%" height="15%" childLayout="center" >  
-          <control name="label" color="#000" text="123" width="100%" height="100%" />
-        </panel>
-        <panel id="panel_top_right2" width="100%" height="15%" childLayout="center" >  
-          <image filename="Interface/Nifty/mainMenu/face1.png" 
-                valign="center" align="center" height="50%" width="30%" >
-          </image>
-        </panel>
-        <panel id="panel_bot_right" width="100%" height="70%" valign="center" >  
-        </panel>
-      </panel>
+  <screen id="game">
+    <layer id="background" childLayout="center" backgroundColor="#0000">
     </layer>
   </screen>
 </nifty>
