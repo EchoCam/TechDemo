@@ -138,7 +138,7 @@ public class Main extends SimpleApplication implements DemoListener {
         DemoLocEvent e;
 
         // First Route
-        area = new DemoRoute("StartRoute", "Models/Scene1.scene", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+        area = new DemoRoute("StartRoute", "Scenes/Scene1.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
         // Starting meeting Event
         e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50);
         e.listeners.add(this);
