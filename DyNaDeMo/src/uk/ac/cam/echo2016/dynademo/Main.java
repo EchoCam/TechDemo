@@ -17,7 +17,6 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
-import de.lessvoid.nifty.Nifty;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
@@ -50,22 +49,18 @@ public class Main extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleInitApp() {
+
+//        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
+//                assetManager, inputManager, audioRenderer, guiViewPort);
+//        Nifty nifty = niftyDisplay.getNifty();
+//        guiViewPort.addProcessor(niftyDisplay);
+//        flyCam.setDragToRotate(true); // you need the mouse for clicking now    
+//        //nifty.setDebugOptionPanelColors(true);
+//        nifty.fromXml("Interface/tutorial/screen2.xml", "start");
+        
 //        pauseDisplay = new NiftyJmeDisplay(
-//            assetManager, inputManager, audioRenderer, guiViewPort);
-        
-        
-        NiftyJmeDisplay mainMenuNiftyDisplay = new NiftyJmeDisplay(
-                assetManager, inputManager, audioRenderer, guiViewPort);
-        Nifty mainMenuNifty = mainMenuNiftyDisplay.getNifty();
-        guiViewPort.addProcessor(mainMenuNiftyDisplay);
-        
-        flyCam.setDragToRotate(true); // you need the mouse for clicking now    
-        //mainMenuNifty.setDebugOptionPanelColors(true);
+//            assetManager, inputManager, audioRenderer, guiViewPort);   
 
-        mainMenuNifty.fromXml("Interface/Nifty/mainMenu/screen.xml", "start"); 
-
-        
-        
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         setupKeys();
