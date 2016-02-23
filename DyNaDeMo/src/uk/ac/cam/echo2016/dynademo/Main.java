@@ -56,19 +56,20 @@ public class Main extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleInitApp() {
+        
+        // Set-Up for the main menu //
         NiftyJmeDisplay mainMenuNiftyDisplay = new NiftyJmeDisplay(
                 assetManager, inputManager, audioRenderer, guiViewPort);
         Nifty mainMenuNifty = mainMenuNiftyDisplay.getNifty();
         guiViewPort.addProcessor(mainMenuNiftyDisplay);
 
+        //TODO(tr395) work out how to properly encapsulate this stuff
         flyCam.setDragToRotate(true); // you need the mouse for clicking now    
-        //mainMenuNifty.setDebugOptionPanelColors(true);
-
         MainMenuScreen mainMenuScreen = new MainMenuScreen();
         stateManager.attach(mainMenuScreen);
-        
         mainMenuNifty.fromXml("Interface/Nifty/mainMenu/screen.xml", "start", mainMenuScreen);
 
+        
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));

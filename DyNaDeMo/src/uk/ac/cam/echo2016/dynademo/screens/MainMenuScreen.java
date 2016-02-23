@@ -45,9 +45,11 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
   }
 
   public void onStartScreen() {
+      
   }
 
   public void onEndScreen() {
+      
   }
 
   /** jME3 AppState methods */
