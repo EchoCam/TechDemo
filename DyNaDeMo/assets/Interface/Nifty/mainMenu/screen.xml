@@ -7,7 +7,7 @@
   <!-- +++++++++++++++++++++++++++++++++++++++ -->
   <!-- lay out the main menu                   -->
   <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <screen id="start" controller="uk.ac.cam.echo2016.dynademo.MainMenuScreen">
+  <screen id="start" controller="uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen">
     <layer id="background" childLayout="center" backgroundColor="#f00f">
     </layer>
     <layer id="foreground" childLayout="vertical">

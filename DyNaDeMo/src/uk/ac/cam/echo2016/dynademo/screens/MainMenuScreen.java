@@ -1,4 +1,4 @@
-package uk.ac.cam.echo2016.dynademo;
+package uk.ac.cam.echo2016.dynademo.screens;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -28,6 +28,7 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
 
   public void startGame() {
     nifty.gotoScreen("game");
+    
   }
 
   public void quitGame() {
