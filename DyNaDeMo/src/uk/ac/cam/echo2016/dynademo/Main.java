@@ -81,7 +81,7 @@ public class Main extends SimpleApplication implements DemoListener {
         // Add global Lights //
 
         AmbientLight al = new AmbientLight(); // No current effect on blender scene
-        al.setColor(ColorRGBA.White);
+        al.setColor(new ColorRGBA(0.1f,0.1f,0.1f,1f));
         rootNode.addLight(al);
 
 //        SpotLight light1 = new SpotLight();
@@ -94,7 +94,7 @@ public class Main extends SimpleApplication implements DemoListener {
 //        rootNode.addLight(light1);
 
         PointLight light2 = new PointLight();
-        light2.setColor(ColorRGBA.White);
+        light2.setColor(ColorRGBA.Gray);
         light2.setPosition(new Vector3f(0, 5, 0));
         light2.setRadius(1000f);
         rootNode.addLight(light2);
@@ -144,7 +144,7 @@ public class Main extends SimpleApplication implements DemoListener {
         DemoLocEvent e;
 
         // First Route
-        area = new DemoRoute("StartRoute", "Scenes/Scene1.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+        area = new DemoRoute("StartRoute", "Models/Scene1.scene", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
         // Starting meeting Event
         e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50);
         e.listeners.add(this);
