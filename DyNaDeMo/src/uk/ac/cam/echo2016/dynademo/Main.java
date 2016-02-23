@@ -18,10 +18,9 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
+import de.lessvoid.nifty.Nifty;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
-import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
 
 /**
  * @author tr93
