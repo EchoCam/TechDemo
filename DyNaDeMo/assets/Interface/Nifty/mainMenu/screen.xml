@@ -38,7 +38,7 @@
   <!-- +++++++++++++++++++++++++++++++++++++++ -->
   <!-- lay out the HUD                         -->
   <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <screen id="game">
+  <screen id="game" controller="uk.ac.cam.echo2016.dynademo.screens.GameScreen">
     <layer id="background" childLayout="center" backgroundColor="#0000">
     </layer>
   </screen>

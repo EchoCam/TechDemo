@@ -1,6 +1,7 @@
 package uk.ac.cam.echo2016.dynademo.screens;
 
 import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
@@ -17,18 +18,16 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
   private Nifty nifty;
   private Screen screen;
   
-  private Application app;
+  private SimpleApplication app;
 
 
-  /** custom methods */
-  public MainMenuScreen(Application a) {
-    /** You custom constructor, can accept arguments */
-    app = a;
+  public MainMenuScreen() {
+      super();
   }
 
   public void startGame() {
+    app.getFlyByCamera().setDragToRotate(false);
     nifty.gotoScreen("game");
-    
   }
 
   public void quitGame() {
@@ -54,7 +53,8 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
   /** jME3 AppState methods */
   @Override
   public void initialize(AppStateManager stateManager, Application app) {
-    this.app = app;
+    super.initialize(stateManager, app);
+    this.app = (SimpleApplication) app;
   }
 
   @Override
