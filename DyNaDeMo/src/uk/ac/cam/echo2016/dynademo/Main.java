@@ -1,5 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -17,6 +18,7 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
+import de.lessvoid.nifty.Nifty;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
@@ -24,19 +26,18 @@ import java.util.ArrayList;
  * @author tr93
  */
 public class Main extends SimpleApplication implements DemoListener {
+
     private final static float CHARHEIGHT = 3;
     public ArrayList<DemoRoute> routes = new ArrayList<DemoRoute>();
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
     private CharacterControl playerControl;
-    
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
-    
     private ArrayDeque<DemoLocEvent> locEventQueue = new ArrayDeque<DemoLocEvent>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
@@ -47,19 +48,24 @@ public class Main extends SimpleApplication implements DemoListener {
         app.start();
     }
 
+    public Main() {
+        super();
+    }
+
     @Override
     public void simpleInitApp() {
 
-//        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
-//                assetManager, inputManager, audioRenderer, guiViewPort);
-//        Nifty nifty = niftyDisplay.getNifty();
-//        guiViewPort.addProcessor(niftyDisplay);
-//        flyCam.setDragToRotate(true); // you need the mouse for clicking now    
-//        //nifty.setDebugOptionPanelColors(true);
-//        nifty.fromXml("Interface/tutorial/screen2.xml", "start");
-        
-//        pauseDisplay = new NiftyJmeDisplay(
-//            assetManager, inputManager, audioRenderer, guiViewPort);   
+        // Set-Up for the main menu //
+        NiftyJmeDisplay mainMenuNiftyDisplay = new NiftyJmeDisplay(
+                assetManager, inputManager, audioRenderer, guiViewPort);
+        Nifty mainMenuNifty = mainMenuNiftyDisplay.getNifty();
+        guiViewPort.addProcessor(mainMenuNiftyDisplay);
+
+        //TODO(tr395) work out how to properly encapsulate this stuff
+        flyCam.setDragToRotate(true); // you need the mouse for clicking now
+        MainMenuScreen mainMenuScreen = new MainMenuScreen();
+        stateManager.attach(mainMenuScreen);
+        mainMenuNifty.fromXml("Interface/Nifty/mainMenu/screen.xml", "start", mainMenuScreen);
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -73,7 +79,7 @@ public class Main extends SimpleApplication implements DemoListener {
         stateManager.attach(bulletAppState);
 
         // Add global Lights //
-        
+
         AmbientLight al = new AmbientLight(); // No current effect on blender scene
         al.setColor(new ColorRGBA(0.1f,0.1f,0.1f,1f));
         rootNode.addLight(al);
@@ -97,7 +103,7 @@ public class Main extends SimpleApplication implements DemoListener {
 //        light3.setDirection(Vector3f.UNIT_Y.negate());
 //        light3.setColor(ColorRGBA.White);
 //        rootNode.addLight(light3);
-        
+
         // TODO add more lights
 
         // Add shadow renderer //
@@ -173,7 +179,7 @@ public class Main extends SimpleApplication implements DemoListener {
             locEventQueue.add(newEvent);
         }
         this.currentRoute = route;
-        
+
         // TODO freeze for a second
         playerControl.setPhysicsLocation(route.getStartLoc());
         cam.lookAtDirection(route.getStartDir(), Vector3f.UNIT_Y);
@@ -196,7 +202,7 @@ public class Main extends SimpleApplication implements DemoListener {
 //        inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_ESCAPE));
 
-        
+
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
@@ -226,10 +232,10 @@ public class Main extends SimpleApplication implements DemoListener {
             playerControl.setWalkDirection(walkDirection);
             cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
 
-    //        System.out.println(playerControl.getPhysicsLocation().x);
-    //        System.out.println(playerControl.getPhysicsLocation().y);
-    //        System.out.println(playerControl.getPhysicsLocation().z);
-    //        System.out.println();
+            //        System.out.println(playerControl.getPhysicsLocation().x);
+            //        System.out.println(playerControl.getPhysicsLocation().y);
+            //        System.out.println(playerControl.getPhysicsLocation().z);
+            //        System.out.println();
 
             for (DemoLocEvent e : locEventQueue) {
                 if (e.checkCondition(playerControl.getPhysicsLocation())) {
@@ -257,8 +263,7 @@ public class Main extends SimpleApplication implements DemoListener {
             if (isPressed) {
                 if (!isPaused) {
                     // Bring up pause menu //
-                }
-                else {
+                } else {
                     // Close pause menu
                 }
                 isPaused = !isPaused;
