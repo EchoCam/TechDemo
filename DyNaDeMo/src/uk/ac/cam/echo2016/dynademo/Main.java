@@ -62,17 +62,19 @@ public class Main extends SimpleApplication implements DemoListener {
         Nifty nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
 
-        nifty.addXml("Interface/Nifty/mainMenu/screen.xml");
-        MainMenuScreen mainMenuScreen = (MainMenuScreen) nifty.getScreen("start").getScreenController();
+        nifty.fromXml("Interface/Nifty/mainMenu.xml", "mainMenu", new MainMenuScreen().init(stateManager, this));
+        nifty.addXml("Interface/Nifty/game.xml");
+
+        MainMenuScreen mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
         GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
-        
+
         stateManager.attach(mainMenuScreen);
         stateManager.attach(gameScreen);
-        
+
         //TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
-        nifty.gotoScreen("start");
-        
-                
+        nifty.gotoScreen("mainMenu");
+
+
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         setupKeys();
@@ -87,7 +89,7 @@ public class Main extends SimpleApplication implements DemoListener {
         // Add global Lights //
 
         AmbientLight al = new AmbientLight(); // No current effect on blender scene
-        al.setColor(new ColorRGBA(0.1f,0.1f,0.1f,1f));
+        al.setColor(new ColorRGBA(0.1f, 0.1f, 0.1f, 1f));
         rootNode.addLight(al);
 
 //        SpotLight light1 = new SpotLight();

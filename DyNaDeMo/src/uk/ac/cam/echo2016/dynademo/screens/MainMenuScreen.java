@@ -15,62 +15,72 @@ import de.lessvoid.nifty.screen.ScreenController;
  */
 public class MainMenuScreen extends AbstractAppState implements ScreenController {
 
-  private Nifty nifty;
-  private Screen screen;
-  
-  private SimpleApplication app;
-  
-  private boolean active = false; //hack to get around the fact that this screen is initialised immediately.
+    private Nifty nifty;
+    private Screen screen;
+    private SimpleApplication app;
 
-
-  public MainMenuScreen() {
-      super();
-  }
-
-  public void startGame() {
-    nifty.gotoScreen("game");
-  }
-
-  public void quitGame() {
-    app.stop();
-  }
-
-  public String getPlayerName() {
-    return System.getProperty("user.name");
-  }
-
-  /** Nifty GUI ScreenControl methods */
-  public void bind(Nifty nifty, Screen screen) {
-    this.nifty = nifty;
-    this.screen = screen;
-  }
-
-  public void onStartScreen() {
-      active = true;
-      if(app != null)
-          app.getFlyByCamera().setDragToRotate(true);
-  }
-
-  public void onEndScreen() {
-      active = false;
-  }
-
-  /** jME3 AppState methods */
-  @Override
-  public void initialize(AppStateManager stateManager, Application app) {
-    super.initialize(stateManager, app);
-    this.app = (SimpleApplication) app;
-    if(active)
-        this.app.getFlyByCamera().setDragToRotate(true);
-  }
-
-  @Override
-  public void update(float tpf) {
-    if (screen.getScreenId().equals("hud")) {
-      Element niftyElement = nifty.getCurrentScreen().findElementByName("score");
-      // Display the time-per-frame -- this field could also display the score etc...
-      niftyElement.getRenderer(TextRenderer.class).setText((int)(tpf*100000) + ""); 
+    public MainMenuScreen() {
+        super();
     }
-  }
-}
 
+    public MainMenuScreen init(AppStateManager stateManager, Application app) {
+        initialize(stateManager, app);
+        return this;
+    }
+
+    public void startGame() {
+        nifty.gotoScreen("game");
+    }
+
+    public void quitGame() {
+        app.stop();
+    }
+
+    public String getPlayerName() {
+        return System.getProperty("user.name");
+    }
+
+    // Nifty GUI ScreenControl methods //
+
+    /**
+     *
+     * @param nifty
+     * @param screen
+     */
+    @Override
+    public void bind(Nifty nifty, Screen screen) {
+        this.nifty = nifty;
+        this.screen = screen;
+    }
+
+    @Override
+    public void onStartScreen() {
+        app.getFlyByCamera().setDragToRotate(true);
+    }
+
+    @Override
+    public void onEndScreen() {
+    }
+
+    // jME3 AppState methods //
+
+    /**
+     *
+     * @param stateManager
+     * @param app
+     */
+    @Override
+    public void initialize(AppStateManager stateManager, Application app) {
+        super.initialize(stateManager, app);
+        this.app = (SimpleApplication) app;
+    }
+
+    @Override
+    public void update(float tpf) {
+        if (screen.getScreenId().equals("hud")) {
+            Element niftyElement = nifty.getCurrentScreen().findElementByName("score");
+            // Display the time-per-frame -- this field could also display the score etc...
+            niftyElement.getRenderer(TextRenderer.class).setText((int) (tpf * 100000) + "");
+        }
+    }
+}

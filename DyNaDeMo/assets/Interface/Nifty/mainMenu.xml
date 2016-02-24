@@ -7,7 +7,7 @@
   <!-- +++++++++++++++++++++++++++++++++++++++ -->
   <!-- lay out the main menu                   -->
   <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <screen id="start" controller="uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen">
+  <screen id="mainMenu" controller="uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen">
     <layer id="background" childLayout="center" backgroundColor="#f00f">
     </layer>
     <layer id="foreground" childLayout="vertical">
@@ -32,14 +32,6 @@
           </control>
         </panel>
       </panel>
-    </layer>
-  </screen>
-  
-  <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <!-- lay out the HUD                         -->
-  <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <screen id="game" controller="uk.ac.cam.echo2016.dynademo.screens.GameScreen">
-    <layer id="background" childLayout="center" backgroundColor="#0000">
     </layer>
   </screen>
 </nifty>
