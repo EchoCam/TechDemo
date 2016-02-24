@@ -21,6 +21,7 @@ import com.jme3.shadow.PointLightShadowRenderer;
 import de.lessvoid.nifty.Nifty;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
 
 /**
  * @author tr93
@@ -56,17 +57,22 @@ public class Main extends SimpleApplication implements DemoListener {
     public void simpleInitApp() {
 
         // Set-Up for the main menu //
-        NiftyJmeDisplay mainMenuNiftyDisplay = new NiftyJmeDisplay(
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
                 assetManager, inputManager, audioRenderer, guiViewPort);
-        Nifty mainMenuNifty = mainMenuNiftyDisplay.getNifty();
-        guiViewPort.addProcessor(mainMenuNiftyDisplay);
+        Nifty nifty = niftyDisplay.getNifty();
+        guiViewPort.addProcessor(niftyDisplay);
 
-        //TODO(tr395) work out how to properly encapsulate this stuff
-        flyCam.setDragToRotate(true); // you need the mouse for clicking now
-        MainMenuScreen mainMenuScreen = new MainMenuScreen();
+        nifty.addXml("Interface/Nifty/mainMenu/screen.xml");
+        MainMenuScreen mainMenuScreen = (MainMenuScreen) nifty.getScreen("start").getScreenController();
+        GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
+        
         stateManager.attach(mainMenuScreen);
-        mainMenuNifty.fromXml("Interface/Nifty/mainMenu/screen.xml", "start", mainMenuScreen);
-
+        stateManager.attach(gameScreen);
+        
+        //TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
+        nifty.gotoScreen("start");
+        
+                
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         setupKeys();
