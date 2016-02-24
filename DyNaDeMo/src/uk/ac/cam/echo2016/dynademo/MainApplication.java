@@ -113,7 +113,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
         PointLight light2 = new PointLight();
         light2.setColor(ColorRGBA.Gray);
-        light2.setPosition(new Vector3f(0, 5, 0));
+        light2.setPosition(new Vector3f(-20, 10, 0));
         light2.setRadius(1000f);
         rootNode.addLight(light2);
 
@@ -162,9 +162,9 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         DemoLocEvent e;
 
         // First Route
-        area = new DemoRoute("StartRoute", "Scenes/Scene1.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+        area = new DemoRoute("StartRoute", "Scenes/Bedroom.j3o", new Vector3f(-20, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
         // Starting meeting Event
-        e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50);
+        e = new DemoLocEvent(0, new Vector3f(100, 1, -5), 40, 14, 10);
         e.listeners.add(this);
         area.events.add(e);
         routes.add(area);
