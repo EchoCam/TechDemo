@@ -36,6 +36,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     @Override
     public void onStartScreen() {
         app.getFlyByCamera().setDragToRotate(false);
+        //TODO: load in maps based on data (eg, selected character etc.)
     }
 
     @Override
