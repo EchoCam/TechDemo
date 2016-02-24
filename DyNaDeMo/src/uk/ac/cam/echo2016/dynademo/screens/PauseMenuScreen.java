@@ -26,8 +26,9 @@ public class PauseMenuScreen extends AbstractAppState implements ScreenControlle
         nifty.gotoScreen("game");
     }
 
-    public void gotToMenu() {
-        //For some reason this isn't working :( TODO(tr395): investigate
+    public void goToMenu() {
+        //TODO: present some kind of warning saying that unsaved data will be lost
+        //Cleanup running game (terminate it)
         nifty.gotoScreen("mainMenu");
     }
 
