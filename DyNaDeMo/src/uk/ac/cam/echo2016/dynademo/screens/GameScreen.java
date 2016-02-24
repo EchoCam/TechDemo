@@ -27,7 +27,6 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;
-        this.app.getFlyByCamera().setDragToRotate(false);
     }
 
     public void bind(Nifty nifty, Screen screen) {
@@ -36,7 +35,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     }
     
     public void onStartScreen() {
-        System.out.println("What???");
+        app.getFlyByCamera().setDragToRotate(false);
     }
 
     public void onEndScreen() {

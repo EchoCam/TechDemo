@@ -19,6 +19,8 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
   private Screen screen;
   
   private SimpleApplication app;
+  
+  private boolean active = false; //hack to get around the fact that this screen is initialised immediately.
 
 
   public MainMenuScreen() {
@@ -26,7 +28,6 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
   }
 
   public void startGame() {
-    app.getFlyByCamera().setDragToRotate(false);
     nifty.gotoScreen("game");
   }
 
@@ -45,11 +46,13 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
   }
 
   public void onStartScreen() {
-      
+      active = true;
+      if(app != null)
+          app.getFlyByCamera().setDragToRotate(true);
   }
 
   public void onEndScreen() {
-      
+      active = false;
   }
 
   /** jME3 AppState methods */
@@ -57,6 +60,8 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
   public void initialize(AppStateManager stateManager, Application app) {
     super.initialize(stateManager, app);
     this.app = (SimpleApplication) app;
+    if(active)
+        this.app.getFlyByCamera().setDragToRotate(true);
   }
 
   @Override
