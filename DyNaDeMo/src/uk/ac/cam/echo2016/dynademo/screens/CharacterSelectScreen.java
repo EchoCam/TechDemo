@@ -22,6 +22,9 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     private Screen screen;
     private SimpleApplication app;
 
+    public void selectCharacter(String character) {
+    }
+
     // ScreenController methods //
     @Override
     public void bind(Nifty nifty, Screen screen) {
@@ -31,6 +34,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
 
     @Override
     public void onStartScreen() {
+        app.getFlyByCamera().setDragToRotate(true);
     }
 
     @Override
