@@ -11,31 +11,22 @@ import de.lessvoid.nifty.screen.ScreenController;
 /**
  *
  */
-public class MainMenuScreen extends AbstractAppState implements ScreenController {
+public class PauseMenuScreen extends AbstractAppState implements ScreenController {
 
     private Nifty nifty;
     private Screen screen;
     private SimpleApplication app;
 
-    public MainMenuScreen() {
+    public PauseMenuScreen() {
         super();
     }
 
-    public MainMenuScreen init(AppStateManager stateManager, Application app) {
-        initialize(stateManager, app);
-        return this;
-    }
-
-    public void startGame() {
+    public void resumeGame() {
         nifty.gotoScreen("game");
     }
 
-    public void quitGame() {
-        app.stop();
-    }
-
-    public String getPlayerName() {
-        return System.getProperty("user.name");
+    public void gotToMenu() {
+        nifty.gotoScreen("mainMenu");
     }
 
     // ScreenContoller methods //

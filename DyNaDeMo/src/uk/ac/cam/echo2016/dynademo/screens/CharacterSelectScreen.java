@@ -22,6 +22,10 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     private Screen screen;
     private SimpleApplication app;
 
+    public CharacterSelectScreen() {
+        super();
+    }
+
     public void selectCharacter(String character) {
     }
 

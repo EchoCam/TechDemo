@@ -22,6 +22,10 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     private Screen screen;
     private SimpleApplication app;
 
+    public GameScreen() {
+        super();
+    }
+
     // ScreenController methods //
     @Override
     public void bind(Nifty nifty, Screen screen) {
@@ -37,11 +41,19 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     @Override
     public void onEndScreen() {
     }
-    
+
     // AbstractAppState methods //
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;
     }
+    //@Override
+    //public void update(float tpf) {
+    //    if (screen.getScreenId().equals("hud")) {
+    //        Element niftyElement = nifty.getCurrentScreen().findElementByName("score");
+    //        // Display the time-per-frame -- this field could also display the score etc...
+    //        niftyElement.getRenderer(TextRenderer.class).setText((int) (tpf * 100000) + "");
+    //    }
+    //}
 }

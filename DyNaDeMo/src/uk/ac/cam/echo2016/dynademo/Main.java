@@ -63,7 +63,10 @@ public class Main extends SimpleApplication implements DemoListener {
         guiViewPort.addProcessor(niftyDisplay);
 
         nifty.fromXml("Interface/Nifty/mainMenu.xml", "mainMenu", new MainMenuScreen().init(stateManager, this));
+        nifty.addXml("Interface/Nifty/characterSelect.xml");
+        nifty.addXml("Interface/Nifty/mainMenu.xml");
         nifty.addXml("Interface/Nifty/game.xml");
+
 
         MainMenuScreen mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
         GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
