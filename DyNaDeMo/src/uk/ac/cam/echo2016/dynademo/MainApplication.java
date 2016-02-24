@@ -21,12 +21,14 @@ import com.jme3.shadow.PointLightShadowRenderer;
 import de.lessvoid.nifty.Nifty;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
 import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
+import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 
 /**
  * @author tr93
  */
-public class Main extends SimpleApplication implements DemoListener {
+public class MainApplication extends SimpleApplication implements DemoListener {
 
     private final static float CHARHEIGHT = 3;
     public ArrayList<DemoRoute> routes = new ArrayList<DemoRoute>();
@@ -43,13 +45,14 @@ public class Main extends SimpleApplication implements DemoListener {
     private Spatial currentWorld;
     private DemoRoute currentRoute;
     //private currentRoute/Character
+    private Nifty nifty;
 
     public static void main(String[] args) {
-        Main app = new Main();
+        MainApplication app = new MainApplication();
         app.start();
     }
 
-    public Main() {
+    public MainApplication() {
         super();
     }
 
@@ -59,19 +62,23 @@ public class Main extends SimpleApplication implements DemoListener {
         // Set-Up for the main menu //
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
                 assetManager, inputManager, audioRenderer, guiViewPort);
-        Nifty nifty = niftyDisplay.getNifty();
+        nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
 
         nifty.fromXml("Interface/Nifty/mainMenu.xml", "mainMenu", new MainMenuScreen().init(stateManager, this));
         nifty.addXml("Interface/Nifty/characterSelect.xml");
-        nifty.addXml("Interface/Nifty/mainMenu.xml");
+        nifty.addXml("Interface/Nifty/pauseMenu.xml");
         nifty.addXml("Interface/Nifty/game.xml");
 
 
         MainMenuScreen mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
+        CharacterSelectScreen characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
+        PauseMenuScreen pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
         GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
 
         stateManager.attach(mainMenuScreen);
+        stateManager.attach(characterSelectScreen);
+        stateManager.attach(pauseMenuScreen);
         stateManager.attach(gameScreen);
 
         //TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
@@ -211,7 +218,7 @@ public class Main extends SimpleApplication implements DemoListener {
 
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
 //        inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
-        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_ESCAPE));
+        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
 
 
         inputManager.addListener(this, "Left");
@@ -273,13 +280,16 @@ public class Main extends SimpleApplication implements DemoListener {
         } else if (keyName.equals("Pause")) {
             if (isPressed) {
                 if (!isPaused) {
-                    // Bring up pause menu //
+                    nifty.gotoScreen("pauseMenu");
                 } else {
-                    // Close pause menu
+                    nifty.gotoScreen("game");
                 }
-                isPaused = !isPaused;
             }
         }
+    }
+    
+    public void setIsPaused(boolean isPaused) {
+        this.isPaused = isPaused;
     }
 
     public void locEventAction(DemoLocEvent e) {

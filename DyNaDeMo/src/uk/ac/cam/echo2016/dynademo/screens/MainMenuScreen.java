@@ -1,12 +1,12 @@
 package uk.ac.cam.echo2016.dynademo.screens;
 
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import uk.ac.cam.echo2016.dynademo.MainApplication;
 
 /**
  *
@@ -15,7 +15,7 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
 
     private Nifty nifty;
     private Screen screen;
-    private SimpleApplication app;
+    private MainApplication app;
 
     public MainMenuScreen() {
         super();
@@ -68,6 +68,6 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        this.app = (SimpleApplication) app;
+        this.app = (MainApplication) app;
     }
 }
