@@ -40,8 +40,7 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
         return System.getProperty("user.name");
     }
 
-    // Nifty GUI ScreenControl methods //
-
+    // ScreenContoller methods //
     /**
      *
      * @param nifty
@@ -62,8 +61,7 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
     public void onEndScreen() {
     }
 
-    // jME3 AppState methods //
-
+    // AbstractAppState methods //
     /**
      *
      * @param stateManager
