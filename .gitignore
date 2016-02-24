@@ -22,3 +22,5 @@ libopenal64.so
 
 /bin/
 /DyNaDeMo/dist/
+
+*.DS_Store
