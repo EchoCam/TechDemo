@@ -113,6 +113,10 @@ public class DemoDialogue {
         return null;
     }
 
+    public String getCurrentCharacter() {
+        return currentCharacter;
+    }
+    
     public void moveToNextDialogue() {
         try {
             if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
