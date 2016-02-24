@@ -16,14 +16,14 @@ import javax.xml.xpath.XPathFactory;
 
 import java.io.*;
 
-public class DemoDialogueNode {
+public class DemoDialogue {
     
     private HashMap<String, Node> dialoguetracker;
     private Node currentnode;
     private String currentCharacter;
     private Document doc;
 
-    public DemoDialogueNode(String xmlfilepath) {
+    public DemoDialogue(String xmlfilepath) {
         try {
             File inputFile = new File(xmlfilepath);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
