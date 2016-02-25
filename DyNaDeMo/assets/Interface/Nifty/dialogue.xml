@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd">
+  <useStyles filename="nifty-default-styles.xml" />
+  <useControls filename="nifty-default-controls.xml" />
+
+  <!-- +++++++++++++++++++++++++++++++++++++++ -->
+  <!-- lay out the HUD                         -->
+  <!-- +++++++++++++++++++++++++++++++++++++++ -->
+  <screen id="game" controller="uk.ac.cam.echo2016.dynademo.screens.DialogueScreen">
+    <layer id="background" childLayout="center" backgroundColor="#0000">
+    </layer>
+    <layer id="foreground" childLayout="vertical">
+      <!-- <panel id="panel_top" height="25%" width="75%" align="center" childLayout="center">  
+        <text text="DyNaDemo" font="Interface/Fonts/Default.fnt" width="100%" height="100%" />
+      </panel>
+      <panel id="panel_mid" height="50%" width="75%" align="center" childLayout="center">       
+        <text text="There must be a better way of adding text..." 
+        font="Interface/Fonts/Default.fnt" width="100%" height="100%" wrap="true" />
+      </panel> -->
+      <panel id="panel_bottom" height="25%" width="75%" align="center" valign="bottom" childLayout="horizontal">  
+        <text
+        id="dialogue-panel" font="Interface/Fonts/Default.fnt" width="100%" height="100%" wrap="true" />
+      </panel>
+    </layer>
+  </screen>
+</nifty>
