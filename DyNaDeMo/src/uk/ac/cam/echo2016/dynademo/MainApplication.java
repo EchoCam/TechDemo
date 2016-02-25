@@ -227,6 +227,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_DOWN));
 
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("Interact", new KeyTrigger(KeyInput.KEY_E));
 //        inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
 
@@ -241,7 +242,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleUpdate(float tpf) {
-        System.out.println(billMurray.getPhysicsLocation().x);
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().multLocal(.4f));
@@ -309,7 +309,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     public void locEventAction(DemoLocEvent e) {
         switch (e.getId()) {
             case 0: // TODO first meeting
-                enterLocation(routes.get(1)); // temp functionality
+                enterLocation(routes.get("PuzzleRoom")); // temp functionality
         }
     }
 

@@ -60,14 +60,6 @@ public class Initialiser {
         for(int i = 0; i< spatialNames.length; ++i) {
             addLight(app,route,lightCoords[i],spatialNames[i]);
         }
-        
-        // OBJECTS
-        Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
-        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        crate.setMaterial(mat);
-        crate.setLocalTranslation(0, 0, -30);
-        route.objects.add(crate);
-        
         // EVENTS
         e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50); 
         e.listeners.add(app);
@@ -76,6 +68,15 @@ public class Initialiser {
 
         // PuzzleRoom
         route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+
+        // LIGHTS
+        addLight(app, route, new Vector3f(0,0,0), new String[]{"Room"});
+        // OBJECTS
+        Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
+        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        crate.setMaterial(mat);
+        crate.setLocalTranslation(0, 0, -30);
+        route.objects.add(crate);
         
         routes.put(route.getId(),route);
         
