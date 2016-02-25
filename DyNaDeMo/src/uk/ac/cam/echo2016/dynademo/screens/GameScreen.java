@@ -8,6 +8,8 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
@@ -25,6 +27,11 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     public GameScreen() {
         super();
     }
+    
+    public void setDialogueText(String text) {
+        Element textElement = nifty.getCurrentScreen().findElementByName("dialogue_box_text");
+        textElement.getRenderer(TextRenderer.class).setText(text);
+    }
 
     // ScreenController methods //
     @Override
@@ -41,6 +48,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         //Bind the mouse to the screen so it is used to rotate the camera
         app.getFlyByCamera().setDragToRotate(false);
         //TODO: load in maps based on data (eg, selected character etc.)
+        setDialogueText("Hahahaaha");
     }
 
     /**
