@@ -33,6 +33,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     }
 
     public void selectCharacter(String character) {
+        System.out.println(character);
     }
 
     // ScreenController methods //
@@ -65,20 +66,21 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
                     width("25%");
 
                     // add control
-                    control(new ButtonBuilder("selectCharacter(" + character + ")", character) {
+                    control(new ButtonBuilder("button_character_" + character, character) {
                         {
                             alignCenter();
                             valignCenter();
                             height("50%");
                             width("50%");
                             visibleToMouse(true);
+
+                            interactOnClick("selectCharacter(" + character + ")");
                         }
                     });
                 }
             };
             bottomPanel.add(p.build(nifty, screen, bottomPanel));
         }
-        nifty.getCurrentScreen();
     }
 
     @Override
