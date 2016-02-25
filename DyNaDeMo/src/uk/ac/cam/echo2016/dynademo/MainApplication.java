@@ -309,7 +309,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     public void locEventAction(DemoLocEvent e) {
         switch (e.getId()) {
             case 0: // TODO first meeting
-                enterLocation(routes.get(1)); // temp functionality
+                enterLocation(routes.get("PuzzleRoom")); // temp functionality
         }
     }
 
