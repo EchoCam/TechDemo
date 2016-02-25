@@ -73,8 +73,8 @@ public class Initialiser {
         }
         
         // OBJECTS
-        Spatial crate = app.getAssetManager().loadModel("Models/Crate");
-        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+//        Spatial crate = app.getAssetManager().loadModel("Models/Crate");
+//        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
         
         // EVENTS
         e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50); 
