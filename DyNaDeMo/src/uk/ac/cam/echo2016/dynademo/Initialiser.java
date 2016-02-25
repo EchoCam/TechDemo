@@ -6,8 +6,10 @@ import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
 import java.util.ArrayList;
 
 import com.jme3.light.PointLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
 
 /**
@@ -26,9 +28,10 @@ public class Initialiser {
         DemoRoute route;
         DemoLocEvent e;
 
-        // First Route
+        // BEDROOM ROUTE
         route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
         
+        // LIGHTS
         Vector3f[] lightCoords = {
             new Vector3f(0f,6f,0f),
             new Vector3f(25f,6f,0f),
@@ -53,7 +56,6 @@ public class Initialiser {
         	{"Corridor"},
         	{"Corridor"},
         };
-        
         for(int i = 0; i< spatialNames.length; ++i) {
             PointLight l = new PointLight();
             l.setColor(ColorRGBA.Gray);
@@ -70,7 +72,11 @@ public class Initialiser {
 //            viewPort.addProcessor(plsr);
         }
         
-        // Starting meeting Event
+        // OBJECTS
+        Spatial crate = app.getAssetManager().loadModel("Models/Crate");
+        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        
+        // EVENTS
         e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50); 
         e.listeners.add(app);
         route.events.add(e);
