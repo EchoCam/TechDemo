@@ -44,12 +44,18 @@ public class PauseMenuScreen extends AbstractAppState implements ScreenControlle
         this.screen = screen;
     }
 
+    /**
+     * This method is run every time the screen is selected.
+     */
     @Override
     public void onStartScreen() {
         app.getFlyByCamera().setDragToRotate(true);
         app.setIsPaused(true);
     }
 
+    /**
+     * This method is run every time the screen deselected.
+     */
     @Override
     public void onEndScreen() {
         app.setIsPaused(false);
