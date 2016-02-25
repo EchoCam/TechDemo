@@ -1,6 +1,8 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import uk.ac.cam.echo2016.dynademo.DemoDialogue;
 import uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -22,9 +24,12 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.AbstractShadowRenderer;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.PointLightShadowRenderer;
+
 import de.lessvoid.nifty.Nifty;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+
 import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
 import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
 import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
@@ -52,6 +57,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     private DemoRoute currentRoute;
     //private currentRoute/Character
     private Nifty nifty;
+    private DemoDialogue dialogue;
 
     public static void main(String[] args) {
         MainApplication app = new MainApplication();
