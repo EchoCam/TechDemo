@@ -11,12 +11,16 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
+import com.jme3.shadow.AbstractShadowRenderer;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.PointLightShadowRenderer;
 import de.lessvoid.nifty.Nifty;
 import java.util.ArrayDeque;
@@ -26,12 +30,13 @@ import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
 import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 
 /**
- * @author tr93
+ * @author tr393
  */
 public class MainApplication extends SimpleApplication implements DemoListener {
 
     private final static float CHARHEIGHT = 3;
     public ArrayList<DemoRoute> routes = new ArrayList<DemoRoute>();
+    
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
     private CharacterControl playerControl;
@@ -41,6 +46,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
+    
     private ArrayDeque<DemoLocEvent> locEventQueue = new ArrayDeque<DemoLocEvent>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
@@ -102,34 +108,30 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         al.setColor(new ColorRGBA(0.1f, 0.1f, 0.1f, 1f));
         rootNode.addLight(al);
 
-//        SpotLight light1 = new SpotLight();
-//        light1.setDirection(new Vector3f(0f,-3f, 0f));
-//        light1.setColor(ColorRGBA.White.mult(5f));
-//        light1.setPosition(new Vector3f(0, 500, 0));
-//        light1.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD); // inner light cone (central beam)
-//        light1.setSpotOuterAngle(120f * FastMath.DEG_TO_RAD);
-//        light1.setSpotRange(1000f);
-//        rootNode.addLight(light1);
-
-        PointLight light2 = new PointLight();
-        light2.setColor(ColorRGBA.Gray);
-        light2.setPosition(new Vector3f(0, 5, 0));
-        light2.setRadius(1000f);
-        rootNode.addLight(light2);
+//        PointLight light2 = new PointLight();
+//        light2.setColor(ColorRGBA.Gray);
+//        light2.setPosition(new Vector3f(0, 10, 0));
+//        light2.setRadius(1000f);
+//        rootNode.addLight(light2);
 
 //        DirectionalLight light3 = new DirectionalLight();
-//        light3.setDirection(Vector3f.UNIT_Y.negate());
+//        light3.setDirection(new Vector3f(-1f, -4f, -1f));
 //        light3.setColor(ColorRGBA.White);
 //        rootNode.addLight(light3);
-
+//        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager,1024,3);
+//        dlsr.setLight(light3);
+//        viewPort.addProcessor(dlsr);
+                
         // TODO add more lights
 
         // Add shadow renderer //
-        PointLightShadowRenderer plsr = new PointLightShadowRenderer(assetManager, 1024);
-        plsr.setLight(light2);
+        
+//        plsr = new PointLightShadowRenderer(assetManager, 1024);
+//        plsr.setLight(light2);
+        
         // bit dodgy - TODO fix walls and textures affected by this
 
-        viewPort.addProcessor(plsr);
+//        viewPort.addProcessor(plsr);
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
 
         // Initialize World //
@@ -163,26 +165,65 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
         // First Route
         area = new DemoRoute("StartRoute", "Scenes/Scene1.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+        
+        Vector3f[] lightCoords = {
+            new Vector3f(0f,10f,0f),
+//            new Vector3f(25f,10f,0f),
+//            new Vector3f(-25f,10f,0f),
+            new Vector3f(0f,10f,-30f),
+//            new Vector3f(25f,10f,-30f),
+//            new Vector3f(-25f,10f,-30f),
+            
+//            new Vector3f(-60f,10f,0f),
+//            new Vector3f(-60f,10f,-30f)
+        };
+        for(Vector3f loc : lightCoords) {
+            PointLight l = new PointLight();
+            l.setColor(ColorRGBA.Gray);
+            l.setPosition(loc);
+            l.setRadius(1000f);
+            area.lights.add(l);
+        }
+        
         // Starting meeting Event
-        e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50);
+        e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50); 
         e.listeners.add(this);
         area.events.add(e);
         routes.add(area);
 
         // Second Route
-        area = new DemoRoute(("Route2"), "Scenes/Scene2.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(-1, 0, 0));
+        area = new DemoRoute("Parkour", "Scenes/Scene2.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(-1, 0, 0));
         routes.add(area);
     }
 
     private void enterLocation(DemoRoute route) {
-        // Unload and Load the old and new routes
+        // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
-
+        
+        for (PointLight l : currentRoute.lights) {
+            rootNode.removeLight(l);
+        }
+        for (PointLightShadowRenderer plsr : currentRoute.shadowRenderers) {
+            viewPort.removeProcessor(plsr);
+        }
+        currentRoute.shadowRenderers = new ArrayList<PointLightShadowRenderer>();
+        
+        // Load new route (route)
         currentWorld = assetManager.loadModel(route.getSceneFile());
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
+        
+        for (PointLight l : route.lights) {
+            rootNode.addLight(l);
+            
+            PointLightShadowRenderer plsr = new PointLightShadowRenderer(assetManager, 1024);
+            plsr.setLight(l);
+            plsr.setFlushQueues(false);
+            route.shadowRenderers.add(plsr);
+            viewPort.addProcessor(plsr);
+        }
 
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
         landscape = new RigidBodyControl(sceneShape, 0f);
