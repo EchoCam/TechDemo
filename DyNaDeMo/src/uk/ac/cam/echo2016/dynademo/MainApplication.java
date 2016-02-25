@@ -39,7 +39,7 @@ import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
  */
 public class MainApplication extends SimpleApplication implements DemoListener {
 
-    private final static float CHARHEIGHT = 3;
+    public final static float CHARHEIGHT = 3;
     public ArrayList<DemoRoute> routes = new ArrayList<DemoRoute>();
     
     private BulletAppState bulletAppState;
@@ -102,7 +102,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         setupKeys();
 
         // Setup world and locEvents //
-        initializeAreas();
+        routes = Initialiser.initialiseRoutes(this);
 
         // Initialize physics engine //
         bulletAppState = new BulletAppState();
@@ -164,44 +164,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         enterLocation(currentRoute);
     }
 
-    private void initializeAreas() {
-        // TODO aassociate lights to routes
-        DemoRoute area;
-        DemoLocEvent e;
-
-        // First Route
-        area = new DemoRoute("StartRoute", "Scenes/Scene1.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
-        
-        Vector3f[] lightCoords = {
-            new Vector3f(0f,10f,0f),
-//            new Vector3f(25f,10f,0f),
-//            new Vector3f(-25f,10f,0f),
-            new Vector3f(0f,10f,-30f),
-//            new Vector3f(25f,10f,-30f),
-//            new Vector3f(-25f,10f,-30f),
-            
-//            new Vector3f(-60f,10f,0f),
-//            new Vector3f(-60f,10f,-30f)
-        };
-        for(Vector3f loc : lightCoords) {
-            PointLight l = new PointLight();
-            l.setColor(ColorRGBA.Gray);
-            l.setPosition(loc);
-            l.setRadius(1000f);
-            area.lights.add(l);
-        }
-        
-        // Starting meeting Event
-        e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50); 
-        e.listeners.add(this);
-        area.events.add(e);
-        routes.add(area);
-
-        // Second Route
-        area = new DemoRoute("Parkour", "Scenes/Scene2.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(-1, 0, 0));
-        routes.add(area);
-    }
-
     private void enterLocation(DemoRoute route) {
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
@@ -222,11 +184,13 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         rootNode.attachChild(currentWorld);
         
         for (PointLight l : route.lights) {
+            rootNode.getChildren();
             rootNode.addLight(l);
             
             PointLightShadowRenderer plsr = new PointLightShadowRenderer(assetManager, 1024);
             plsr.setLight(l);
             plsr.setFlushQueues(false);
+            plsr.setShadowIntensity(0.01f);
             route.shadowRenderers.add(plsr);
             viewPort.addProcessor(plsr);
         }
