@@ -1,6 +1,7 @@
 
 package uk.ac.cam.echo2016.dynademo;
 
+import com.jme3.bullet.BulletAppState;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
 
 import java.util.ArrayList;
@@ -73,8 +74,12 @@ public class Initialiser {
         }
         
         // OBJECTS
-//        Spatial crate = app.getAssetManager().loadModel("Models/Crate");
-//        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
+        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        crate.setMaterial(mat);
+        crate.setLocalTranslation(0, 0, -30);
+//        app.getStateManager().getState(BulletAppState.class).getPhysicsSpace();
+        app.getRootNode().attachChild(crate);
         
         // EVENTS
         e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50); 
