@@ -23,14 +23,26 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     private Nifty nifty;
     private Screen screen;
     private MainApplication app;
+    
+    private String character; //temp variable just to show variable passing
 
     public GameScreen() {
         super();
     }
     
+    /**
+     * Sets the text that is displayed in the dialogue box.
+     * 
+     * @param text 
+     */
     public void setDialogueText(String text) {
         Element textElement = nifty.getCurrentScreen().findElementByName("dialogue_box_text");
         textElement.getRenderer(TextRenderer.class).setText(text);
+    }
+    
+    //temp functino to show variable passing
+    public void setCharacter(String character) {
+        this.character = character;
     }
 
     // ScreenController methods //
@@ -48,7 +60,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         //Bind the mouse to the screen so it is used to rotate the camera
         app.getFlyByCamera().setDragToRotate(false);
         //TODO: load in maps based on data (eg, selected character etc.)
-        setDialogueText("Hahahaaha");
+        setDialogueText("You are playing as " + character);
     }
 
     /**
