@@ -180,7 +180,10 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         rootNode.attachChild(currentWorld);
         
         for (DemoLight l : route.lights) {
-            rootNode.addLight(l.light);
+        	for(String spatialName: l.spatialNames) {
+        		Spatial spatial = rootNode.descendantMatches(spatialName).get(0);
+        		spatial.addLight(l.light);
+        	}
         }
         for (AbstractShadowRenderer plsr : route.shadowRenderers) {
             viewPort.addProcessor(plsr);

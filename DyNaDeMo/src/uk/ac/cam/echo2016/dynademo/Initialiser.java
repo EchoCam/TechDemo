@@ -33,36 +33,34 @@ public class Initialiser {
         Vector3f[] lightCoords = {
             new Vector3f(0f,6f,0f),
             new Vector3f(25f,6f,0f),
-            new Vector3f(-25f,6f,0f),
-            new Vector3f(0f,6f,-30f),
-            new Vector3f(25f,6f,-30f),
-            new Vector3f(-25f,6f,-30f),
-            
-            new Vector3f(25f,6f,-15f),
-            new Vector3f(-25f,6f,-15f),
-            
-            new Vector3f(-60f,6f,0f),
-            new Vector3f(-60f,6f,-30f)
+//            new Vector3f(-25f,6f,0f),
+//            new Vector3f(0f,6f,-30f),
+//            new Vector3f(25f,6f,-30f),
+//            new Vector3f(-25f,6f,-30f),
+//            
+//            new Vector3f(25f,6f,-15f),
+//            new Vector3f(-25f,6f,-15f),
+//            
+//            new Vector3f(-60f,6f,0f),
+//            new Vector3f(-60f,6f,-30f)
         };
-        String[] nodes = {
-        	"Room",
-        	"Room.001",
-        	"Room.002",
-        	"Room.003"
+        String[][] spatialNames = {
+        	{"Room","Room.001"},
+        	{"Room.004","Room.001"}
         };
         
-        for(int i = 0; i< nodes.length; ++i) {
+        for(int i = 0; i< spatialNames.length; ++i) {
             PointLight l = new PointLight();
             l.setColor(ColorRGBA.Gray);
             l.setPosition(lightCoords[i]);
             l.setRadius(1000f);
             
-            route.lights.add(new DemoLight(l, nodes[i]));
+            route.lights.add(new DemoLight(l, spatialNames[i]));
             
             PointLightShadowRenderer plsr = new PointLightShadowRenderer(app.getAssetManager(), 1024);
             plsr.setLight(l);
             plsr.setFlushQueues(false);
-            plsr.setShadowIntensity(0.01f);
+            plsr.setShadowIntensity(0.1f);
             route.shadowRenderers.add(plsr);
 //            viewPort.addProcessor(plsr);
         }
