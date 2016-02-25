@@ -111,31 +111,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         AmbientLight al = new AmbientLight(); // No current effect on blender scene
         al.setColor(new ColorRGBA(0.1f, 0.1f, 0.1f, 1f));
         rootNode.addLight(al);
-
-//        PointLight light2 = new PointLight();
-//        light2.setColor(ColorRGBA.Gray);
-//        light2.setPosition(new Vector3f(0, 10, 0));
-//        light2.setRadius(1000f);
-//        rootNode.addLight(light2);
-
-//        DirectionalLight light3 = new DirectionalLight();
-//        light3.setDirection(new Vector3f(-1f, -4f, -1f));
-//        light3.setColor(ColorRGBA.White);
-//        rootNode.addLight(light3);
-//        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager,1024,3);
-//        dlsr.setLight(light3);
-//        viewPort.addProcessor(dlsr);
-
-        // TODO add more lights
-
-        // Add shadow renderer //
-
-//        plsr = new PointLightShadowRenderer(assetManager, 1024);
-//        plsr.setLight(light2);
-
-        // bit dodgy - TODO fix walls and textures affected by this
-
-//        viewPort.addProcessor(plsr);
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
 
         // Initialize World //
@@ -168,7 +143,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
         
-        for (DemoLight l : currentRoute.lights) {
+        for (DemoLight l : currentRoute.lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
         for (AbstractShadowRenderer plsr : currentRoute.shadowRenderers) {
@@ -180,8 +155,9 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         this.currentRoute = route;
         
         // Load new route (route)
-        
-        
+        currentWorld = assetManager.loadModel(route.getSceneFile());
+        currentWorld.scale(10f);
+        rootNode.attachChild(currentWorld);
         
         for (DemoLight l : route.lights) {
         	for(String spatialName: l.spatialNames) {
@@ -192,7 +168,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         	}
         }
         for (AbstractShadowRenderer plsr : route.shadowRenderers) {
-            viewPort.addProcessor(plsr);
+//            viewPort.addProcessor(plsr);
         }
         for (DemoLocEvent newEvent : route.events) {
             locEventQueue.add(newEvent);
