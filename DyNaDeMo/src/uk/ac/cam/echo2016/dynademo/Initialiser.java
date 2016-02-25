@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
 import com.jme3.shadow.PointLightShadowRenderer;
 
 /**
@@ -28,29 +27,31 @@ public class Initialiser {
         DemoLocEvent e;
 
         // First Route
-        route = new DemoRoute("StartRoute", "Scenes/Scene1.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+        route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
         
         Vector3f[] lightCoords = {
             new Vector3f(0f,6f,0f),
-            new Vector3f(-25f,6f,0f),
-            new Vector3f(-25f,6f,-30f),
-            new Vector3f(0f,6f,-30f),           
             new Vector3f(25f,6f,0f),
             new Vector3f(25f,6f,-30f),
-            
+            new Vector3f(0f,6f,-30f),
+            new Vector3f(-25f,6f,-30f),            
+            new Vector3f(-25f,6f,0f),
+
             new Vector3f(25f,6f,-15f),
             new Vector3f(-25f,6f,-15f),
-            
-            new Vector3f(-60f,6f,0f),
-            new Vector3f(-60f,6f,-30f)
+//            
+//            new Vector3f(-60f,6f,0f),
+//            new Vector3f(-60f,6f,-30f)
         };
         String[][] spatialNames = {
-        	{"Room1","Corridor"},
-        	{"Room2","Corridor"},
-        	{"Room3","Corridor"},
-        	{"Room4","Corridor"},
-        	{"Room5","Corridor"},
-        	{"Room6","Corridor"}
+        	{"Room1"},//,"Corridor"},
+        	{"Room2"},//,"Corridor"},
+        	{"Room3"},//,"Corridor"},
+        	{"Room4"},//,"Corridor"},
+        	{"Room5"},//,"Corridor"},
+        	{"Room6"},//,"Corridor"}
+        	{"Corridor"},
+        	{"Corridor"},
         };
         
         for(int i = 0; i< spatialNames.length; ++i) {
