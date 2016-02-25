@@ -1,7 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
@@ -12,6 +11,7 @@ import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
@@ -30,6 +30,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.AbstractShadowRenderer;
 
 import de.lessvoid.nifty.Nifty;
+import java.util.HashMap;
 
 /**
  * @author tr393
@@ -38,7 +39,7 @@ import de.lessvoid.nifty.Nifty;
 public class MainApplication extends SimpleApplication implements DemoListener {
 
     public final static float CHARHEIGHT = 3;
-    public ArrayList<DemoRoute> routes = new ArrayList<DemoRoute>();
+    public HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
     
     private Node playerNode;
     private BulletAppState bulletAppState;
@@ -126,26 +127,31 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
         landscape = new RigidBodyControl(sceneShape, 0f);
         currentWorld.addControl(landscape);
+        landscape.setFriction(1f);
         bulletAppState.getPhysicsSpace().add(landscape);
 
         // Load Character into world //
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(CHARHEIGHT / 2, CHARHEIGHT, 1);
-        playerControl = new CharacterControl(capsuleShape, 1f);
-        playerControl.setJumpSpeed(17.5f);
+        playerNode = new Node("playerNode");
+        rootNode.attachChild(playerNode);
+        
+        // Attach physic control to the character
+        playerControl = new CharacterControl(
+                new CapsuleCollisionShape(CHARHEIGHT / 2, CHARHEIGHT, 1), 0.2f);
+        playerControl.setJumpSpeed(20f);
         playerControl.setFallSpeed(30);
         playerControl.setGravity(50);
         playerControl.setPhysicsLocation(new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0)); // 2.5f vertical lee-way
-        bulletAppState.getPhysicsSpace().add(playerControl);
-
-        playerNode = new Node("playerNode");
-        billMurray = new GhostControl(capsuleShape);
-        playerNode.addControl(billMurray);
         playerNode.addControl(playerControl);
-//        billMurray.setApplyPhysicsLocal(true);
-//        bulletAppState.getPhysicsSpace().add(billMurray);
+        bulletAppState.getPhysicsSpace().add(playerControl);
+        
+        // Attach ghost control to the character
+        billMurray = new GhostControl(
+                new CapsuleCollisionShape((CHARHEIGHT / 2), CHARHEIGHT , 1));
+        playerNode.addControl(billMurray);
+        bulletAppState.getPhysicsSpace().add(billMurray);
         
         // Start at Area 0 //
-        currentRoute = routes.get(0);
+        currentRoute = routes.get("Bedroom");
         enterLocation(currentRoute);
     }
 
@@ -174,16 +180,12 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
         
+        // Load route objects and add rigidbodycontrols
         for (Spatial object : route.objects) {
             rootNode.attachChild(object);
-            RigidBodyControl rbc = new RigidBodyControl(2f);
+            RigidBodyControl rbc = new RigidBodyControl(5f);
             object.addControl(rbc);
-            
-            rbc.setCcdMotionThreshold(1f);
-            System.out.println(rbc.getAngularDamping());
-            System.out.println(rbc.getAngularFactor());
-//            System.out.println(rbc.setCcdMotionThreshold(1f));
-            System.out.println(rbc.getAngularSleepingThreshold());
+            rbc.setFriction(1.5f);
             bulletAppState.getPhysicsSpace().add(rbc);
         }
         for (DemoLight l : route.lights) {
@@ -239,10 +241,12 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleUpdate(float tpf) {
-        System.out.println(playerNode.getWorldTranslation().x);
+        System.out.println(billMurray.getPhysicsLocation().x);
         if (!isPaused) {
+            // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().multLocal(.4f));
             camLeft.set(cam.getLeft().multLocal(.4f));
+            // Calculate distance to move
             walkDirection.set(0, 0, 0);
             if (keyLeft) {
                 walkDirection.addLocal(camLeft);
@@ -256,14 +260,15 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             if (keyDown) {
                 walkDirection.addLocal(-camDir.x, 0, -camDir.z);
             }
-            playerControl.setWalkDirection(walkDirection.mult(50f*tpf));
+            playerControl.setWalkDirection(walkDirection.mult(60f*tpf));
+            // Move camera to correspond to player
             cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
-
-            //        System.out.println(playerControl.getPhysicsLocation().x);
-            //        System.out.println(playerControl.getPhysicsLocation().y);
-            //        System.out.println(playerControl.getPhysicsLocation().z);
-            //        System.out.println();
-
+            // Check character for collisions
+            for(PhysicsCollisionObject object : billMurray.getOverlappingObjects()) {
+                if (object instanceof RigidBodyControl)
+                    ((RigidBodyControl) object).applyCentralForce(camDir.mult(1000f));
+            }
+            // Check global event queue
             for (DemoLocEvent e : locEventQueue) {
                 if (e.checkCondition(playerControl.getPhysicsLocation())) {
                     e.fireEvent();
