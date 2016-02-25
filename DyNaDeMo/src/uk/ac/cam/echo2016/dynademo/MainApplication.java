@@ -15,16 +15,17 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.AbstractShadowRenderer;
 
@@ -38,9 +39,13 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     public final static float CHARHEIGHT = 3;
     public ArrayList<DemoRoute> routes = new ArrayList<DemoRoute>();
+    
+    private Node playerNode;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
     private CharacterControl playerControl;
+    private GhostControl billMurray;
+    
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
@@ -113,8 +118,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         rootNode.addLight(al);
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
 
-        // Initialize World //
-        currentWorld = assetManager.loadModel("Scenes/Scene1.j3o"); // Not used - reloaded later
+        // Initialize World (as a placeholder) //
+        currentWorld = assetManager.loadModel("Scenes/Bedroom.j3o"); // Not used - reloaded later
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
         // Make a rigid body from the scene //
@@ -132,6 +137,13 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         playerControl.setPhysicsLocation(new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0)); // 2.5f vertical lee-way
         bulletAppState.getPhysicsSpace().add(playerControl);
 
+        playerNode = new Node("playerNode");
+        billMurray = new GhostControl(capsuleShape);
+        playerNode.addControl(billMurray);
+        playerNode.addControl(playerControl);
+//        billMurray.setApplyPhysicsLocal(true);
+//        bulletAppState.getPhysicsSpace().add(billMurray);
+        
         // Start at Area 0 //
         currentRoute = routes.get(0);
         enterLocation(currentRoute);
@@ -143,6 +155,9 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
         
+        for (Spatial object : currentRoute.objects) {
+            rootNode.detachChild(object);
+        }
         for (DemoLight l : currentRoute.lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
@@ -159,6 +174,18 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
         
+        for (Spatial object : route.objects) {
+            rootNode.attachChild(object);
+            RigidBodyControl rbc = new RigidBodyControl(2f);
+            object.addControl(rbc);
+            
+            rbc.setCcdMotionThreshold(1f);
+            System.out.println(rbc.getAngularDamping());
+            System.out.println(rbc.getAngularFactor());
+//            System.out.println(rbc.setCcdMotionThreshold(1f));
+            System.out.println(rbc.getAngularSleepingThreshold());
+            bulletAppState.getPhysicsSpace().add(rbc);
+        }
         for (DemoLight l : route.lights) {
         	for(String spatialName: l.spatialNames) {
         		List<Spatial> list = rootNode.descendantMatches(spatialName);
@@ -168,7 +195,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         	}
         }
         for (AbstractShadowRenderer plsr : route.shadowRenderers) {
-//            viewPort.addProcessor(plsr);
+//            viewPort.addProcessor(plsr); // Disabled for now
         }
         for (DemoLocEvent newEvent : route.events) {
             locEventQueue.add(newEvent);
@@ -212,6 +239,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleUpdate(float tpf) {
+        System.out.println(playerNode.getWorldTranslation().x);
         if (!isPaused) {
             camDir.set(cam.getDirection().multLocal(.4f));
             camLeft.set(cam.getLeft().multLocal(.4f));
