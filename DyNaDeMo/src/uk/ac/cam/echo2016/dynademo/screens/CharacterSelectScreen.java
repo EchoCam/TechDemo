@@ -35,6 +35,8 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     public void selectCharacter(String character) {
         System.out.println("Playing as " + character);
         //TODO: choose route based on character and start the game...
+        GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
+        gameScreen.setCharacter(character);
         nifty.gotoScreen("game");
     }
 
