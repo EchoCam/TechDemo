@@ -32,21 +32,25 @@ public class Initialiser {
         
         Vector3f[] lightCoords = {
             new Vector3f(0f,6f,0f),
+            new Vector3f(-25f,6f,0f),
+            new Vector3f(-25f,6f,-30f),
+            new Vector3f(0f,6f,-30f),           
             new Vector3f(25f,6f,0f),
-//            new Vector3f(-25f,6f,0f),
-//            new Vector3f(0f,6f,-30f),
-//            new Vector3f(25f,6f,-30f),
-//            new Vector3f(-25f,6f,-30f),
-//            
-//            new Vector3f(25f,6f,-15f),
-//            new Vector3f(-25f,6f,-15f),
-//            
-//            new Vector3f(-60f,6f,0f),
-//            new Vector3f(-60f,6f,-30f)
+            new Vector3f(25f,6f,-30f),
+            
+            new Vector3f(25f,6f,-15f),
+            new Vector3f(-25f,6f,-15f),
+            
+            new Vector3f(-60f,6f,0f),
+            new Vector3f(-60f,6f,-30f)
         };
         String[][] spatialNames = {
-        	{"Room","Room.001"},
-        	{"Room.004","Room.001"}
+        	{"Room1","Corridor"},
+        	{"Room2","Corridor"},
+        	{"Room3","Corridor"},
+        	{"Room4","Corridor"},
+        	{"Room5","Corridor"},
+        	{"Room6","Corridor"}
         };
         
         for(int i = 0; i< spatialNames.length; ++i) {
