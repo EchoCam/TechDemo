@@ -130,8 +130,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
         // Load Character into world //
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(CHARHEIGHT / 2, CHARHEIGHT, 1);
-        playerControl = new CharacterControl(capsuleShape, 0.2f);
-        playerControl.setJumpSpeed(20);
+        playerControl = new CharacterControl(capsuleShape, 1f);
+        playerControl.setJumpSpeed(17.5f);
         playerControl.setFallSpeed(30);
         playerControl.setGravity(50);
         playerControl.setPhysicsLocation(new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0)); // 2.5f vertical lee-way
@@ -256,7 +256,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             if (keyDown) {
                 walkDirection.addLocal(-camDir.x, 0, -camDir.z);
             }
-            playerControl.setWalkDirection(walkDirection);
+            playerControl.setWalkDirection(walkDirection.mult(50f*tpf));
             cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
 
             //        System.out.println(playerControl.getPhysicsLocation().x);
