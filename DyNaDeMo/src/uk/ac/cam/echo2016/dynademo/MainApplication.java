@@ -2,6 +2,7 @@ package uk.ac.cam.echo2016.dynademo;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.List;
 
 import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
 import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
@@ -178,9 +179,15 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         }
         this.currentRoute = route;
         
+        // Load new route (route)
+        
+        
+        
         for (DemoLight l : route.lights) {
         	for(String spatialName: l.spatialNames) {
-        		Spatial spatial = rootNode.descendantMatches(spatialName).get(0);
+        		List<Spatial> list = rootNode.descendantMatches(spatialName);
+        		if (list.isEmpty()) {System.out.println("Spatial not found!");}
+        		Spatial spatial = list.get(0);
         		spatial.addLight(l.light);
         	}
         }

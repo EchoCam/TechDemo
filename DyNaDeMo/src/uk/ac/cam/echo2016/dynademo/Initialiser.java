@@ -28,7 +28,7 @@ public class Initialiser {
         DemoLocEvent e;
 
         // First Route
-        route = new DemoRoute("StartRoute", "Scenes/Scene1.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+        route = new DemoRoute("Bedroom", "Scenes/Scene1.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
         
         Vector3f[] lightCoords = {
             new Vector3f(0f,6f,0f),
@@ -38,11 +38,11 @@ public class Initialiser {
             new Vector3f(25f,6f,0f),
             new Vector3f(25f,6f,-30f),
             
-            new Vector3f(25f,6f,-15f),
-            new Vector3f(-25f,6f,-15f),
-            
-            new Vector3f(-60f,6f,0f),
-            new Vector3f(-60f,6f,-30f)
+//            new Vector3f(25f,6f,-15f),
+//            new Vector3f(-25f,6f,-15f),
+//            
+//            new Vector3f(-60f,6f,0f),
+//            new Vector3f(-60f,6f,-30f)
         };
         String[][] spatialNames = {
         	{"Room1","Corridor"},
