@@ -176,7 +176,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         for (PointLightShadowRenderer plsr : currentRoute.shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-        currentRoute.shadowRenderers = new ArrayList<PointLightShadowRenderer>();
         
         // Load new route (route)
         currentWorld = assetManager.loadModel(route.getSceneFile());
@@ -184,14 +183,9 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         rootNode.attachChild(currentWorld);
         
         for (PointLight l : route.lights) {
-            rootNode.getChildren();
             rootNode.addLight(l);
-            
-            PointLightShadowRenderer plsr = new PointLightShadowRenderer(assetManager, 1024);
-            plsr.setLight(l);
-            plsr.setFlushQueues(false);
-            plsr.setShadowIntensity(0.01f);
-            route.shadowRenderers.add(plsr);
+        }
+        for (PointLightShadowRenderer plsr : route.shadowRenderers) {
             viewPort.addProcessor(plsr);
         }
 
