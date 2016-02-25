@@ -2,6 +2,7 @@ package uk.ac.cam.echo2016.dynademo;
 
 import uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -11,16 +12,12 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
-import com.jme3.light.Light;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.AbstractShadowRenderer;
-import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.PointLightShadowRenderer;
 import de.lessvoid.nifty.Nifty;
 import java.util.ArrayDeque;
@@ -36,7 +33,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     public final static float CHARHEIGHT = 3;
     public ArrayList<DemoRoute> routes = new ArrayList<DemoRoute>();
-    
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
     private CharacterControl playerControl;
@@ -46,12 +42,16 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
-    
     private ArrayDeque<DemoLocEvent> locEventQueue = new ArrayDeque<DemoLocEvent>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
     //private currentRoute/Character
     private Nifty nifty;
+    //Screens
+    private MainMenuScreen mainMenuScreen;
+    private CharacterSelectScreen characterSelectScreen;
+    private PauseMenuScreen pauseMenuScreen;
+    private GameScreen gameScreen;
 
     public static void main(String[] args) {
         MainApplication app = new MainApplication();
@@ -77,10 +77,10 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         nifty.addXml("Interface/Nifty/game.xml");
 
 
-        MainMenuScreen mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
-        CharacterSelectScreen characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
-        PauseMenuScreen pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
-        GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
+        mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
+        characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
+        pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
+        gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
 
         stateManager.attach(mainMenuScreen);
         stateManager.attach(characterSelectScreen);
@@ -121,14 +121,14 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 //        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager,1024,3);
 //        dlsr.setLight(light3);
 //        viewPort.addProcessor(dlsr);
-                
+
         // TODO add more lights
 
         // Add shadow renderer //
-        
+
 //        plsr = new PointLightShadowRenderer(assetManager, 1024);
 //        plsr.setLight(light2);
-        
+
         // bit dodgy - TODO fix walls and textures affected by this
 
 //        viewPort.addProcessor(plsr);
@@ -163,19 +163,19 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
-        
+
         for (PointLight l : currentRoute.lights) {
             rootNode.removeLight(l);
         }
         for (PointLightShadowRenderer plsr : currentRoute.shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-        
+
         // Load new route (route)
         currentWorld = assetManager.loadModel(route.getSceneFile());
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
-        
+
         for (PointLight l : route.lights) {
             rootNode.addLight(l);
         }
@@ -286,7 +286,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             }
         }
     }
-    
+
     public void setIsPaused(boolean isPaused) {
         this.isPaused = isPaused;
     }
@@ -296,6 +296,26 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             case 0: // TODO first meeting
                 enterLocation(routes.get(1)); // temp functionality
         }
+    }
+
+    public MainMenuScreen getMainMenuScreen() {
+        return mainMenuScreen;
+    }
+
+    public PauseMenuScreen getPauseMenuScreen() {
+        return pauseMenuScreen;
+    }
+
+    public CharacterSelectScreen getCharacterSelectScreen() {
+        return characterSelectScreen;
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
+    
+    public AppStateManager getStateManager() {
+        return stateManager;
     }
 
     public void chooseRoute() {

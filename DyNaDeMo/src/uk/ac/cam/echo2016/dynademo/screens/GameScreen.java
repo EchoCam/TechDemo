@@ -48,6 +48,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
      */
     @Override
     public void onEndScreen() {
+
     }
 
     // AbstractAppState methods //
@@ -56,12 +57,10 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         super.initialize(stateManager, app);
         this.app = (MainApplication) app;
     }
-    //@Override
-    //public void update(float tpf) {
-    //    if (screen.getScreenId().equals("hud")) {
-    //        Element niftyElement = nifty.getCurrentScreen().findElementByName("score");
-    //        // Display the time-per-frame -- this field could also display the score etc...
-    //        niftyElement.getRenderer(TextRenderer.class).setText((int) (tpf * 100000) + "");
-    //    }
-    //}
+    
+    @Override
+    public void update(float tpf) {
+        if (isEnabled()) {
+        }
+    }
 }
