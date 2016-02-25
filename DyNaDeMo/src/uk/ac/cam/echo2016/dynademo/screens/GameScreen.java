@@ -33,12 +33,19 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         this.screen = screen;
     }
 
+    /**
+     * This method is run every time this screen is selected.
+     */
     @Override
     public void onStartScreen() {
+        //Bind the mouse to the screen so it is used to rotate the camera
         app.getFlyByCamera().setDragToRotate(false);
         //TODO: load in maps based on data (eg, selected character etc.)
     }
 
+    /**
+     * This method is run every time this screen is deselected.
+     */
     @Override
     public void onEndScreen() {
     }
