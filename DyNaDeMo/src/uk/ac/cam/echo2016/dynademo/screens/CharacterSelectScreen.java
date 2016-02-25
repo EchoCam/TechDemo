@@ -56,9 +56,11 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             currentChars.add("Dooby");
         }
 
+        //Get the bottom panel so we can insert character buttons
         Element bottomPanel = nifty.getCurrentScreen().findElementByName("panel_bottom");
+
         for (final String character : currentChars) {
-            //Add character to screen...
+            //Add character button to the screen
             PanelBuilder p = new PanelBuilder("character_" + character) {
                 {
                     childLayoutCenter();
@@ -67,7 +69,6 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
                     height("25%");
                     width("25%");
 
-                    // add control
                     control(new ButtonBuilder("button_character_" + character, character) {
                         {
                             alignCenter();
