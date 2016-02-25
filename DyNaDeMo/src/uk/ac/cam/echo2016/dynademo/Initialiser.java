@@ -1,12 +1,15 @@
 
 package uk.ac.cam.echo2016.dynademo;
 
+import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
+
+import java.util.ArrayList;
+
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.shadow.PointLightShadowRenderer;
-import java.util.ArrayList;
-import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
 
 /**
  * @author tr393
@@ -41,12 +44,20 @@ public class Initialiser {
             new Vector3f(-60f,6f,0f),
             new Vector3f(-60f,6f,-30f)
         };
-        for(Vector3f loc : lightCoords) {
+        String[] nodes = {
+        	"Room",
+        	"Room.001",
+        	"Room.002",
+        	"Room.003"
+        };
+        
+        for(int i = 0; i< nodes.length; ++i) {
             PointLight l = new PointLight();
             l.setColor(ColorRGBA.Gray);
-            l.setPosition(loc);
+            l.setPosition(lightCoords[i]);
             l.setRadius(1000f);
-            route.lights.add(l);
+            
+            route.lights.add(new DemoLight(l, nodes[i]));
             
             PointLightShadowRenderer plsr = new PointLightShadowRenderer(app.getAssetManager(), 1024);
             plsr.setLight(l);
