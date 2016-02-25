@@ -1,6 +1,14 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+
+import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
+import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
 import uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen;
+import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.bullet.BulletAppState;
@@ -12,23 +20,19 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
-import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.PointLightShadowRenderer;
+import com.jme3.shadow.AbstractShadowRenderer;
+
 import de.lessvoid.nifty.Nifty;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
-import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
-import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 
 /**
  * @author tr393
  */
+@SuppressWarnings("deprecation")
 public class MainApplication extends SimpleApplication implements DemoListener {
 
     public final static float CHARHEIGHT = 3;
@@ -107,31 +111,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         AmbientLight al = new AmbientLight(); // No current effect on blender scene
         al.setColor(new ColorRGBA(0.1f, 0.1f, 0.1f, 1f));
         rootNode.addLight(al);
-
-//        PointLight light2 = new PointLight();
-//        light2.setColor(ColorRGBA.Gray);
-//        light2.setPosition(new Vector3f(0, 10, 0));
-//        light2.setRadius(1000f);
-//        rootNode.addLight(light2);
-
-//        DirectionalLight light3 = new DirectionalLight();
-//        light3.setDirection(new Vector3f(-1f, -4f, -1f));
-//        light3.setColor(ColorRGBA.White);
-//        rootNode.addLight(light3);
-//        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager,1024,3);
-//        dlsr.setLight(light3);
-//        viewPort.addProcessor(dlsr);
-
-        // TODO add more lights
-
-        // Add shadow renderer //
-
-//        plsr = new PointLightShadowRenderer(assetManager, 1024);
-//        plsr.setLight(light2);
-
-        // bit dodgy - TODO fix walls and textures affected by this
-
-//        viewPort.addProcessor(plsr);
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
 
         // Initialize World //
@@ -163,39 +142,42 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
-
-        for (PointLight l : currentRoute.lights) {
-            rootNode.removeLight(l);
+        
+        for (DemoLight l : currentRoute.lights) { // FIXME should do a search
+            rootNode.removeLight(l.light);
         }
-        for (PointLightShadowRenderer plsr : currentRoute.shadowRenderers) {
+        for (AbstractShadowRenderer plsr : currentRoute.shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-
+        for (DemoLocEvent oldEvent : currentRoute.events) {
+            locEventQueue.remove(oldEvent);
+        }
+        this.currentRoute = route;
+        
         // Load new route (route)
         currentWorld = assetManager.loadModel(route.getSceneFile());
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
-
-        for (PointLight l : route.lights) {
-            rootNode.addLight(l);
+        
+        for (DemoLight l : route.lights) {
+        	for(String spatialName: l.spatialNames) {
+        		List<Spatial> list = rootNode.descendantMatches(spatialName);
+        		if (list.isEmpty()) {System.out.println("Spatial not found!");}
+        		Spatial spatial = list.get(0);
+        		spatial.addLight(l.light);
+        	}
         }
-        for (PointLightShadowRenderer plsr : route.shadowRenderers) {
-            viewPort.addProcessor(plsr);
+        for (AbstractShadowRenderer plsr : route.shadowRenderers) {
+//            viewPort.addProcessor(plsr);
+        }
+        for (DemoLocEvent newEvent : route.events) {
+            locEventQueue.add(newEvent);
         }
 
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
         landscape = new RigidBodyControl(sceneShape, 0f);
         currentWorld.addControl(landscape);
         bulletAppState.getPhysicsSpace().add(landscape);
-
-        // Update events to the new route
-        for (DemoLocEvent oldEvent : currentRoute.events) {
-            locEventQueue.remove(oldEvent);
-        }
-        for (DemoLocEvent newEvent : route.events) {
-            locEventQueue.add(newEvent);
-        }
-        this.currentRoute = route;
 
         // TODO freeze for a second
         playerControl.setPhysicsLocation(route.getStartLoc());
