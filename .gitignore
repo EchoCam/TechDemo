@@ -24,3 +24,6 @@ libopenal64.so
 /DyNaDeMo/dist/
 
 *.DS_Store
+
+#dnp files that aren't needed
+narrative/**/*.dnm

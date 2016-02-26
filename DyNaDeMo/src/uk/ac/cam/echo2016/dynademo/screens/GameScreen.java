@@ -15,6 +15,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
+import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 
 /**
  *
@@ -28,6 +29,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     private String character; // temp variable just to show variable passing
     private boolean textShowing = false;
     private Deque<String> dialogueDeque = new ArrayDeque<>();
+    private NarrativeInstance narrativeInstance;
 
     public GameScreen() {
         super();
@@ -112,6 +114,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = (MainApplication) app;
+        narrativeInstance = this.app.getNarrativeInstance();
     }
 
     @Override

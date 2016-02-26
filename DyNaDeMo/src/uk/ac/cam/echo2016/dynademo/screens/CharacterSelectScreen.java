@@ -4,6 +4,7 @@
  */
 package uk.ac.cam.echo2016.dynademo.screens;
 
+import android.os.BaseBundle;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -14,9 +15,9 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayList;
-import java.util.List;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
+import uk.ac.cam.echo2016.multinarrative.Route;
 
 /**
  *
@@ -27,16 +28,15 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     private Nifty nifty;
     private Screen screen;
     private MainApplication app;
-    private List<String> currentChars;
     private NarrativeInstance narrativeInstance;
 
     public CharacterSelectScreen() {
         super();
     }
 
-    public void selectCharacter(String character) {
+    public void selectRoute(String routeName, String character) {
         System.out.println("Playing as " + character);
-        // TODO: choose route based on character and start the game...
+        // TODO: Choose location loaded based on route
         GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
         gameScreen.setCharacter(character);
         nifty.gotoScreen("game");
@@ -52,20 +52,21 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     @Override
     public void onStartScreen() {
         app.getFlyByCamera().setDragToRotate(true);
-        currentChars = new ArrayList<>();
 
-        //TODO: get chars from narrativeInstance
-        {
-            currentChars.add("Brandon");
-            currentChars.add("Dooby");
-        }
+        ArrayList<Route> currentRoutes = narrativeInstance.getPlayableRoutes();
 
         // Get the bottom panel so we can insert character buttons
         Element bottomPanel = nifty.getCurrentScreen().findElementByName("panel_bottom");
 
-        for (final String character : currentChars) {
+        for (final Route route : currentRoutes) {
+            final String routeName = route.toString();
+            
+            //TODO: null check, and get character name from properties
+            BaseBundle b = route.getProperties();
+            final String character = "Fred"; //placeholder
+            
             // Add character button to the screen
-            PanelBuilder p = new PanelBuilder("character_" + character) {
+            PanelBuilder p = new PanelBuilder("route_" + routeName) {
                 {
                     childLayoutCenter();
                     valignCenter();
@@ -73,7 +74,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
                     height("25%");
                     width("25%");
 
-                    control(new ButtonBuilder("button_character_" + character, character) {
+                    control(new ButtonBuilder("button_route_" + routeName, character) {
                         {
                             alignCenter();
                             valignCenter();
@@ -81,7 +82,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
                             width("50%");
                             visibleToMouse(true);
 
-                            interactOnClick("selectCharacter(" + character + ")");
+                            interactOnClick("selectRoute(" + routeName + ", " + character + ")");
                         }
                     });
                 }
