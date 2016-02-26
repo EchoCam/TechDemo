@@ -22,8 +22,7 @@ import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
  *
  * @author moosichu
  */
-public class CharacterSelectScreen extends AbstractAppState implements
-        ScreenController {
+public class CharacterSelectScreen extends AbstractAppState implements ScreenController {
 
     private Nifty nifty;
     private Screen screen;
@@ -38,8 +37,7 @@ public class CharacterSelectScreen extends AbstractAppState implements
     public void selectCharacter(String character) {
         System.out.println("Playing as " + character);
         // TODO: choose route based on character and start the game...
-        GameScreen gameScreen = (GameScreen) nifty.getScreen("game")
-                .getScreenController();
+        GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
         gameScreen.setCharacter(character);
         nifty.gotoScreen("game");
     }
@@ -63,8 +61,7 @@ public class CharacterSelectScreen extends AbstractAppState implements
         }
 
         // Get the bottom panel so we can insert character buttons
-        Element bottomPanel = nifty.getCurrentScreen().findElementByName(
-                "panel_bottom");
+        Element bottomPanel = nifty.getCurrentScreen().findElementByName("panel_bottom");
 
         for (final String character : currentChars) {
             // Add character button to the screen
@@ -76,8 +73,7 @@ public class CharacterSelectScreen extends AbstractAppState implements
                     height("25%");
                     width("25%");
 
-                    control(new ButtonBuilder("button_character_" + character,
-                            character) {
+                    control(new ButtonBuilder("button_character_" + character, character) {
                         {
                             alignCenter();
                             valignCenter();
@@ -85,8 +81,7 @@ public class CharacterSelectScreen extends AbstractAppState implements
                             width("50%");
                             visibleToMouse(true);
 
-                            interactOnClick("selectCharacter(" + character
-                                    + ")");
+                            interactOnClick("selectCharacter(" + character + ")");
                         }
                     });
                 }

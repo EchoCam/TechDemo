@@ -26,8 +26,7 @@ public class DemoDialogue {
     public DemoDialogue(String xmlfilepath) {
         try {
             File inputFile = new File(xmlfilepath);
-            DocumentBuilderFactory factory = DocumentBuilderFactory
-                    .newInstance();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             doc = builder.parse(inputFile);
             doc.getDocumentElement().normalize();
@@ -116,24 +115,19 @@ public class DemoDialogue {
 
     public void moveToNextDialogue() {
         try {
-            if (!this.hasOptions()
-                    && currentnode.getNodeType() == Node.ELEMENT_NODE) {
+            if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
                 Element elem = (Element) currentnode;
                 String nextid = elem.getAttribute("nextID");
                 XPathFactory charxPathfactory = XPathFactory.newInstance();
                 XPath charxpath = charxPathfactory.newXPath();
                 XPathExpression charexpr;
-                charexpr = charxpath.compile("//protagonist[@name=\""
-                        + currentCharacter + "\"]");
-                NodeList charnodes = (NodeList) charexpr.evaluate(doc,
-                        XPathConstants.NODESET);
+                charexpr = charxpath.compile("//protagonist[@name=\"" + currentCharacter + "\"]");
+                NodeList charnodes = (NodeList) charexpr.evaluate(doc, XPathConstants.NODESET);
                 XPathFactory nextxPathfactory = XPathFactory.newInstance();
                 XPath nextxpath = nextxPathfactory.newXPath();
                 XPathExpression nextexpr;
-                nextexpr = nextxpath.compile("//dialogue[@id=\"" + nextid
-                        + "\"]");
-                NodeList nextnodes = (NodeList) nextexpr.evaluate(
-                        charnodes.item(0), XPathConstants.NODESET);
+                nextexpr = nextxpath.compile("//dialogue[@id=\"" + nextid + "\"]");
+                NodeList nextnodes = (NodeList) nextexpr.evaluate(charnodes.item(0), XPathConstants.NODESET);
                 currentnode = nextnodes.item(0);
             }
         } catch (XPathExpressionException e) {
@@ -145,22 +139,17 @@ public class DemoDialogue {
 
     public void moveToNextDialogue(String nextID) {
         try {
-            if (!this.hasOptions()
-                    && currentnode.getNodeType() == Node.ELEMENT_NODE) {
+            if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
                 XPathFactory charxPathfactory = XPathFactory.newInstance();
                 XPath charxpath = charxPathfactory.newXPath();
                 XPathExpression charexpr;
-                charexpr = charxpath.compile("//protagonist[@name=\""
-                        + currentCharacter + "\"]");
-                NodeList charnodes = (NodeList) charexpr.evaluate(doc,
-                        XPathConstants.NODESET);
+                charexpr = charxpath.compile("//protagonist[@name=\"" + currentCharacter + "\"]");
+                NodeList charnodes = (NodeList) charexpr.evaluate(doc, XPathConstants.NODESET);
                 XPathFactory nextxPathfactory = XPathFactory.newInstance();
                 XPath nextxpath = nextxPathfactory.newXPath();
                 XPathExpression nextexpr;
-                nextexpr = nextxpath.compile("//dialogue[@id=\"" + nextID
-                        + "\"]");
-                NodeList nextnodes = (NodeList) nextexpr.evaluate(
-                        charnodes.item(0), XPathConstants.NODESET);
+                nextexpr = nextxpath.compile("//dialogue[@id=\"" + nextID + "\"]");
+                NodeList nextnodes = (NodeList) nextexpr.evaluate(charnodes.item(0), XPathConstants.NODESET);
                 currentnode = nextnodes.item(0);
             }
         } catch (XPathExpressionException e) {

@@ -12,8 +12,7 @@ import uk.ac.cam.echo2016.dynademo.MainApplication;
 /**
  *
  */
-public class PauseMenuScreen extends AbstractAppState implements
-        ScreenController {
+public class PauseMenuScreen extends AbstractAppState implements ScreenController {
 
     private Nifty nifty;
     private Screen screen;

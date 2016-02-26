@@ -23,8 +23,7 @@ public class Initialiser {
      *            - required for event subscribing and renderer attaching
      * @return
      */
-    public static HashMap<String, DemoRoute> initialiseRoutes(
-            MainApplication app) {
+    public static HashMap<String, DemoRoute> initialiseRoutes(MainApplication app) {
         HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
 
         DemoRoute route;
@@ -32,14 +31,12 @@ public class Initialiser {
         DemoInteractEvent eInter;
 
         // ////// Bedroom ////////
-        route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0,
-                (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+        route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
+                new Vector3f(1, 0, 0));
 
         // LIGHTS
-        Vector3f[] lightCoords = { new Vector3f(0f, 6f, 0f),
-                new Vector3f(25f, 6f, 0f), new Vector3f(25f, 6f, -30f),
-                new Vector3f(0f, 6f, -30f), new Vector3f(-25f, 6f, -30f),
-                new Vector3f(-25f, 6f, 0f),
+        Vector3f[] lightCoords = { new Vector3f(0f, 6f, 0f), new Vector3f(25f, 6f, 0f), new Vector3f(25f, 6f, -30f),
+                new Vector3f(0f, 6f, -30f), new Vector3f(-25f, 6f, -30f), new Vector3f(-25f, 6f, 0f),
 
                 new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f),
         //
@@ -63,13 +60,11 @@ public class Initialiser {
         routes.put(route.getId(), route);
 
         // ////// Puzzle Room ////////
-        route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o",
-                new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(0, 0,
-                        -1));
+        route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
+                new Vector3f(0, 0, -1));
 
         // LIGHTS
-        addLight(app, route, new Vector3f(0, 8f, 0), new String[] { "Room",
-                "Crate" });
+        addLight(app, route, new Vector3f(0, 8f, 0), new String[] { "Room", "Crate" });
 
         // OBJECTS
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
@@ -84,9 +79,8 @@ public class Initialiser {
         routes.put(route.getId(), route);
 
         // ////// Lever Room ////////
-        route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o",
-                new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0,
-                        0));
+        route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
+                new Vector3f(1, 0, 0));
 
         // LIGHTS
         addLight(app, route, new Vector3f(0, 0, 0), new String[] { "Room" });
@@ -99,13 +93,11 @@ public class Initialiser {
 
         // ////// Button Room ////////
 
-        route = new DemoRoute("ButtonRoom", "Scenes/ButtonRoom.j3o",
-                new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0,
-                        0));
+        route = new DemoRoute("ButtonRoom", "Scenes/ButtonRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
+                new Vector3f(1, 0, 0));
 
         // LIGHTS
-        addLight(app, route, new Vector3f(0f, 8f, 0f), new String[] { "Room",
-                "LeverBase" });
+        addLight(app, route, new Vector3f(0f, 8f, 0f), new String[] { "Room", "LeverBase" });
         // OBJECTS
         Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
         // Material leverMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
@@ -119,8 +111,7 @@ public class Initialiser {
         return routes;
     }
 
-    private static void addLight(MainApplication app, DemoRoute route,
-            Vector3f loc, String[] spatialNames) {
+    private static void addLight(MainApplication app, DemoRoute route, Vector3f loc, String[] spatialNames) {
         PointLight l = new PointLight();
         l.setColor(ColorRGBA.Gray);
         l.setPosition(loc);
@@ -128,8 +119,7 @@ public class Initialiser {
 
         route.lights.add(new DemoLight(l, spatialNames));
 
-        PointLightShadowRenderer plsr = new PointLightShadowRenderer(
-                app.getAssetManager(), 1024);
+        PointLightShadowRenderer plsr = new PointLightShadowRenderer(app.getAssetManager(), 1024);
         plsr.setLight(l);
         plsr.setFlushQueues(false);
         plsr.setShadowIntensity(0.1f);
