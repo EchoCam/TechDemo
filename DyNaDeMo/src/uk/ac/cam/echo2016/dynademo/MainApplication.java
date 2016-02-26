@@ -449,8 +449,9 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 if (rbc == null) {
                     throw new NullPointerException("No valid physics control found for object: " + spatial.getName());
                 }
-                spatial.rotate(0f, FastMath.PI / 2, -FastMath.PI / 2); // Three way rotation
-
+                spatial.rotate(-FastMath.PI/4, 0f, 0f); // Three way rotation
+                spatial.rotate(0f, FastMath.PI, 0f);
+                spatial.rotate(FastMath.PI/4, 0f, 0f);
                 break;
             default:
                 System.out.println("Error: Event type: " + eInter.getType() + " not recognized");

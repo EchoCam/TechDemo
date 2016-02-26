@@ -8,10 +8,13 @@ package uk.ac.cam.echo2016.dynademo;
  * @author tr393
  */
 public class TaskRotation extends DemoKinematicTask {
-
-    public TaskRotation(DemoKinematic object, float completionTime) {
-        //TODO finish
+    private float startAngle;
+    private float endAngle;
+    
+    public TaskRotation(DemoKinematic object, float completionTime, float startAngle, float endAngle) {
         super(object, completionTime);
+        this.startAngle = startAngle;
+        this.endAngle = endAngle;
     }
     
     @Override

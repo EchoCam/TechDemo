@@ -16,7 +16,9 @@ public abstract class DemoKinematicTask {
     }
     
     public abstract void update(float time);
-    public abstract boolean isFinished();
+    public boolean isFinished() {
+        return (currentTime<0);
+    }
 
     /**
      * @return the object
