@@ -26,8 +26,7 @@ public class DemoRoute {
     // public Node interactableNode = new Node("Interactables");
     public HashMap<Spatial, DemoInteractEvent> interactions = new HashMap<>();
 
-    public DemoRoute(String id, String sceneFile, Vector3f startLoc,
-            Vector3f startDir) {
+    public DemoRoute(String id, String sceneFile, Vector3f startLoc, Vector3f startDir) {
         this.id = id;
         this.sceneFile = sceneFile;
         this.startLoc = startLoc;

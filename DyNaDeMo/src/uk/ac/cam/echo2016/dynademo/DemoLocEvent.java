@@ -11,8 +11,7 @@ public class DemoLocEvent extends DemoEvent {
     int trigHeight; // y
     int trigDepth; // z
 
-    public DemoLocEvent(String id, Vector3f loc, int width, int height,
-            int depth) {
+    public DemoLocEvent(String id, Vector3f loc, int width, int height, int depth) {
         super(id);
         trigLoc = loc;
         trigWidth = width;
@@ -21,10 +20,8 @@ public class DemoLocEvent extends DemoEvent {
     }
 
     public boolean checkCondition(Vector3f playerLoc) {
-        return playerLoc.x > trigLoc.x && playerLoc.x < trigLoc.x + trigWidth
-                && playerLoc.y > trigLoc.y
-                && playerLoc.y < trigLoc.y + trigHeight
-                && playerLoc.z > trigLoc.z
+        return playerLoc.x > trigLoc.x && playerLoc.x < trigLoc.x + trigWidth && playerLoc.y > trigLoc.y
+                && playerLoc.y < trigLoc.y + trigHeight && playerLoc.z > trigLoc.z
                 && playerLoc.z < trigLoc.z + trigDepth;
     }
 }

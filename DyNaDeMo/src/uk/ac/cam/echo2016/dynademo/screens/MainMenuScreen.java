@@ -11,8 +11,7 @@ import uk.ac.cam.echo2016.dynademo.MainApplication;
 /**
  *
  */
-public class MainMenuScreen extends AbstractAppState implements
-        ScreenController {
+public class MainMenuScreen extends AbstractAppState implements ScreenController {
 
     private Nifty nifty;
     private Screen screen;
