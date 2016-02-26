@@ -72,11 +72,11 @@ public class Initialiser {
         route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(0, 0, -1));
 
         // LIGHTS
-        addLight(app, route, new Vector3f(0,8f,0), new String[]{"Room"});
+        addLight(app, route, new Vector3f(0,8f,0), new String[]{"Room", "Crate"});
         // OBJECTS
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
-        Material crateMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        crate.setMaterial(crateMat);
+//        Material crateMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//      crate.setMaterial(crateMat);
         crate.setLocalTranslation(0, 0, -30);
         
         // Pickup Event
@@ -91,7 +91,8 @@ public class Initialiser {
         route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
         
         // LIGHTS
-//        addLight(app, route, new Vector3f(0,0,0), new String[]{"Room"});
+        addLight(app, route, new Vector3f(0,0,0), new String[]{"Room"});
+         
         // OBJECTS
 //        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
 //        Material leverMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
@@ -103,7 +104,7 @@ public class Initialiser {
         route = new DemoRoute("ButtonRoom", "Scenes/ButtonRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
         
         // LIGHTS
-        addLight(app, route, new Vector3f(0f,8f,0f), new String[]{"Room"});
+        addLight(app, route, new Vector3f(0f,8f,0f), new String[]{"Room","LeverBase"});
         // OBJECTS
         Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
 //        Material leverMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
