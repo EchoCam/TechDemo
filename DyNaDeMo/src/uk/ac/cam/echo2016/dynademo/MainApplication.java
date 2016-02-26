@@ -248,10 +248,13 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleUpdate(float tpf) {
-//        System.out.println(playerNode.getWorldTranslation().x);
-//        System.out.println(playerNode.getWorldTranslation().y);
-//        System.out.println(playerNode.getWorldTranslation().z);
-//        System.out.println("");
+//        if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
+//            Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
+//            System.out.println(spat.getName());
+//            System.out.println(spat.getWorldTranslation().x);
+//            System.out.println(spat.getWorldTranslation().y);
+//            System.out.println(spat.getWorldTranslation().z);
+//        }
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
@@ -273,6 +276,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             playerControl.setWalkDirection(walkDirection.mult(25f * tpf));
             // Move camera to correspond to player
             cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
+            
             // Position carried items appropriately
             if (draggedObject != null) {
                 float distance = draggedObject.getLocalTranslation().length();
@@ -280,7 +284,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 draggedObject.setLocalTranslation(newLoc);
                 draggedObject.setLocalRotation(cam.getRotation());
             }
-//            draggedObject.setLocalTranslation(distance, tpf, tpf);
             
             // Check character for collisions
             for (PhysicsCollisionObject object : billMurray.getOverlappingObjects()) {
@@ -309,11 +312,20 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             keyDown = isPressed;
         } else if (keyName.equals("Interact")) {
             if (isPressed) {
-                if (draggedObject != null) { //Already holding object
+                if (draggedObject != null) {
+                    // Drop current Object held
+                    Vector3f location = draggedObject.getWorldTranslation();
                     bulletAppState.getPhysicsSpace().add(draggedObject);
                     draggedObject.removeFromParent();
                     rootNode.attachChild(draggedObject);
+                    draggedObject.setLocalTranslation(location);
+                    ((RigidBodyControl)draggedObject.getControl(0)).setPhysicsLocation(location);
                     draggedObject = null;
+                    
+                    Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
+                    System.out.println(spat.getWorldTranslation().x);
+                    System.out.println(spat.getWorldTranslation().y);
+                    System.out.println(spat.getWorldTranslation().z);
                 } else {
                     // Ray Casting (checking for first interactable object)
                     Ray ray = new Ray(cam.getLocation(), cam.getDirection());
