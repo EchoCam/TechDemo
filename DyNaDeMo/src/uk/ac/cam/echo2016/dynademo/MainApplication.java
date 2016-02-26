@@ -330,8 +330,10 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         } else if (keyName.equals("Down")) {
             keyDown = isPressed;
         } else if (keyName.equals("Interact")) {
-            if (isPressed) {
-                if (draggedObject != null) {
+             if (isPressed) {
+                if(gameScreen.isTextShowing()) {
+                    gameScreen.progressThroughText();
+                } else if (draggedObject != null) {
                     // Drop current Object held
                     Vector3f location = draggedObject.getWorldTranslation();
                     bulletAppState.getPhysicsSpace().add(draggedObject);
@@ -387,6 +389,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             switch (e.getId()) {
                 case "Node1": // TODO first meeting
                     loadRoute(routes.get("ButtonRoom")); // temp functionality
+                    gameScreen.setDialogueTextSequence(new String[]{"You are now in the button room"}); //testing dialogue
                     break;
                 default:
                     System.out.println("Error: Event name ," + e.getId() + ",not recognized");

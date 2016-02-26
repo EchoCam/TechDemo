@@ -12,6 +12,8 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
 
 /**
@@ -23,23 +25,58 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     private Nifty nifty;
     private Screen screen;
     private MainApplication app;
-    
     private String character; //temp variable just to show variable passing
+    private boolean textShowing = false;
+    private Deque<String> dialogueDeque = new ArrayDeque<>();
 
     public GameScreen() {
         super();
     }
-    
+
     /**
      * Sets the text that is displayed in the dialogue box.
-     * 
-     * @param text 
+     *
+     * @param text
      */
-    public void setDialogueText(String text) {
+    private void setDialogueText(String text) {
         Element textElement = nifty.getCurrentScreen().findElementByName("dialogue_box_text");
         textElement.getRenderer(TextRenderer.class).setText(text);
+        if (text.equals("")) {
+            textShowing = false;
+        } else {
+            textShowing = true;
+        }
     }
     
+    public void setDialogueTextSequence(String[] textSequence) {
+        for(int i = 0; i < textSequence.length; i++) {
+            dialogueDeque.addLast(textSequence[i]);
+        }
+        if(!isTextShowing()) {
+            progressThroughText();
+        }
+    }
+    
+    /**
+     * Flushes all the text queued and removes text being displayed.
+     */
+    public void flushDialogueTextSequence() {
+        dialogueDeque.clear();
+        progressThroughText();
+    }
+
+    public boolean isTextShowing() {
+        return textShowing;
+    }
+
+    public void progressThroughText() {
+        if (!dialogueDeque.isEmpty()) {
+            setDialogueText(dialogueDeque.pollFirst());
+        } else {
+            setDialogueText("");
+        }
+    }
+
     //temp functino to show variable passing
     public void setCharacter(String character) {
         this.character = character;
@@ -60,7 +97,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         //Bind the mouse to the screen so it is used to rotate the camera
         app.getFlyByCamera().setDragToRotate(false);
         //TODO: load in maps based on data (eg, selected character etc.)
-        setDialogueText("You are playing as " + character);
+        setDialogueTextSequence(new String[]{"You are playing as " + character, "Please enjoy DyNaDeMo"});
     }
 
     /**
@@ -68,7 +105,6 @@ public class GameScreen extends AbstractAppState implements ScreenController {
      */
     @Override
     public void onEndScreen() {
-
     }
 
     // AbstractAppState methods //
@@ -77,7 +113,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         super.initialize(stateManager, app);
         this.app = (MainApplication) app;
     }
-    
+
     @Override
     public void update(float tpf) {
         if (isEnabled()) {
