@@ -27,7 +27,8 @@ public class Initialiser {
         HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
         
         DemoRoute route;
-        DemoLocEvent e;
+        DemoLocEvent eLoc;
+        DemoInteractEvent eInter;
 
         // BEDROOM ROUTE
         route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
@@ -61,9 +62,9 @@ public class Initialiser {
             addLight(app,route,lightCoords[i],spatialNames[i]);
         }
         // EVENTS
-        e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50); 
-        e.listeners.add(app);
-        route.events.add(e);
+        eLoc = new DemoLocEvent("Node1", new Vector3f(-80, 1, -40), 40, 14, 50); 
+        eLoc.addListener(app);
+        route.events.add(eLoc);
         routes.put(route.getId(),route);
 
         // PuzzleRoom
@@ -76,7 +77,10 @@ public class Initialiser {
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         crate.setMaterial(mat);
         crate.setLocalTranslation(0, 0, -30);
-        route.interactables.attachChild(crate);
+        
+        eInter = new DemoInteractEvent("crate", crate, 0);
+        eInter.addListener(app);
+        route.setInteractable(crate, eInter);
         route.objects.add(crate);
         
         routes.put(route.getId(),route);

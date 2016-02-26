@@ -28,6 +28,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.AbstractShadowRenderer;
@@ -138,8 +139,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         rootNode.attachChild(playerNode);
         
         // Attach physic control to the character
-        playerControl = new CharacterControl(
-                new CapsuleCollisionShape(CHARHEIGHT / 2, CHARHEIGHT, 1), 0.2f);
+        CapsuleCollisionShape capsule = new CapsuleCollisionShape(CHARHEIGHT / 2, CHARHEIGHT, 1);
+        playerControl = new CharacterControl(capsule, 0.2f);
         playerControl.setJumpSpeed(20f);
         playerControl.setFallSpeed(30);
         playerControl.setGravity(50);
@@ -148,8 +149,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         bulletAppState.getPhysicsSpace().add(playerControl);
         
         // Attach ghost control to the character
-        billMurray = new GhostControl(
-                new CapsuleCollisionShape((CHARHEIGHT / 2), CHARHEIGHT , 1));
+        billMurray = new GhostControl(capsule);
         playerNode.addControl(billMurray);
         bulletAppState.getPhysicsSpace().add(billMurray);
         
@@ -192,12 +192,14 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             bulletAppState.getPhysicsSpace().add(rbc);
         }
         for (DemoLight l : route.lights) {
-        	for(String spatialName: l.spatialNames) {
-        		List<Spatial> list = rootNode.descendantMatches(spatialName);
-        		if (list.isEmpty()) {System.out.println("Spatial not found!");}
-        		Spatial spatial = list.get(0);
-        		spatial.addLight(l.light);
-        	}
+            for (String spatialName : l.spatialNames) {
+                List<Spatial> list = rootNode.descendantMatches(spatialName);
+                if (list.isEmpty()) {
+                    System.out.println("Spatial not found!");
+                }
+                Spatial spatial = list.get(0);
+                spatial.addLight(l.light);
+            }
         }
         for (AbstractShadowRenderer plsr : route.shadowRenderers) {
 //            viewPort.addProcessor(plsr); // Disabled for now
@@ -239,7 +241,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
-        inputManager.addListener(this, "I");
+        inputManager.addListener(this, "Interact");
         inputManager.addListener(this, "Jump");
         inputManager.addListener(this, "Pause");
     }
@@ -295,9 +297,15 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             // Ray Casting (checking for first interactable object)
             Ray ray = new Ray(cam.getLocation(),cam.getDirection());
             CollisionResults results = new CollisionResults();
-            currentRoute.interactables.collideWith(ray, results);
+            rootNode.collideWith(ray, results);
             CollisionResult closest = results.getClosestCollision();
-            closest.getGeometry().getName(); // TODO finish impl
+            
+            // Gets the closest geometry (if it exists) and attempts to interact with it
+            if (closest != null) {
+                System.out.println(closest.getGeometry().getName() + " found!");
+                if (currentRoute.interactWith(closest.getGeometry()));
+                else {System.out.println(closest.getGeometry().getName() + " is not responding...");}
+            }
         } else if (keyName.equals("Jump")) {
             if (isPressed) {
                 playerControl.jump();
@@ -317,10 +325,28 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         this.isPaused = isPaused;
     }
 
-    public void locEventAction(DemoLocEvent e) {
-        switch (e.getId()) {
-            case 0: // TODO first meeting
-                enterLocation(routes.get("PuzzleRoom")); // temp functionality
+    @Override
+    public void demoEventAction(DemoEvent e) {
+        if (e instanceof DemoLocEvent) {
+            switch (e.getId()) {
+                case "Node1": // TODO first meeting
+                    enterLocation(routes.get("PuzzleRoom")); // temp functionality
+                    break;
+                default:
+                    System.out.println("Error: Event name ," + e.getId() + ",not recognized");
+            }
+        } else if (e instanceof DemoInteractEvent) {
+            DemoInteractEvent eInter = (DemoInteractEvent) e;
+            switch (eInter.getType()) {
+                case 0: // Drag (pick up) event
+                    System.out.println("Drag Event "+ eInter.getId() +" for spatial " + eInter.getSpatial().getName());
+                    playerNode.attachChild(eInter.getSpatial());
+                    break;
+                case 1: // Translation event
+                    //
+                default:
+                    System.out.println("Error: Event type ," + eInter.getType() + ",not recognized");
+            }
         }
     }
 
