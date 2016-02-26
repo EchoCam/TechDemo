@@ -18,10 +18,13 @@ import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
@@ -236,6 +239,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
+        inputManager.addListener(this, "I");
         inputManager.addListener(this, "Jump");
         inputManager.addListener(this, "Pause");
     }
@@ -287,6 +291,13 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             keyUp = isPressed;
         } else if (keyName.equals("Down")) {
             keyDown = isPressed;
+        } else if (keyName.equals("Interact")) {
+            // Ray Casting (checking for first interactable object)
+            Ray ray = new Ray(cam.getLocation(),cam.getDirection());
+            CollisionResults results = new CollisionResults();
+            currentRoute.interactables.collideWith(ray, results);
+            CollisionResult closest = results.getClosestCollision();
+            closest.getGeometry().getName(); // TODO finish impl
         } else if (keyName.equals("Jump")) {
             if (isPressed) {
                 playerControl.jump();

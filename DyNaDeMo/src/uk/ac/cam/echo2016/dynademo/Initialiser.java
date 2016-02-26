@@ -76,6 +76,7 @@ public class Initialiser {
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         crate.setMaterial(mat);
         crate.setLocalTranslation(0, 0, -30);
+        route.interactables.attachChild(crate);
         route.objects.add(crate);
         
         routes.put(route.getId(),route);
