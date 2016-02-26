@@ -407,7 +407,10 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         if (e instanceof DemoLocEvent) {
             switch (e.getId()) {
             case "Node1": // TODO first meeting
+                //could do...
                 
+                //routes.get(gameScreen.getRouteName());
+                //to get the name of the route the player has selected
                 loadRoute(routes.get("PuzzleRoom")); // temp functionality
                 gameScreen.setDialogueTextSequence(new String[]{"You are now in the button room"});
                 break;

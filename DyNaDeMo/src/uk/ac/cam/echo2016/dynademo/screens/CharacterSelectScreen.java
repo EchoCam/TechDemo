@@ -39,6 +39,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         // TODO: Choose location loaded based on route
         GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
         gameScreen.setCharacter(character);
+        gameScreen.setRoute(routeName);
         nifty.gotoScreen("game");
     }
 

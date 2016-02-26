@@ -15,6 +15,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
+import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 
 /**
@@ -26,7 +27,8 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     private Nifty nifty;
     private Screen screen;
     private MainApplication app;
-    private String character; // temp variable just to show variable passing
+    private String character; //currently playable character
+    private String routeName; //currently playing route...
     private boolean textShowing = false;
     private Deque<String> dialogueDeque = new ArrayDeque<>();
     private NarrativeInstance narrativeInstance;
@@ -83,6 +85,14 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     public void setCharacter(String character) {
         this.character = character;
     }
+    
+    public void setRoute(String routeName) {
+        this.routeName = routeName;
+    }
+    
+    public String getRoute() {
+        return routeName;
+    }
 
     // ScreenController methods //
     @Override
@@ -100,6 +110,13 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         app.getFlyByCamera().setDragToRotate(false);
         // TODO: load in maps based on data (eg, selected character etc.)
         setDialogueTextSequence(new String[] { "You are playing as " + character, "Please enjoy DyNaDeMo" });
+        try {
+            narrativeInstance.startRoute(routeName);
+        } catch (GraphElementNotFoundException e) {
+            System.err.println("IMPOSSIBLE_ERROR");
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
