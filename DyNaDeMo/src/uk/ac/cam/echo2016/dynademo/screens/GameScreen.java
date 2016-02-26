@@ -25,7 +25,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     private Nifty nifty;
     private Screen screen;
     private MainApplication app;
-    private String character; //temp variable just to show variable passing
+    private String character; // temp variable just to show variable passing
     private boolean textShowing = false;
     private Deque<String> dialogueDeque = new ArrayDeque<>();
 
@@ -39,7 +39,8 @@ public class GameScreen extends AbstractAppState implements ScreenController {
      * @param text
      */
     private void setDialogueText(String text) {
-        Element textElement = nifty.getCurrentScreen().findElementByName("dialogue_box_text");
+        Element textElement = nifty.getCurrentScreen().findElementByName(
+                "dialogue_box_text");
         textElement.getRenderer(TextRenderer.class).setText(text);
         if (text.equals("")) {
             textShowing = false;
@@ -47,16 +48,16 @@ public class GameScreen extends AbstractAppState implements ScreenController {
             textShowing = true;
         }
     }
-    
+
     public void setDialogueTextSequence(String[] textSequence) {
-        for(int i = 0; i < textSequence.length; i++) {
+        for (int i = 0; i < textSequence.length; i++) {
             dialogueDeque.addLast(textSequence[i]);
         }
-        if(!isTextShowing()) {
+        if (!isTextShowing()) {
             progressThroughText();
         }
     }
-    
+
     /**
      * Flushes all the text queued and removes text being displayed.
      */
@@ -77,7 +78,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         }
     }
 
-    //temp functino to show variable passing
+    // temp functino to show variable passing
     public void setCharacter(String character) {
         this.character = character;
     }
@@ -94,10 +95,11 @@ public class GameScreen extends AbstractAppState implements ScreenController {
      */
     @Override
     public void onStartScreen() {
-        //Bind the mouse to the screen so it is used to rotate the camera
+        // Bind the mouse to the screen so it is used to rotate the camera
         app.getFlyByCamera().setDragToRotate(false);
-        //TODO: load in maps based on data (eg, selected character etc.)
-        setDialogueTextSequence(new String[]{"You are playing as " + character, "Please enjoy DyNaDeMo"});
+        // TODO: load in maps based on data (eg, selected character etc.)
+        setDialogueTextSequence(new String[] {
+                "You are playing as " + character, "Please enjoy DyNaDeMo" });
     }
 
     /**

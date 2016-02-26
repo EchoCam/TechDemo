@@ -12,7 +12,8 @@ import uk.ac.cam.echo2016.dynademo.MainApplication;
 /**
  *
  */
-public class PauseMenuScreen extends AbstractAppState implements ScreenController {
+public class PauseMenuScreen extends AbstractAppState implements
+        ScreenController {
 
     private Nifty nifty;
     private Screen screen;
@@ -27,8 +28,8 @@ public class PauseMenuScreen extends AbstractAppState implements ScreenControlle
     }
 
     public void goToMenu() {
-        //TODO: present some kind of warning saying that unsaved data will be lost
-        //Cleanup running game (terminate it)
+        // TODO: present some kind of warning saying that unsaved data will be lost
+        // Cleanup running game (terminate it)
         nifty.gotoScreen("mainMenu");
     }
 

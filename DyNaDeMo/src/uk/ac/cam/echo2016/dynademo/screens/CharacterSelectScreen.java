@@ -24,7 +24,8 @@ import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
  *
  * @author moosichu
  */
-public class CharacterSelectScreen extends AbstractAppState implements ScreenController {
+public class CharacterSelectScreen extends AbstractAppState implements
+        ScreenController {
 
     private Nifty nifty;
     private Screen screen;
@@ -37,8 +38,9 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
 
     public void selectCharacter(String character) {
         System.out.println("Playing as " + character);
-        //TODO: choose route based on character and start the game...
-        GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
+        // TODO: choose route based on character and start the game...
+        GameScreen gameScreen = (GameScreen) nifty.getScreen("game")
+                .getScreenController();
         gameScreen.setCharacter(character);
         nifty.gotoScreen("game");
     }
@@ -55,17 +57,18 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         app.getFlyByCamera().setDragToRotate(true);
         currentChars = new ArrayList<>();
 
-        //This piece of code should be loading in routes from dynamic narrative
+        // This piece of code should be loading in routes from dynamic narrative
         {
             currentChars.add("Brandon");
             currentChars.add("Dooby");
         }
 
-        //Get the bottom panel so we can insert character buttons
-        Element bottomPanel = nifty.getCurrentScreen().findElementByName("panel_bottom");
+        // Get the bottom panel so we can insert character buttons
+        Element bottomPanel = nifty.getCurrentScreen().findElementByName(
+                "panel_bottom");
 
         for (final String character : currentChars) {
-            //Add character button to the screen
+            // Add character button to the screen
             PanelBuilder p = new PanelBuilder("character_" + character) {
                 {
                     childLayoutCenter();
@@ -74,7 +77,8 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
                     height("25%");
                     width("25%");
 
-                    control(new ButtonBuilder("button_character_" + character, character) {
+                    control(new ButtonBuilder("button_character_" + character,
+                            character) {
                         {
                             alignCenter();
                             valignCenter();
@@ -82,7 +86,8 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
                             width("50%");
                             visibleToMouse(true);
 
-                            interactOnClick("selectCharacter(" + character + ")");
+                            interactOnClick("selectCharacter(" + character
+                                    + ")");
                         }
                     });
                 }

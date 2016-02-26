@@ -23,10 +23,11 @@ public class DemoRoute {
     public ArrayList<Spatial> dynamicObjects = new ArrayList<>();
     public ArrayList<Spatial> kinematicObjects = new ArrayList<>();
     public ArrayList<Spatial> staticObjects = new ArrayList<>();
-//    public Node interactableNode = new Node("Interactables");
+    // public Node interactableNode = new Node("Interactables");
     public HashMap<Spatial, DemoInteractEvent> interactions = new HashMap<>();
 
-    public DemoRoute(String id, String sceneFile, Vector3f startLoc, Vector3f startDir) {
+    public DemoRoute(String id, String sceneFile, Vector3f startLoc,
+            Vector3f startDir) {
         this.id = id;
         this.sceneFile = sceneFile;
         this.startLoc = startLoc;
@@ -50,7 +51,7 @@ public class DemoRoute {
     }
 
     public void setInteractable(Spatial s, DemoInteractEvent e) {
-//        interactableNode.attachChild(s);
+        // interactableNode.attachChild(s);
         interactions.put(s, e);
     }
 

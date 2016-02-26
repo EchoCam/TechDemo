@@ -53,16 +53,17 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
     private Spatial draggedObject;
-    
-    private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
+
+    private boolean keyLeft = false, keyRight = false, keyUp = false,
+            keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
     private ArrayDeque<DemoLocEvent> locEventQueue = new ArrayDeque<DemoLocEvent>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
-    //private currentRoute/Character
+    // private currentRoute/Character
     private Nifty nifty;
-    //Screens
+    // Screens
     private MainMenuScreen mainMenuScreen;
     private CharacterSelectScreen characterSelectScreen;
     private PauseMenuScreen pauseMenuScreen;
@@ -80,20 +81,23 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     @Override
     public void simpleInitApp() {
         // Set-Up for the main menu //
-        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
-                assetManager, inputManager, audioRenderer, guiViewPort);
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager,
+                inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
 
-        nifty.fromXml("Interface/Nifty/mainMenu.xml", "mainMenu", new MainMenuScreen().init(stateManager, this));
+        nifty.fromXml("Interface/Nifty/mainMenu.xml", "mainMenu",
+                new MainMenuScreen().init(stateManager, this));
         nifty.addXml("Interface/Nifty/characterSelect.xml");
         nifty.addXml("Interface/Nifty/pauseMenu.xml");
         nifty.addXml("Interface/Nifty/game.xml");
 
-
-        mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
-        characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
-        pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
+        mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu")
+                .getScreenController();
+        characterSelectScreen = (CharacterSelectScreen) nifty.getScreen(
+                "characterSelect").getScreenController();
+        pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu")
+                .getScreenController();
         gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
 
         stateManager.attach(mainMenuScreen);
@@ -101,9 +105,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         stateManager.attach(pauseMenuScreen);
         stateManager.attach(gameScreen);
 
-        //TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
+        // TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
         nifty.gotoScreen("mainMenu");
-
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -128,7 +131,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
         // Make a rigid body from the scene //
-        CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
+        CollisionShape sceneShape = CollisionShapeFactory
+                .createMeshShape(currentWorld);
         landscape = new RigidBodyControl(sceneShape, 0f);
         currentWorld.addControl(landscape);
         landscape.setFriction(1f);
@@ -139,12 +143,14 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         rootNode.attachChild(playerNode);
 
         // Attach physic control to the character
-        CapsuleCollisionShape capsule = new CapsuleCollisionShape(CHARHEIGHT / 2, CHARHEIGHT, 1);
+        CapsuleCollisionShape capsule = new CapsuleCollisionShape(
+                CHARHEIGHT / 2, CHARHEIGHT, 1);
         playerControl = new CharacterControl(capsule, 0.2f);
         playerControl.setJumpSpeed(20f);
         playerControl.setFallSpeed(30);
         playerControl.setGravity(50);
-        playerControl.setPhysicsLocation(new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0)); // 2.5f vertical lee-way
+        playerControl.setPhysicsLocation(new Vector3f(0,
+                (CHARHEIGHT / 2) + 2.5f, 0)); // 2.5f vertical lee-way
         playerNode.addControl(playerControl);
         bulletAppState.getPhysicsSpace().add(playerControl);
 
@@ -182,7 +188,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         for (DemoLocEvent oldEvent : currentRoute.events) {
             locEventQueue.remove(oldEvent);
         }
-        
+
         // Load new route (route)
         currentRoute = route;
         currentWorld = assetManager.loadModel(route.getSceneFile());
@@ -221,13 +227,14 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             }
         }
         for (AbstractShadowRenderer plsr : route.shadowRenderers) {
-//            viewPort.addProcessor(plsr); // Disabled shadows for now
+            // viewPort.addProcessor(plsr); // Disabled shadows for now
         }
         for (DemoLocEvent newEvent : route.events) {
             locEventQueue.add(newEvent);
         }
 
-        CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
+        CollisionShape sceneShape = CollisionShapeFactory
+                .createMeshShape(currentWorld);
         landscape = new RigidBodyControl(sceneShape, 0f);
         currentWorld.addControl(landscape);
         bulletAppState.getPhysicsSpace().add(landscape);
@@ -252,9 +259,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Interact", new KeyTrigger(KeyInput.KEY_E));
-//        inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
+        // inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
-
 
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
@@ -267,13 +273,13 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleUpdate(float tpf) {
-//        if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
-//            Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
-//            System.out.println(spat.getName());
-//            System.out.println(spat.getWorldTranslation().x);
-//            System.out.println(spat.getWorldTranslation().y);
-//            System.out.println(spat.getWorldTranslation().z);
-//        }
+        // if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
+        // Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
+        // System.out.println(spat.getName());
+        // System.out.println(spat.getWorldTranslation().x);
+        // System.out.println(spat.getWorldTranslation().y);
+        // System.out.println(spat.getWorldTranslation().z);
+        // }
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
@@ -294,8 +300,9 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             }
             playerControl.setWalkDirection(walkDirection.mult(25f * tpf));
             // Move camera to correspond to player
-            cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
-            
+            cam.setLocation(playerControl.getPhysicsLocation().add(0,
+                    CHARHEIGHT / 2 + 1f, 0));
+
             // Position carried items appropriately
             if (draggedObject != null) {
                 float distance = draggedObject.getLocalTranslation().length();
@@ -303,11 +310,13 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 draggedObject.setLocalTranslation(newLoc);
                 draggedObject.setLocalRotation(cam.getRotation());
             }
-            
+
             // Check character for collisions
-            for (PhysicsCollisionObject object : billMurray.getOverlappingObjects()) {
+            for (PhysicsCollisionObject object : billMurray
+                    .getOverlappingObjects()) {
                 if (object instanceof RigidBodyControl) {
-                    ((RigidBodyControl) object).applyCentralForce(camDir.mult(1000f));
+                    ((RigidBodyControl) object).applyCentralForce(camDir
+                            .mult(1000f));
                 }
             }
             // Check global event queue
@@ -330,8 +339,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         } else if (keyName.equals("Down")) {
             keyDown = isPressed;
         } else if (keyName.equals("Interact")) {
-             if (isPressed) {
-                if(gameScreen.isTextShowing()) {
+            if (isPressed) {
+                if (gameScreen.isTextShowing()) {
                     gameScreen.progressThroughText();
                 } else if (draggedObject != null) {
                     // Drop current Object held
@@ -340,10 +349,12 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                     draggedObject.removeFromParent();
                     rootNode.attachChild(draggedObject);
                     draggedObject.setLocalTranslation(location);
-                    ((RigidBodyControl)draggedObject.getControl(0)).setPhysicsLocation(location);
+                    ((RigidBodyControl) draggedObject.getControl(0))
+                            .setPhysicsLocation(location);
                     draggedObject = null;
-                    
-                    Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
+
+                    Spatial spat = rootNode.descendantMatches(
+                            "Models/Crate.blend").get(0);
                     System.out.println(spat.getWorldTranslation().x);
                     System.out.println(spat.getWorldTranslation().y);
                     System.out.println(spat.getWorldTranslation().z);
@@ -356,10 +367,11 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
                     // Gets the closest geometry (if it exists) and attempts to interact with it
                     if (closest != null) {
-                        System.out.println(closest.getGeometry().getName() + " found!");
-                        if (!currentRoute.interactWith(closest.getGeometry())) 
-                        {
-                            System.out.println(closest.getGeometry().getName() + " is not responding...");
+                        System.out.println(closest.getGeometry().getName()
+                                + " found!");
+                        if (!currentRoute.interactWith(closest.getGeometry())) {
+                            System.out.println(closest.getGeometry().getName()
+                                    + " is not responding...");
                         }
                     }
                 }
@@ -387,30 +399,34 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     public void demoEventAction(DemoEvent e) {
         if (e instanceof DemoLocEvent) {
             switch (e.getId()) {
-                case "Node1": // TODO first meeting
-                    loadRoute(routes.get("ButtonRoom")); // temp functionality
-                    gameScreen.setDialogueTextSequence(new String[]{"You are now in the button room"}); //testing dialogue
-                    break;
-                default:
-                    System.out.println("Error: Event name ," + e.getId() + ",not recognized");
+            case "Node1": // TODO first meeting
+                loadRoute(routes.get("ButtonRoom")); // temp functionality
+                gameScreen
+                        .setDialogueTextSequence(new String[] { "You are now in the button room" }); // testing dialogue
+                break;
+            default:
+                System.out.println("Error: Event name ," + e.getId()
+                        + ",not recognized");
             }
         } else if (e instanceof DemoInteractEvent) {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
             switch (eInter.getType()) {
-                case 0: // Drag (pick up) event
-                    Spatial spatial = eInter.getSpatial();
-                    System.out.println("Drag Event " + eInter.getId() + " for spatial " + spatial.getName());
-                    
-                    // Remove it from the physics space
-                    bulletAppState.getPhysicsSpace().remove(spatial);
-                    // Attatch it to the player
-                    playerNode.attachChild(spatial);
-                    draggedObject = spatial;
-                    break;
-                case 1: // Translation event
+            case 0: // Drag (pick up) event
+                Spatial spatial = eInter.getSpatial();
+                System.out.println("Drag Event " + eInter.getId()
+                        + " for spatial " + spatial.getName());
+
+                // Remove it from the physics space
+                bulletAppState.getPhysicsSpace().remove(spatial);
+                // Attatch it to the player
+                playerNode.attachChild(spatial);
+                draggedObject = spatial;
+                break;
+            case 1: // Translation event
                 //
-                default:
-                    System.out.println("Error: Event type ," + eInter.getType() + ",not recognized");
+            default:
+                System.out.println("Error: Event type ," + eInter.getType()
+                        + ",not recognized");
             }
         }
     }
@@ -437,7 +453,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     public void chooseRoute() {
         // TODO add calls to our tools here
-        //currentRoute = ...
-        //enterLocation(...)
+        // currentRoute = ...
+        // enterLocation(...)
     }
 }
