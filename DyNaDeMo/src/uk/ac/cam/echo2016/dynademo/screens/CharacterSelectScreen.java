@@ -63,7 +63,18 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             
             //TODO: null check, and get character name from properties
             BaseBundle b = route.getProperties();
-            final String character = "Fred"; //placeholder
+            if(b == null) {
+                throw new RuntimeException("The route: " + routeName + " doesn't have any properties.");
+            }
+            
+            System.out.println(b.get("Char1") +" + "+ b.get("Char2"));
+            if(b.containsKey("Char1")) System.out.println(b.get("Char1").getClass().getSimpleName());
+            if(b.containsKey("Char2")) System.out.println(b.get("Char2").getClass().getSimpleName());
+
+            boolean char1 = b.getBoolean("Char1");
+            boolean char2 = b.getBoolean("Char2");
+            final String character = char1 ? char2? "Timangelise and Tojamobin" : "Timangelise" : char2?  "Tojamobin": "None";
+
             
             // Add character button to the screen
             PanelBuilder p = new PanelBuilder("route_" + routeName) {
