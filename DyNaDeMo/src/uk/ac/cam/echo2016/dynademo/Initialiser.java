@@ -10,6 +10,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -29,6 +30,7 @@ public class Initialiser {
         DemoRoute route;
         DemoLocEvent eLoc;
         DemoInteractEvent eInter;
+        DemoLight light;
 
         // ////// Bedroom ////////
         route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
@@ -64,17 +66,21 @@ public class Initialiser {
                 new Vector3f(0, 0, -1));
 
         // LIGHTS
-        addLight(app, route, new Vector3f(0, 8f, 0), new String[] {"Room", "Cube"});
+        light = addLight(app, route, new Vector3f(0, 8f, 0), new String[] {"Room"}); // Cube
 
         // OBJECTS
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
         crate.setLocalTranslation(0, 0, -30);
 
-        // OBJECT EVENTS
+        // Set object event
         eInter = new DemoInteractEvent("crate", crate, 0);
         eInter.addListener(app);
         route.setInteractable(crate, eInter);
-        route.dynamicObjects.add(crate);
+        
+        // Set ojbect lights
+        ArrayList<DemoLight> lights = new ArrayList<>();
+        lights.add(light);
+        route.objects.add(new DemoObject(crate, lights, 2, 5f, true));
 
         routes.put(route.getId(), route);
 
@@ -83,7 +89,7 @@ public class Initialiser {
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
-        addLight(app, route, new Vector3f(0, 0, 0), new String[] { "Room" });
+        addLight(app, route, new Vector3f(0, 0, 0), new String[] {"Room"});
 
         // OBJECTS
         // Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
@@ -97,7 +103,7 @@ public class Initialiser {
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
-        addLight(app, route, new Vector3f(0f, 8f, 0f), new String[] { "Room", "LeverBase" });
+        addLight(app, route, new Vector3f(0f, 8f, 0f), new String[] {"Room"}); // LeverBase
         
         // OBJECTS
         
@@ -108,29 +114,33 @@ public class Initialiser {
         lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
         
         // hacky but it works :)
-        Spatial leverMesh = ((Node) lever).descendantMatches("Lever").get(0);
-        eInter = new DemoInteractEvent("lever", leverMesh, 1);
+        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
+        eInter = new DemoInteractEvent("lever", leverRod, 1);
         eInter.addListener(app);
         route.setInteractable(lever, eInter);
-        route.staticObjects.add(lever);
+//        route.staticObjects.add(lever);
+//        route.kinematicObjects.add(leverRod);        
 
         routes.put(route.getId(), route);
 
         return routes;
     }
 
-    private static void addLight(MainApplication app, DemoRoute route, Vector3f loc, String[] spatialNames) {
+    private static DemoLight addLight(MainApplication app, DemoRoute route, Vector3f loc, String[] spatialNames) {
         PointLight l = new PointLight();
         l.setColor(ColorRGBA.Gray);
         l.setPosition(loc);
         l.setRadius(1000f);
-
-        route.lights.add(new DemoLight(l, spatialNames));
+        
+        DemoLight dLight =  new DemoLight(l, spatialNames);
+        route.lights.add(dLight);
 
         PointLightShadowRenderer plsr = new PointLightShadowRenderer(app.getAssetManager(), 1024);
         plsr.setLight(l);
         plsr.setFlushQueues(false);
         plsr.setShadowIntensity(0.1f);
         route.shadowRenderers.add(plsr);
+        
+        return dLight;
     }
 }

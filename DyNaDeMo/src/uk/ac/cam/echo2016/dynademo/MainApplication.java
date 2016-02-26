@@ -185,15 +185,14 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
-
-        for (Spatial object : currentRoute.dynamicObjects) {
-            rootNode.detachChild(object);
-        }
-        for (Spatial object : currentRoute.kinematicObjects) {
-            rootNode.detachChild(object);
-        }
-        for (Spatial object : currentRoute.staticObjects) {
-            rootNode.detachChild(object);
+        for (DemoObject object : currentRoute.objects) {
+            // TODO clean up physicsSpace (save info?)
+            if (object.isMainParent)
+                rootNode.detachChild(object.spatial);
+            bulletAppState.getPhysicsSpace().remove(object.spatial);
+            for(DemoLight dLight : object.lights) {
+                object.spatial.removeLight(dLight.light);
+            }
         }
         for (DemoLight l : currentRoute.lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
@@ -212,34 +211,26 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         rootNode.attachChild(currentWorld);
 
         // Load route objects and add rigidbodycontrols
-        for (Spatial object : route.dynamicObjects) {
-            rootNode.attachChild(object);
-            RigidBodyControl rbc = new RigidBodyControl(5f);
-            object.addControl(rbc);
-            rbc.setFriction(1.5f);
+        for (DemoObject object : route.objects) {
+            if (object.isMainParent)
+                rootNode.attachChild(object.spatial);
+            RigidBodyControl rbc = new RigidBodyControl(object.mass);
+            object.spatial.addControl(rbc);
+            if (object.physicsType == 1) rbc.setKinematic(true);
+            if (object.physicsType == 2) rbc.setFriction(1.5f);
             bulletAppState.getPhysicsSpace().add(rbc);
-        }
-        for (Spatial object : route.kinematicObjects) {
-            rootNode.attachChild(object);
-            RigidBodyControl rbc = new RigidBodyControl(5f);
-            object.addControl(rbc);
-            rbc.setKinematic(true);
-            bulletAppState.getPhysicsSpace().add(rbc);
-        }
-        for (Spatial object : route.staticObjects) {
-            rootNode.attachChild(object);
-            RigidBodyControl rbc = new RigidBodyControl(0f);
-            object.addControl(rbc);
-            bulletAppState.getPhysicsSpace().add(rbc);
+            for (DemoLight dLight : object.lights) {
+                object.spatial.addLight(dLight.light);
+            }
         }
         for (DemoLight l : route.lights) {
-            for (String spatialName : l.spatialNames) {
-                List<Spatial> list = rootNode.descendantMatches(spatialName);
+            for (String roomName : l.affectedRooms) {
+                List<Spatial> list = rootNode.descendantMatches(roomName);
                 if (list.isEmpty()) {
                     System.out.println("Spatial not found!");
                 }
-                Spatial spatial = list.get(0);
-                spatial.addLight(l.light);
+                Spatial room = list.get(0);
+                room.addLight(l.light);
             }
         }
         for (AbstractShadowRenderer plsr : route.shadowRenderers) {
@@ -412,7 +403,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 
                 //routes.get(gameScreen.getRouteName());
                 //to get the name of the route the player has selected
-                loadRoute(routes.get("ButtonRoom")); // temp functionality
+                loadRoute(routes.get("PuzzleRoom")); // temp functionality
                 gameScreen.setDialogueTextSequence(new String[]{"You are now in the button room"});
                 break;
             default:
