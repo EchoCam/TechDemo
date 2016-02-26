@@ -103,7 +103,7 @@ public class Initialiser {
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
-        addLight(app, route, new Vector3f(0f, 8f, 0f), new String[] {"Room"}); // LeverBase
+        light = addLight(app, route, new Vector3f(0f, 8f, 0f), new String[] {"Room"}); // LeverBase
         
         // OBJECTS
         
@@ -113,13 +113,17 @@ public class Initialiser {
         lever.setLocalTranslation(0f, 5f, 10f);
         lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
         
+        lights = new ArrayList<>();
+        lights.add(light);
+        
         // hacky but it works :)
         Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
         eInter = new DemoInteractEvent("lever", leverRod, 1);
         eInter.addListener(app);
         route.setInteractable(lever, eInter);
-//        route.staticObjects.add(lever);
-//        route.kinematicObjects.add(leverRod);        
+        
+        route.objects.add(new DemoObject(lever, lights, 0, 0f, true));
+        route.objects.add(new DemoObject(leverRod, lights, 1, 1f, false));
 
         routes.put(route.getId(), route);
 

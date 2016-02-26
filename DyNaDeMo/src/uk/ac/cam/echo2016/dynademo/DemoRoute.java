@@ -59,7 +59,7 @@ public class DemoRoute {
      * Fires a {@code DemoInteractEvent} if the spatial or any of its parents is set to be interactable. If multiple
      * ancestors are interactable, only the closest one (fewest connnections) will be interacted with.
      *
-     * @param spatial
+     * @param spatial - The spatial or parent that maps to an {@code DemoInteractEvent}
      */
     public boolean interactWith(Spatial spatial) {
         DemoInteractEvent e = interactions.get(spatial);
