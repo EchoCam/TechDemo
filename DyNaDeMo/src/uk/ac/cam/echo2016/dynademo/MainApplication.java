@@ -10,6 +10,7 @@ import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.AssetKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -34,6 +35,7 @@ import com.jme3.shadow.AbstractShadowRenderer;
 
 import de.lessvoid.nifty.Nifty;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,9 +83,9 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     public MainApplication() {
         super();
-        try {
-            //TODO: use JMONKEY assets loader somehow as this is a hack!
-            NarrativeTemplate narrativeTemplate = SaveReader.loadNarrativeTemplate("assets/Narrative/dynademo.dnm");
+        try {   
+            InputStream is = this.getClass().getResourceAsStream("dynademo.dnm");
+            NarrativeTemplate narrativeTemplate = SaveReader.loadNarrativeTemplate(is);
             narrativeInstance = narrativeTemplate.generateInstance();
         } catch (IOException | InvalidGraphException ex) {
             Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, null, ex);
