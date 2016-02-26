@@ -10,7 +10,6 @@ import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -34,7 +33,14 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.AbstractShadowRenderer;
 
 import de.lessvoid.nifty.Nifty;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
+import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
+import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
+import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
 
 /**
  * @author tr393
@@ -53,7 +59,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
     private Spatial draggedObject;
-
     private boolean keyLeft = false, keyRight = false, keyUp = false,
             keyDown = false;
     private boolean isPaused = false;
@@ -68,6 +73,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     private CharacterSelectScreen characterSelectScreen;
     private PauseMenuScreen pauseMenuScreen;
     private GameScreen gameScreen;
+    private NarrativeInstance narrativeInstance;
 
     public static void main(String[] args) {
         MainApplication app = new MainApplication();
@@ -76,6 +82,19 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     public MainApplication() {
         super();
+        try {
+            //TODO: use JMONKEY assets loader somehow as this is a hack!
+            NarrativeTemplate narrativeTemplate = SaveReader.loadNarrativeTemplate("assets/Narrative/dynademo.dnm");
+            narrativeInstance = narrativeTemplate.generateInstance();
+        } catch (IOException | InvalidGraphException ex) {
+            Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    public NarrativeInstance getNarrativeInstance() {
+        return narrativeInstance;
     }
 
     @Override
@@ -399,34 +418,34 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     public void demoEventAction(DemoEvent e) {
         if (e instanceof DemoLocEvent) {
             switch (e.getId()) {
-            case "Node1": // TODO first meeting
-                loadRoute(routes.get("ButtonRoom")); // temp functionality
-                gameScreen
-                        .setDialogueTextSequence(new String[] { "You are now in the button room" }); // testing dialogue
-                break;
-            default:
-                System.out.println("Error: Event name ," + e.getId()
-                        + ",not recognized");
+                case "Node1": // TODO first meeting
+                    loadRoute(routes.get("ButtonRoom")); // temp functionality
+                    gameScreen
+                            .setDialogueTextSequence(new String[]{"You are now in the button room"}); // testing dialogue
+                    break;
+                default:
+                    System.out.println("Error: Event name ," + e.getId()
+                            + ",not recognized");
             }
         } else if (e instanceof DemoInteractEvent) {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
             switch (eInter.getType()) {
-            case 0: // Drag (pick up) event
-                Spatial spatial = eInter.getSpatial();
-                System.out.println("Drag Event " + eInter.getId()
-                        + " for spatial " + spatial.getName());
+                case 0: // Drag (pick up) event
+                    Spatial spatial = eInter.getSpatial();
+                    System.out.println("Drag Event " + eInter.getId()
+                            + " for spatial " + spatial.getName());
 
-                // Remove it from the physics space
-                bulletAppState.getPhysicsSpace().remove(spatial);
-                // Attatch it to the player
-                playerNode.attachChild(spatial);
-                draggedObject = spatial;
-                break;
-            case 1: // Translation event
+                    // Remove it from the physics space
+                    bulletAppState.getPhysicsSpace().remove(spatial);
+                    // Attatch it to the player
+                    playerNode.attachChild(spatial);
+                    draggedObject = spatial;
+                    break;
+                case 1: // Translation event
                 //
-            default:
-                System.out.println("Error: Event type ," + eInter.getType()
-                        + ",not recognized");
+                default:
+                    System.out.println("Error: Event type ," + eInter.getType()
+                            + ",not recognized");
             }
         }
     }
