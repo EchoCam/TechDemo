@@ -412,10 +412,11 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             }
         } else if (e instanceof DemoInteractEvent) {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
+            Spatial spatial = eInter.getSpatial();
+            
             switch (eInter.getType()) {
 
             case 0: // Drag (pick up) event
-                Spatial spatial = eInter.getSpatial();
                 System.out.println("Drag Event " + eInter.getId() + " for spatial " + spatial.getName());
 
                 // Remove it from the physics space
@@ -425,7 +426,9 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 draggedObject = spatial;
                 break;
             case 1: // Translation event
-            //
+                RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
+                if (rbc == null) System.out.println("No avlid physics control found for object: " + spatial.getName());
+//                rbc.setAngularVelocity(new Vector3f(0f,-1f,0f));
             default:
                 System.out.println("Error: Event type ," + eInter.getType() + ",not recognized");
             }
