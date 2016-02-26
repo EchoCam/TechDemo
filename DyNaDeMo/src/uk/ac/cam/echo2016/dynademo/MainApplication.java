@@ -401,12 +401,12 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     public void demoEventAction(DemoEvent e) {
         if (e instanceof DemoLocEvent) {
             switch (e.getId()) {
-                case "Node1": // TODO first meeting
-                    loadRoute(routes.get("ButtonRoom")); // temp functionality
-                    gameScreen.setDialogueTextSequence(new String[] { "You are now in the button room" });
-                    break;
-                default:
-                    System.out.println("Error: Event name ," + e.getId() + ",not recognized");
+            case "Node1": // TODO first meeting
+                loadRoute(routes.get("ButtonRoom")); // temp functionality
+                gameScreen.setDialogueTextSequence(new String[]{"You are now in the button room"});
+                break;
+            default:
+                System.out.println("Error: Event name ," + e.getId() + ",not recognized");
             }
         } else if (e instanceof DemoInteractEvent) {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
@@ -423,7 +423,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 draggedObject = spatial;
                 break;
             case 1: // Translation event
-                //
+            //
             default:
                 System.out.println("Error: Event type ," + eInter.getType() + ",not recognized");
             }
