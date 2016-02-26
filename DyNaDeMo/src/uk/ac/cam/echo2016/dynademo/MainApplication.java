@@ -25,6 +25,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
@@ -411,7 +412,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 
                 //routes.get(gameScreen.getRouteName());
                 //to get the name of the route the player has selected
-                loadRoute(routes.get("PuzzleRoom")); // temp functionality
+                loadRoute(routes.get("ButtonRoom")); // temp functionality
                 gameScreen.setDialogueTextSequence(new String[]{"You are now in the button room"});
                 break;
             default:
@@ -434,10 +435,11 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 break;
             case 1: // Translation event
                 RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
+                // FIXME should check parent nodes for physics controls
                 if (rbc == null) System.out.println("No valid physics control found for object: " + spatial.getName());
-//                rbc.setPhysicsRotation(new Quaternion(-2.5f, 0f, 0f, 1f));
+//                rbc.setPhysicsRotation(new Quaternion().fromAngles(-FastMath.PI, 0f,0f));
 //                System.out.println();
-                spatial.setLocalRotation(new Quaternion(-1f, 0f, 0f, 3f));
+                spatial.rotate(0f, FastMath.PI/2, -FastMath.PI/2);
 //                rbc.setAngularVelocity(new Vector3f(0f,-1f,0f));
 //                rbc.applyTorqueImpulse(new Vector3f(0f,-1f,0f).mult(100f));
                 

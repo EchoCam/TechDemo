@@ -3,11 +3,11 @@ package uk.ac.cam.echo2016.dynademo;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
 
 import com.jme3.light.PointLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
 import java.util.HashMap;
@@ -105,8 +105,11 @@ public class Initialiser {
         // Material leverMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         // lever.setMaterial(leverMat);
         lever.setLocalTranslation(0f, 5f, 10f);
-        lever.setLocalRotation(new Quaternion(-1f, 0f, 0f, 1f));
-        eInter = new DemoInteractEvent("lever", lever, 1);
+        lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
+        
+        // hacky but it works :)
+        Spatial leverMesh = ((Node) lever).descendantMatches("Lever").get(0);
+        eInter = new DemoInteractEvent("lever", leverMesh, 1);
         eInter.addListener(app);
         route.setInteractable(lever, eInter);
         route.staticObjects.add(lever);
