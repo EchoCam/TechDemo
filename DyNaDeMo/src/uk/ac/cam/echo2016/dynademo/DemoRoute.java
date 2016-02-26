@@ -68,7 +68,7 @@ public class DemoRoute {
         } else {
             Node parent = spatial.getParent();
             if (parent != null) {
-                interactWith(parent);
+                return interactWith(parent);
             }
         }
         return false;

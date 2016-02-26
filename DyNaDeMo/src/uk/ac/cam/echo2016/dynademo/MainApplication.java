@@ -25,6 +25,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -34,11 +35,13 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.AbstractShadowRenderer;
 
 import de.lessvoid.nifty.Nifty;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
@@ -404,11 +407,12 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         if (e instanceof DemoLocEvent) {
             switch (e.getId()) {
             case "Node1": // TODO first meeting
-                loadRoute(routes.get("ButtonRoom")); // temp functionality
+                
+                loadRoute(routes.get("PuzzleRoom")); // temp functionality
                 gameScreen.setDialogueTextSequence(new String[]{"You are now in the button room"});
                 break;
             default:
-                System.out.println("Error: Event name ," + e.getId() + ",not recognized");
+                System.out.println("Error: Event name: " + e.getId() + " not recognized");
             }
         } else if (e instanceof DemoInteractEvent) {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
@@ -427,10 +431,16 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 break;
             case 1: // Translation event
                 RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
-                if (rbc == null) System.out.println("No avlid physics control found for object: " + spatial.getName());
+                if (rbc == null) System.out.println("No valid physics control found for object: " + spatial.getName());
+//                rbc.setPhysicsRotation(new Quaternion(-2.5f, 0f, 0f, 1f));
+//                System.out.println();
+                spatial.setLocalRotation(new Quaternion(-1f, 0f, 0f, 3f));
 //                rbc.setAngularVelocity(new Vector3f(0f,-1f,0f));
+//                rbc.applyTorqueImpulse(new Vector3f(0f,-1f,0f).mult(100f));
+                
+                break;
             default:
-                System.out.println("Error: Event type ," + eInter.getType() + ",not recognized");
+                System.out.println("Error: Event type: " + eInter.getType() + " not recognized");
             }
         }
     }
