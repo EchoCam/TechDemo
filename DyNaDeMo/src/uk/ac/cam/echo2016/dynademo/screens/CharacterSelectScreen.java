@@ -16,9 +16,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayList;
 import java.util.List;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
-import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
-import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
 
 /**
  *
@@ -30,6 +28,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     private Screen screen;
     private MainApplication app;
     private List<String> currentChars;
+    private NarrativeInstance narrativeInstance;
 
     public CharacterSelectScreen() {
         super();
@@ -55,7 +54,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         app.getFlyByCamera().setDragToRotate(true);
         currentChars = new ArrayList<>();
 
-        // This piece of code should be loading in routes from dynamic narrative
+        //TODO: get chars from narrativeInstance
         {
             currentChars.add("Brandon");
             currentChars.add("Dooby");
@@ -100,5 +99,6 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = (MainApplication) app;
+        this.narrativeInstance = this.app.getNarrativeInstance();
     }
 }
