@@ -7,12 +7,13 @@ import com.jme3.scene.Spatial;
  */
 public abstract class DemoKinematicTask {
     private DemoKinematic object;
-    private float completionTime;
-    private float currentTime = 0;
+    private final float completionTime;
+    private float currentTime;
     
     public DemoKinematicTask(DemoKinematic object, float completionTime) {
         this.object = object;
         this.completionTime = completionTime;
+        this.currentTime = completionTime;
     }
     
     public abstract void update(float time);
@@ -39,5 +40,9 @@ public abstract class DemoKinematicTask {
      */
     public float getCurrentTime() {
         return currentTime;
+    }
+    
+    public void updateTime(float timePassed) {
+        currentTime -= timePassed;
     }
 }

@@ -71,16 +71,14 @@ public class Initialiser {
         // OBJECTS
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
         crate.setLocalTranslation(0, 0, -30);
-
-        // Set object event
-        eInter = new DemoInteractEvent("crate", crate, 0);
-        eInter.addListener(app);
-        route.setInteractable(crate, eInter);
-        
-        // Set ojbect lights
+        // object physics
         DemoDynamic crateObj = new DemoDynamic(crate, 5f, true);
         crateObj.lights.add(light);
         route.objects.add(crateObj);
+        // object events
+        eInter = new DemoInteractEvent("crate", crateObj, 0);
+        eInter.addListener(app);
+        route.setInteractable(crate, eInter);
 
         routes.put(route.getId(), route);
 
@@ -108,18 +106,14 @@ public class Initialiser {
         // OBJECTS
         
         Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
-        // Material leverMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        // lever.setMaterial(leverMat);
         lever.setLocalTranslation(0f, 5f, 10f);
         lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
+        // WARNING: Rigid body applied after this transform - local transform offset
         
         // hacky but it works :)
         Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
         
-        eInter = new DemoInteractEvent("lever", leverRod, 1);
-        eInter.addListener(app);
-        route.setInteractable(lever, eInter);
-        
+        // object physics
         DemoStatic leverBaseObj = new DemoStatic(lever, true);
         leverBaseObj.lights.add(light);
         route.objects.add(leverBaseObj);
@@ -127,6 +121,11 @@ public class Initialiser {
         DemoKinematic leverObj = new DemoKinematic(leverRod, 1f, false);
         leverObj.lights.add(light);
         route.objects.add(leverObj);
+        
+        // object events
+        eInter = new DemoInteractEvent("lever", leverObj, 1);
+        eInter.addListener(app);
+        route.setInteractable(lever, eInter);
 
         routes.put(route.getId(), route);
 

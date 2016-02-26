@@ -6,7 +6,7 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public class DemoInteractEvent extends DemoEvent {
-    private final Spatial spatial;
+    private final DemoObject object;
     private final int interactType;
 
     /**
@@ -24,14 +24,14 @@ public class DemoInteractEvent extends DemoEvent {
      *      1 - Translation event. e.g. pressure plate press
      * </pre>
      */
-    public DemoInteractEvent(String id, Spatial spatial, int interactType) {
+    public DemoInteractEvent(String id, DemoObject object, int interactType) {
         super(id);
-        this.spatial = spatial;
+        this.object = object;
         this.interactType = interactType;
     }
 
-    public Spatial getSpatial() {
-        return spatial;
+    public DemoObject getObject() {
+        return object;
     }
 
     /**

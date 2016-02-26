@@ -23,6 +23,6 @@ public class TaskTranslation extends DemoKinematicTask {
     @Override
     public void update(float timePassed) {
         getObject().spatial.move(direction.mult(averageSpeed*timePassed));
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        updateTime(timePassed);
     }
 }

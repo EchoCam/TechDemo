@@ -335,8 +335,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 DemoKinematicTask task = queue.peek();
                 task.update(tpf);
                 if (task.isFinished()) {
-                    queue.pop();
-                    if (queue.isEmpty()) taskEventBus.remove(queue.getFirst().getObject());
+                    DemoKinematic kinematicObj = queue.pop().getObject();
+                    if (queue.isEmpty()) taskEventBus.remove(kinematicObj);
                 }
             }
         }
@@ -430,8 +430,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             }
         } else if (e instanceof DemoInteractEvent) {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
-            Spatial spatial = eInter.getSpatial();
-
+            DemoObject object = eInter.getObject();
+            Spatial spatial = object.spatial;
             switch (eInter.getType()) {
 
             case 0: // Drag (pick up) event
@@ -449,9 +449,16 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 if (rbc == null) {
                     throw new NullPointerException("No valid physics control found for object: " + spatial.getName());
                 }
-                spatial.rotate(-FastMath.PI/4, 0f, 0f); // Three way rotation
-                spatial.rotate(0f, FastMath.PI, 0f);
-                spatial.rotate(FastMath.PI/4, 0f, 0f);
+                if (!(object instanceof DemoKinematic)) {
+                    throw new RuntimeException("Translation event called but object: "
+                            + spatial.getName() + " is not kinematic");
+                }
+                DemoKinematic kinematicObj = (DemoKinematic) object;
+                System.out.println(camDir.negate());
+                kinematicObj.queueTranslation(this, new Vector3f(0f, 1f, 0f), 10f, 5f);
+//                spatial.rotate(-FastMath.PI/4, 0f, 0f);
+//                spatial.rotate(0f, FastMath.PI, 0f);
+//                spatial.rotate(FastMath.PI/4, 0f, 0f);
                 break;
             default:
                 System.out.println("Error: Event type: " + eInter.getType() + " not recognized");
