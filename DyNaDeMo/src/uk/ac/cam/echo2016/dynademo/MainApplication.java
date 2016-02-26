@@ -10,7 +10,6 @@ import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.asset.AssetKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -26,7 +25,6 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -55,7 +53,7 @@ import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
 public class MainApplication extends SimpleApplication implements DemoListener {
 
     public final static float CHARHEIGHT = 3;
-    public HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
+    public HashMap<String, DemoRoute> routes = new HashMap<>();
     private Node playerNode;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
@@ -68,7 +66,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
-    private ArrayDeque<DemoLocEvent> locEventQueue = new ArrayDeque<DemoLocEvent>();
+    private ArrayDeque<DemoLocEvent> locEventBus = new ArrayDeque<>();
+    private HashMap<DemoKinematic, ArrayDeque<DemoKinematicTask>> taskEventBus = new HashMap<>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
     // private currentRoute/Character
@@ -203,7 +202,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             viewPort.removeProcessor(plsr);
         }
         for (DemoLocEvent oldEvent : currentRoute.events) {
-            locEventQueue.remove(oldEvent);
+            locEventBus.remove(oldEvent);
         }
 
         // Load new route (route)
@@ -240,7 +239,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             // viewPort.addProcessor(plsr); // Disabled shadows for now
         }
         for (DemoLocEvent newEvent : route.events) {
-            locEventQueue.add(newEvent);
+            locEventBus.add(newEvent);
         }
 
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
@@ -326,9 +325,18 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 }
             }
             // Check global event queue
-            for (DemoLocEvent e : locEventQueue) {
+            for (DemoLocEvent e : locEventBus) {
                 if (e.checkCondition(playerControl.getPhysicsLocation())) {
                     e.fireEvent();
+                }
+            }
+            // Update task queue
+            for (ArrayDeque<DemoKinematicTask> queue : taskEventBus.values()) {
+                DemoKinematicTask task = queue.peek();
+                task.update(tpf);
+                if (task.isFinished()) {
+                    queue.pop();
+                    if (queue.isEmpty()) taskEventBus.remove(queue.getFirst().getObject());
                 }
             }
         }
@@ -336,60 +344,68 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     @Override
     public void onAction(String keyName, boolean isPressed, float tpf) {
-        if (keyName.equals("Left")) {
-            keyLeft = isPressed;
-        } else if (keyName.equals("Right")) {
-            keyRight = isPressed;
-        } else if (keyName.equals("Up")) {
-            keyUp = isPressed;
-        } else if (keyName.equals("Down")) {
-            keyDown = isPressed;
-        } else if (keyName.equals("Interact")) {
-            if (isPressed) {
-                if (gameScreen.isTextShowing()) {
-                    gameScreen.progressThroughText();
-                } else if (draggedObject != null) {
-                    // Drop current Object held
-                    Vector3f location = draggedObject.getWorldTranslation();
-                    bulletAppState.getPhysicsSpace().add(draggedObject);
-                    draggedObject.removeFromParent();
-                    rootNode.attachChild(draggedObject);
-                    draggedObject.setLocalTranslation(location);
-                    ((RigidBodyControl) draggedObject.getControl(0)).setPhysicsLocation(location);
-                    draggedObject = null;
+        switch (keyName) {
+            case "Left":
+                keyLeft = isPressed;
+                break;
+            case "Right":
+                keyRight = isPressed;
+                break;
+            case "Up":
+                keyUp = isPressed;
+                break;
+            case "Down":
+                keyDown = isPressed;
+                break;
+            case "Interact":
+                if (isPressed) {
+                    if (gameScreen.isTextShowing()) {
+                        gameScreen.progressThroughText();
+                    } else if (draggedObject != null) {
+                        // Drop current Object held
+                        Vector3f location = draggedObject.getWorldTranslation();
+                        bulletAppState.getPhysicsSpace().add(draggedObject);
+                        draggedObject.removeFromParent();
+                        rootNode.attachChild(draggedObject);
+                        draggedObject.setLocalTranslation(location);
+                        ((RigidBodyControl) draggedObject.getControl(0)).setPhysicsLocation(location);
+                        draggedObject = null;
 
-                    Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
-                    System.out.println(spat.getWorldTranslation().x);
-                    System.out.println(spat.getWorldTranslation().y);
-                    System.out.println(spat.getWorldTranslation().z);
-                } else {
-                    // Ray Casting (checking for first interactable object)
-                    Ray ray = new Ray(cam.getLocation(), cam.getDirection());
-                    CollisionResults results = new CollisionResults();
-                    rootNode.collideWith(ray, results);
-                    CollisionResult closest = results.getClosestCollision();
+                        Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
+                        System.out.println(spat.getWorldTranslation().x);
+                        System.out.println(spat.getWorldTranslation().y);
+                        System.out.println(spat.getWorldTranslation().z);
+                    } else {
+                        // Ray Casting (checking for first interactable object)
+                        Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+                        CollisionResults results = new CollisionResults();
+                        rootNode.collideWith(ray, results);
+                        CollisionResult closest = results.getClosestCollision();
 
-                    // Gets the closest geometry (if it exists) and attempts to interact with it
-                    if (closest != null) {
-                        System.out.println(closest.getGeometry().getName() + " found!");
-                        if (!currentRoute.interactWith(closest.getGeometry())) {
-                            System.out.println(closest.getGeometry().getName() + " is not responding...");
+                        // Gets the closest geometry (if it exists) and attempts to interact with it
+                        if (closest != null) {
+                            System.out.println(closest.getGeometry().getName() + " found!");
+                            if (!currentRoute.interactWith(closest.getGeometry())) {
+                                System.out.println(closest.getGeometry().getName() + " is not responding...");
+                            }
                         }
                     }
                 }
-            }
-        } else if (keyName.equals("Jump")) {
-            if (isPressed) {
-                playerControl.jump();
-            }
-        } else if (keyName.equals("Pause")) {
-            if (isPressed) {
-                if (!isPaused) {
-                    nifty.gotoScreen("pauseMenu");
-                } else {
-                    nifty.gotoScreen("game");
+                break;
+            case "Jump":
+                if (isPressed) {
+                    playerControl.jump();
                 }
-            }
+                break;
+            case "Pause":
+                if (isPressed) {
+                    if (!isPaused) {
+                        nifty.gotoScreen("pauseMenu");
+                    } else {
+                        nifty.gotoScreen("game");
+                    }
+                }
+                break;
         }
     }
 
@@ -403,7 +419,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             switch (e.getId()) {
             case "Node1": // TODO first meeting
                 //could do...
-                
+
                 //routes.get(gameScreen.getRouteName());
                 //to get the name of the route the player has selected
                 loadRoute(routes.get("ButtonRoom")); // temp functionality
@@ -415,7 +431,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         } else if (e instanceof DemoInteractEvent) {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
             Spatial spatial = eInter.getSpatial();
-            
+
             switch (eInter.getType()) {
 
             case 0: // Drag (pick up) event
@@ -430,10 +446,11 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             case 1: // Translation event
                 RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
                 // TODO should check parent nodes for physics controls?
-                if (rbc == null)
+                if (rbc == null) {
                     throw new NullPointerException("No valid physics control found for object: " + spatial.getName());
-                spatial.rotate(0f, FastMath.PI/2, -FastMath.PI/2); // Three way rotation
-                
+                }
+                spatial.rotate(0f, FastMath.PI / 2, -FastMath.PI / 2); // Three way rotation
+
                 break;
             default:
                 System.out.println("Error: Event type: " + eInter.getType() + " not recognized");
@@ -441,6 +458,12 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         }
     }
 
+    public void addTask(DemoKinematic object, ArrayDeque<DemoKinematicTask> task) {
+        if (!taskEventBus.containsKey(object)) {
+            taskEventBus.put(object, task);
+        }
+    }
+    
     public MainMenuScreen getMainMenuScreen() {
         return mainMenuScreen;
     }
@@ -457,6 +480,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         return gameScreen;
     }
 
+    @Override
     public AppStateManager getStateManager() {
         return stateManager;
     }
