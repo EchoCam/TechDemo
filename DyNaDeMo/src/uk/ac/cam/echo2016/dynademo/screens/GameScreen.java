@@ -131,7 +131,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         // Bind the mouse to the screen so it is used to rotate the camera
         app.getFlyByCamera().setDragToRotate(false);
         // TODO: load in maps based on data (eg, selected character etc.)
-        setDialogueTextSequence(new String[] { "You are playing as " + character, "Please enjoy DyNaDeMo" });
+        setDialogueTextSequence(new String[] { "Press \"e\" to scroll through text.", "You are playing as " + character + ".", "Please enjoy DyNaDeMo!" });
         try {
             narrativeInstance.startRoute(routeName);
         } catch (GraphElementNotFoundException e) {
