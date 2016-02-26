@@ -10,6 +10,7 @@ import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -28,7 +29,6 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.AbstractShadowRenderer;
@@ -44,16 +44,16 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     public final static float CHARHEIGHT = 3;
     public HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
-    
     private Node playerNode;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
     private CharacterControl playerControl;
     private GhostControl billMurray;
-    
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
+    private Spatial draggedObject;
+    
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
@@ -137,7 +137,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         // Load Character into world //
         playerNode = new Node("playerNode");
         rootNode.attachChild(playerNode);
-        
+
         // Attach physic control to the character
         CapsuleCollisionShape capsule = new CapsuleCollisionShape(CHARHEIGHT / 2, CHARHEIGHT, 1);
         playerControl = new CharacterControl(capsule, 0.2f);
@@ -147,12 +147,12 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         playerControl.setPhysicsLocation(new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0)); // 2.5f vertical lee-way
         playerNode.addControl(playerControl);
         bulletAppState.getPhysicsSpace().add(playerControl);
-        
+
         // Attach ghost control to the character
         billMurray = new GhostControl(capsule);
         playerNode.addControl(billMurray);
         bulletAppState.getPhysicsSpace().add(billMurray);
-        
+
         // Start at Area 0 //
         currentRoute = routes.get("Bedroom");
         enterLocation(currentRoute);
@@ -163,7 +163,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
-        
+
         for (Spatial object : currentRoute.objects) {
             rootNode.detachChild(object);
         }
@@ -177,12 +177,12 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             locEventQueue.remove(oldEvent);
         }
         this.currentRoute = route;
-        
+
         // Load new route (route)
         currentWorld = assetManager.loadModel(route.getSceneFile());
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
-        
+
         // Load route objects and add rigidbodycontrols
         for (Spatial object : route.objects) {
             rootNode.attachChild(object);
@@ -248,10 +248,14 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleUpdate(float tpf) {
+//        System.out.println(playerNode.getWorldTranslation().x);
+//        System.out.println(playerNode.getWorldTranslation().y);
+//        System.out.println(playerNode.getWorldTranslation().z);
+//        System.out.println("");
         if (!isPaused) {
             // Find direction of camera (and rotation)
-            camDir.set(cam.getDirection().multLocal(.4f));
-            camLeft.set(cam.getLeft().multLocal(.4f));
+            camDir.set(cam.getDirection().normalize());
+            camLeft.set(cam.getLeft().normalize());
             // Calculate distance to move
             walkDirection.set(0, 0, 0);
             if (keyLeft) {
@@ -266,13 +270,23 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             if (keyDown) {
                 walkDirection.addLocal(-camDir.x, 0, -camDir.z);
             }
-            playerControl.setWalkDirection(walkDirection.mult(60f*tpf));
+            playerControl.setWalkDirection(walkDirection.mult(25f * tpf));
             // Move camera to correspond to player
             cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
+            // Position carried items appropriately
+            if (draggedObject != null) {
+                float distance = draggedObject.getLocalTranslation().length();
+                Vector3f newLoc = camDir.mult(distance);
+                draggedObject.setLocalTranslation(newLoc);
+                draggedObject.setLocalRotation(cam.getRotation());
+            }
+//            draggedObject.setLocalTranslation(distance, tpf, tpf);
+            
             // Check character for collisions
-            for(PhysicsCollisionObject object : billMurray.getOverlappingObjects()) {
-                if (object instanceof RigidBodyControl)
+            for (PhysicsCollisionObject object : billMurray.getOverlappingObjects()) {
+                if (object instanceof RigidBodyControl) {
                     ((RigidBodyControl) object).applyCentralForce(camDir.mult(1000f));
+                }
             }
             // Check global event queue
             for (DemoLocEvent e : locEventQueue) {
@@ -294,17 +308,28 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         } else if (keyName.equals("Down")) {
             keyDown = isPressed;
         } else if (keyName.equals("Interact")) {
-            // Ray Casting (checking for first interactable object)
-            Ray ray = new Ray(cam.getLocation(),cam.getDirection());
-            CollisionResults results = new CollisionResults();
-            rootNode.collideWith(ray, results);
-            CollisionResult closest = results.getClosestCollision();
-            
-            // Gets the closest geometry (if it exists) and attempts to interact with it
-            if (closest != null) {
-                System.out.println(closest.getGeometry().getName() + " found!");
-                if (currentRoute.interactWith(closest.getGeometry()));
-                else {System.out.println(closest.getGeometry().getName() + " is not responding...");}
+            if (isPressed) {
+                if (draggedObject != null) { //Already holding object
+                    bulletAppState.getPhysicsSpace().add(draggedObject);
+                    draggedObject.removeFromParent();
+                    rootNode.attachChild(draggedObject);
+                    draggedObject = null;
+                } else {
+                    // Ray Casting (checking for first interactable object)
+                    Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+                    CollisionResults results = new CollisionResults();
+                    rootNode.collideWith(ray, results);
+                    CollisionResult closest = results.getClosestCollision();
+
+                    // Gets the closest geometry (if it exists) and attempts to interact with it
+                    if (closest != null) {
+                        System.out.println(closest.getGeometry().getName() + " found!");
+                        if (!currentRoute.interactWith(closest.getGeometry())) 
+                        {
+                            System.out.println(closest.getGeometry().getName() + " is not responding...");
+                        }
+                    }
+                }
             }
         } else if (keyName.equals("Jump")) {
             if (isPressed) {
@@ -339,11 +364,17 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
             switch (eInter.getType()) {
                 case 0: // Drag (pick up) event
-                    System.out.println("Drag Event "+ eInter.getId() +" for spatial " + eInter.getSpatial().getName());
-                    playerNode.attachChild(eInter.getSpatial());
+                    Spatial spatial = eInter.getSpatial();
+                    System.out.println("Drag Event " + eInter.getId() + " for spatial " + spatial.getName());
+                    
+                    // Remove it from the physics space
+                    bulletAppState.getPhysicsSpace().remove(spatial);
+                    // Attatch it to the player
+                    playerNode.attachChild(spatial);
+                    draggedObject = spatial;
                     break;
                 case 1: // Translation event
-                    //
+                //
                 default:
                     System.out.println("Error: Event type ," + eInter.getType() + ",not recognized");
             }
@@ -365,7 +396,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     public GameScreen getGameScreen() {
         return gameScreen;
     }
-    
+
     public AppStateManager getStateManager() {
         return stateManager;
     }
