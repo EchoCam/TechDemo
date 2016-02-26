@@ -3,11 +3,12 @@ package uk.ac.cam.echo2016.dynademo;
 
 import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
 
-import java.util.ArrayList;
 
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
@@ -27,9 +28,10 @@ public class Initialiser {
         HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
         
         DemoRoute route;
-        DemoLocEvent e;
+        DemoLocEvent eLoc;
+        DemoInteractEvent eInter;
 
-        // BEDROOM ROUTE
+//////// Bedroom ////////
         route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
         
         // LIGHTS
@@ -60,22 +62,55 @@ public class Initialiser {
         for(int i = 0; i< spatialNames.length; ++i) {
             addLight(app,route,lightCoords[i],spatialNames[i]);
         }
-        
-        // OBJECTS
-        Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
-        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        crate.setMaterial(mat);
-        crate.setLocalTranslation(0, 0, -30);
-        route.objects.add(crate);
-        
         // EVENTS
-        e = new DemoLocEvent(0, new Vector3f(-80, 1, -40), 40, 14, 50); 
-        e.listeners.add(app);
-        route.events.add(e);
+        eLoc = new DemoLocEvent("Node1", new Vector3f(-80, 1, -40), 40, 14, 50); 
+        eLoc.addListener(app);
+        route.events.add(eLoc);
         routes.put(route.getId(),route);
 
-        // PuzzleRoom
-        route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+//////// Puzzle Room ////////
+        route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(0, 0, -1));
+
+        // LIGHTS
+        addLight(app, route, new Vector3f(0,8f,0), new String[]{"Room"});
+        // OBJECTS
+        Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
+        Material crateMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        crate.setMaterial(crateMat);
+        crate.setLocalTranslation(0, 0, -30);
+        
+        // Pickup Event
+        eInter = new DemoInteractEvent("crate", crate, 0);
+        eInter.addListener(app);
+        route.setInteractable(crate, eInter);
+        route.dynamicObjects.add(crate);
+        
+        routes.put(route.getId(),route);
+        
+//////// Lever Room ////////
+        route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+        
+        // LIGHTS
+//        addLight(app, route, new Vector3f(0,0,0), new String[]{"Room"});
+        // OBJECTS
+//        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
+//        Material leverMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//        lever.setMaterial(leverMat);
+//        lever.setLocalTranslation(0f, 0f, 0f);
+        
+//////// Button Room ////////
+        
+        route = new DemoRoute("ButtonRoom", "Scenes/ButtonRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0), new Vector3f(1, 0, 0));
+        
+        // LIGHTS
+        addLight(app, route, new Vector3f(0f,8f,0f), new String[]{"Room"});
+        // OBJECTS
+        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
+//        Material leverMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//        lever.setMaterial(leverMat);
+        lever.setLocalTranslation(0f, 5f, 10f);
+        lever.setLocalRotation(new Quaternion(-1f, 0f, 0f, 1f));
+        route.staticObjects.add(lever);
         
         routes.put(route.getId(),route);
         
