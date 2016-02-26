@@ -10,6 +10,6 @@ public class DemoLight {
 	public String[] spatialNames;
 	DemoLight(Light l, String[] ns) {
 		light = l;
-		spatialNames = ns;	
+		spatialNames = ns;
 	}
 }	
