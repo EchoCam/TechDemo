@@ -9,7 +9,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
 
 /**
- *
+ * @author tr395
  */
 public class MainMenuScreen extends AbstractAppState implements ScreenController {
 

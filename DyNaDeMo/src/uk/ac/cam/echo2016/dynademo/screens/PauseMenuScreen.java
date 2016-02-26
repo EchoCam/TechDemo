@@ -10,7 +10,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
 
 /**
- *
+ * @author tr395
  */
 public class PauseMenuScreen extends AbstractAppState implements ScreenController {
 
