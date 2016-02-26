@@ -64,7 +64,7 @@ public class Initialiser {
                 new Vector3f(0, 0, -1));
 
         // LIGHTS
-        addLight(app, route, new Vector3f(0, 8f, 0), new String[] { "Room", "Crate" });
+        addLight(app, route, new Vector3f(0, 8f, 0), new String[] {"Room", "Cube"});
 
         // OBJECTS
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
@@ -98,12 +98,17 @@ public class Initialiser {
 
         // LIGHTS
         addLight(app, route, new Vector3f(0f, 8f, 0f), new String[] { "Room", "LeverBase" });
+        
         // OBJECTS
+        
         Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
         // Material leverMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         // lever.setMaterial(leverMat);
         lever.setLocalTranslation(0f, 5f, 10f);
         lever.setLocalRotation(new Quaternion(-1f, 0f, 0f, 1f));
+        eInter = new DemoInteractEvent("lever", lever, 1);
+        eInter.addListener(app);
+        route.setInteractable(lever, eInter);
         route.staticObjects.add(lever);
 
         routes.put(route.getId(), route);
