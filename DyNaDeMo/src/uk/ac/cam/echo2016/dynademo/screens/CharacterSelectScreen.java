@@ -16,6 +16,9 @@ import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayList;
 import java.util.List;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
+import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
+import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
+import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
 
 /**
  *
