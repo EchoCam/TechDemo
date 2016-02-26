@@ -155,16 +155,22 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
         // Start at Area 0 //
         currentRoute = routes.get("Bedroom");
-        enterLocation(currentRoute);
+        loadRoute(currentRoute);
     }
 
-    private void enterLocation(DemoRoute route) {
+    private void loadRoute(DemoRoute route) {
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
 
-        for (Spatial object : currentRoute.objects) {
+        for (Spatial object : currentRoute.dynamicObjects) {
+            rootNode.detachChild(object);
+        }
+        for (Spatial object : currentRoute.kinematicObjects) {
+            rootNode.detachChild(object);
+        }
+        for (Spatial object : currentRoute.staticObjects) {
             rootNode.detachChild(object);
         }
         for (DemoLight l : currentRoute.lights) { // FIXME should do a search
@@ -176,19 +182,32 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         for (DemoLocEvent oldEvent : currentRoute.events) {
             locEventQueue.remove(oldEvent);
         }
-        this.currentRoute = route;
-
+        
         // Load new route (route)
+        currentRoute = route;
         currentWorld = assetManager.loadModel(route.getSceneFile());
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
 
         // Load route objects and add rigidbodycontrols
-        for (Spatial object : route.objects) {
+        for (Spatial object : route.dynamicObjects) {
             rootNode.attachChild(object);
             RigidBodyControl rbc = new RigidBodyControl(5f);
             object.addControl(rbc);
             rbc.setFriction(1.5f);
+            bulletAppState.getPhysicsSpace().add(rbc);
+        }
+        for (Spatial object : route.kinematicObjects) {
+            rootNode.attachChild(object);
+            RigidBodyControl rbc = new RigidBodyControl(5f);
+            object.addControl(rbc);
+            rbc.setKinematic(true);
+            bulletAppState.getPhysicsSpace().add(rbc);
+        }
+        for (Spatial object : route.staticObjects) {
+            rootNode.attachChild(object);
+            RigidBodyControl rbc = new RigidBodyControl(0f);
+            object.addControl(rbc);
             bulletAppState.getPhysicsSpace().add(rbc);
         }
         for (DemoLight l : route.lights) {
@@ -202,7 +221,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             }
         }
         for (AbstractShadowRenderer plsr : route.shadowRenderers) {
-//            viewPort.addProcessor(plsr); // Disabled for now
+//            viewPort.addProcessor(plsr); // Disabled shadows for now
         }
         for (DemoLocEvent newEvent : route.events) {
             locEventQueue.add(newEvent);
@@ -367,7 +386,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         if (e instanceof DemoLocEvent) {
             switch (e.getId()) {
                 case "Node1": // TODO first meeting
-                    enterLocation(routes.get("PuzzleRoom")); // temp functionality
+                    loadRoute(routes.get("ButtonRoom")); // temp functionality
                     break;
                 default:
                     System.out.println("Error: Event name ," + e.getId() + ",not recognized");

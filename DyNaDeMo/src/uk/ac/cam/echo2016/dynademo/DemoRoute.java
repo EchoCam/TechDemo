@@ -20,7 +20,9 @@ public class DemoRoute {
     public ArrayList<DemoLocEvent> events = new ArrayList<>();
     public ArrayList<DemoLight> lights = new ArrayList<>();
     public ArrayList<AbstractShadowRenderer> shadowRenderers = new ArrayList<>();
-    public ArrayList<Spatial> objects = new ArrayList<>();
+    public ArrayList<Spatial> dynamicObjects = new ArrayList<>();
+    public ArrayList<Spatial> kinematicObjects = new ArrayList<>();
+    public ArrayList<Spatial> staticObjects = new ArrayList<>();
 //    public Node interactableNode = new Node("Interactables");
     public HashMap<Spatial, DemoInteractEvent> interactions = new HashMap<>();
 
