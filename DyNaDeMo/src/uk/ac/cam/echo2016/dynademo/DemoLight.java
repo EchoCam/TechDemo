@@ -7,10 +7,10 @@ import com.jme3.light.Light;
  */
 public class DemoLight {
     public Light light;
-    public String[] spatialNames;
+    public String[] affectedRooms;
 
     DemoLight(Light l, String[] ns) {
         light = l;
-        spatialNames = ns;
+        affectedRooms = ns;
     }
 }

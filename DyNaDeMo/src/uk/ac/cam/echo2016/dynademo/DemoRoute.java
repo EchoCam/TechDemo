@@ -20,9 +20,10 @@ public class DemoRoute {
     public ArrayList<DemoLocEvent> events = new ArrayList<>();
     public ArrayList<DemoLight> lights = new ArrayList<>();
     public ArrayList<AbstractShadowRenderer> shadowRenderers = new ArrayList<>();
-    public ArrayList<Spatial> dynamicObjects = new ArrayList<>();
-    public ArrayList<Spatial> kinematicObjects = new ArrayList<>();
-    public ArrayList<Spatial> staticObjects = new ArrayList<>();
+    public ArrayList<DemoObject> objects = new ArrayList<>();
+//    public ArrayList<Spatial> dynamicObjects = new ArrayList<>();
+//    public ArrayList<Spatial> kinematicObjects = new ArrayList<>();
+//    public ArrayList<Spatial> staticObjects = new ArrayList<>();
     // public Node interactableNode = new Node("Interactables");
     public HashMap<Spatial, DemoInteractEvent> interactions = new HashMap<>();
 
@@ -58,7 +59,7 @@ public class DemoRoute {
      * Fires a {@code DemoInteractEvent} if the spatial or any of its parents is set to be interactable. If multiple
      * ancestors are interactable, only the closest one (fewest connnections) will be interacted with.
      *
-     * @param spatial
+     * @param spatial - The spatial or parent that maps to an {@code DemoInteractEvent}
      */
     public boolean interactWith(Spatial spatial) {
         DemoInteractEvent e = interactions.get(spatial);
