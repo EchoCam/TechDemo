@@ -73,13 +73,12 @@ public class Initialiser {
 
         // LIGHTS
         addLight(app, route, new Vector3f(0,8f,0), new String[]{"Room", "Crate"});
+        
         // OBJECTS
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
-//        Material crateMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-//      crate.setMaterial(crateMat);
         crate.setLocalTranslation(0, 0, -30);
         
-        // Pickup Event
+        // OBJECT EVENTS
         eInter = new DemoInteractEvent("crate", crate, 0);
         eInter.addListener(app);
         route.setInteractable(crate, eInter);
