@@ -189,7 +189,9 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             // TODO clean up physicsSpace (save info?)
             if (object.isMainParent)
                 rootNode.detachChild(object.spatial);
+            
             bulletAppState.getPhysicsSpace().remove(object.spatial);
+            
             for(DemoLight dLight : object.lights) {
                 object.spatial.removeLight(dLight.light);
             }
@@ -214,10 +216,11 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         for (DemoObject object : route.objects) {
             if (object.isMainParent)
                 rootNode.attachChild(object.spatial);
+            
             RigidBodyControl rbc = new RigidBodyControl(object.mass);
             object.spatial.addControl(rbc);
-            if (object.physicsType == 1) rbc.setKinematic(true);
-            if (object.physicsType == 2) rbc.setFriction(1.5f);
+            if (object instanceof DemoKinematic) rbc.setKinematic(true);
+            if (object instanceof DemoDynamic) rbc.setFriction(1.5f);
             bulletAppState.getPhysicsSpace().add(rbc);
             for (DemoLight dLight : object.lights) {
                 object.spatial.addLight(dLight.light);
@@ -430,12 +433,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 if (rbc == null)
                     throw new NullPointerException("No valid physics control found for object: " + spatial.getName());
                 spatial.rotate(0f, FastMath.PI/2, -FastMath.PI/2); // Three way rotation
-//                rbc.activate();
-//                rbc.setLinearVelocity(camDir.mult(-1000f));
-//                rbc.applyImpulse(camDir.mult(1000f), Vector3f.ZERO);
-//                spatial.
-//                System.out.println(rbc.isKinematicSpatial());
-//                System.out.println(rbc.isKinematic());
+                
                 break;
             default:
                 System.out.println("Error: Event type: " + eInter.getType() + " not recognized");

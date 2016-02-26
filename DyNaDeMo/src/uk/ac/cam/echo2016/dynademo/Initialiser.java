@@ -78,9 +78,9 @@ public class Initialiser {
         route.setInteractable(crate, eInter);
         
         // Set ojbect lights
-        ArrayList<DemoLight> lights = new ArrayList<>();
-        lights.add(light);
-        route.objects.add(new DemoObject(crate, lights, 2, 5f, true));
+        DemoDynamic crateObj = new DemoDynamic(crate, 5f, true);
+        crateObj.lights.add(light);
+        route.objects.add(crateObj);
 
         routes.put(route.getId(), route);
 
@@ -113,17 +113,20 @@ public class Initialiser {
         lever.setLocalTranslation(0f, 5f, 10f);
         lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
         
-        lights = new ArrayList<>();
-        lights.add(light);
-        
         // hacky but it works :)
         Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
+        
         eInter = new DemoInteractEvent("lever", leverRod, 1);
         eInter.addListener(app);
         route.setInteractable(lever, eInter);
         
-        route.objects.add(new DemoObject(lever, lights, 0, 0f, true));
-        route.objects.add(new DemoObject(leverRod, lights, 1, 1f, false));
+        DemoStatic leverBaseObj = new DemoStatic(lever, true);
+        leverBaseObj.lights.add(light);
+        route.objects.add(leverBaseObj);
+        
+        DemoKinematic leverObj = new DemoKinematic(leverRod, 1f, false);
+        leverObj.lights.add(light);
+        route.objects.add(leverObj);
 
         routes.put(route.getId(), route);
 
