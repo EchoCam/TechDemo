@@ -13,22 +13,27 @@ import java.util.ArrayList;
 public abstract class DemoEvent {
     private ArrayList<DemoListener> listeners = new ArrayList<>();
     private final String id;
+
     public DemoEvent(String id) {
         this.id = id;
     }
+
     public String getId() {
         return id;
     }
+
     public ArrayList<DemoListener> getListeners() {
         return listeners;
     }
+
     public void addListener(DemoListener l) {
         listeners.add(l);
     }
+
     public void fireEvent() {
         for (DemoListener listener : listeners) {
             listener.demoEventAction(this);
         }
     }
-    
+
 }

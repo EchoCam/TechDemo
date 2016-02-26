@@ -10,7 +10,7 @@ import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.bounding.BoundingBox;
+import com.jme3.asset.AssetKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -25,6 +25,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -34,7 +35,17 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.AbstractShadowRenderer;
 
 import de.lessvoid.nifty.Nifty;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
+import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
+import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
+import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
 
 /**
  * @author tr393
@@ -53,20 +64,20 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
     private Spatial draggedObject;
-    
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
     private ArrayDeque<DemoLocEvent> locEventQueue = new ArrayDeque<DemoLocEvent>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
-    //private currentRoute/Character
+    // private currentRoute/Character
     private Nifty nifty;
-    //Screens
+    // Screens
     private MainMenuScreen mainMenuScreen;
     private CharacterSelectScreen characterSelectScreen;
     private PauseMenuScreen pauseMenuScreen;
     private GameScreen gameScreen;
+    private NarrativeInstance narrativeInstance;
 
     public static void main(String[] args) {
         MainApplication app = new MainApplication();
@@ -75,13 +86,25 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     public MainApplication() {
         super();
+        try {   
+            InputStream is = this.getClass().getResourceAsStream("dynademo.dnm");
+            NarrativeTemplate narrativeTemplate = SaveReader.loadNarrativeTemplate(is);
+            narrativeInstance = narrativeTemplate.generateInstance();
+        } catch (IOException | InvalidGraphException ex) {
+            Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    public NarrativeInstance getNarrativeInstance() {
+        return narrativeInstance;
     }
 
     @Override
     public void simpleInitApp() {
         // Set-Up for the main menu //
-        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
-                assetManager, inputManager, audioRenderer, guiViewPort);
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
 
@@ -89,7 +112,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         nifty.addXml("Interface/Nifty/characterSelect.xml");
         nifty.addXml("Interface/Nifty/pauseMenu.xml");
         nifty.addXml("Interface/Nifty/game.xml");
-
 
         mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
         characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
@@ -101,9 +123,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         stateManager.attach(pauseMenuScreen);
         stateManager.attach(gameScreen);
 
-        //TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
+        // TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
         nifty.gotoScreen("mainMenu");
-
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -182,7 +203,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         for (DemoLocEvent oldEvent : currentRoute.events) {
             locEventQueue.remove(oldEvent);
         }
-        
+
         // Load new route (route)
         currentRoute = route;
         currentWorld = assetManager.loadModel(route.getSceneFile());
@@ -221,7 +242,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             }
         }
         for (AbstractShadowRenderer plsr : route.shadowRenderers) {
-//            viewPort.addProcessor(plsr); // Disabled shadows for now
+            // viewPort.addProcessor(plsr); // Disabled shadows for now
         }
         for (DemoLocEvent newEvent : route.events) {
             locEventQueue.add(newEvent);
@@ -252,9 +273,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Interact", new KeyTrigger(KeyInput.KEY_E));
-//        inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
+        // inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
-
 
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
@@ -267,13 +287,13 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     @Override
     public void simpleUpdate(float tpf) {
-//        if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
-//            Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
-//            System.out.println(spat.getName());
-//            System.out.println(spat.getWorldTranslation().x);
-//            System.out.println(spat.getWorldTranslation().y);
-//            System.out.println(spat.getWorldTranslation().z);
-//        }
+        // if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
+        // Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
+        // System.out.println(spat.getName());
+        // System.out.println(spat.getWorldTranslation().x);
+        // System.out.println(spat.getWorldTranslation().y);
+        // System.out.println(spat.getWorldTranslation().z);
+        // }
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
@@ -295,7 +315,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             playerControl.setWalkDirection(walkDirection.mult(25f * tpf));
             // Move camera to correspond to player
             cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
-            
+
             // Position carried items appropriately
             if (draggedObject != null) {
                 float distance = draggedObject.getLocalTranslation().length();
@@ -303,7 +323,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 draggedObject.setLocalTranslation(newLoc);
                 draggedObject.setLocalRotation(cam.getRotation());
             }
-            
+
             // Check character for collisions
             for (PhysicsCollisionObject object : billMurray.getOverlappingObjects()) {
                 if (object instanceof RigidBodyControl) {
@@ -331,16 +351,18 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             keyDown = isPressed;
         } else if (keyName.equals("Interact")) {
             if (isPressed) {
-                if (draggedObject != null) {
+                if (gameScreen.isTextShowing()) {
+                    gameScreen.progressThroughText();
+                } else if (draggedObject != null) {
                     // Drop current Object held
                     Vector3f location = draggedObject.getWorldTranslation();
                     bulletAppState.getPhysicsSpace().add(draggedObject);
                     draggedObject.removeFromParent();
                     rootNode.attachChild(draggedObject);
                     draggedObject.setLocalTranslation(location);
-                    ((RigidBodyControl)draggedObject.getControl(0)).setPhysicsLocation(location);
+                    ((RigidBodyControl) draggedObject.getControl(0)).setPhysicsLocation(location);
                     draggedObject = null;
-                    
+
                     Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
                     System.out.println(spat.getWorldTranslation().x);
                     System.out.println(spat.getWorldTranslation().y);
@@ -355,8 +377,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                     // Gets the closest geometry (if it exists) and attempts to interact with it
                     if (closest != null) {
                         System.out.println(closest.getGeometry().getName() + " found!");
-                        if (!currentRoute.interactWith(closest.getGeometry())) 
-                        {
+                        if (!currentRoute.interactWith(closest.getGeometry())) {
                             System.out.println(closest.getGeometry().getName() + " is not responding...");
                         }
                     }
@@ -385,29 +406,44 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     public void demoEventAction(DemoEvent e) {
         if (e instanceof DemoLocEvent) {
             switch (e.getId()) {
-                case "Node1": // TODO first meeting
-                    loadRoute(routes.get("ButtonRoom")); // temp functionality
-                    break;
-                default:
-                    System.out.println("Error: Event name ," + e.getId() + ",not recognized");
+            case "Node1": // TODO first meeting
+                //could do...
+                
+                //routes.get(gameScreen.getRouteName());
+                //to get the name of the route the player has selected
+                loadRoute(routes.get("PuzzleRoom")); // temp functionality
+                gameScreen.setDialogueTextSequence(new String[]{"You are now in the button room"});
+                break;
+            default:
+                System.out.println("Error: Event name: " + e.getId() + " not recognized");
             }
         } else if (e instanceof DemoInteractEvent) {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
+            Spatial spatial = eInter.getSpatial();
+            
             switch (eInter.getType()) {
-                case 0: // Drag (pick up) event
-                    Spatial spatial = eInter.getSpatial();
-                    System.out.println("Drag Event " + eInter.getId() + " for spatial " + spatial.getName());
-                    
-                    // Remove it from the physics space
-                    bulletAppState.getPhysicsSpace().remove(spatial);
-                    // Attatch it to the player
-                    playerNode.attachChild(spatial);
-                    draggedObject = spatial;
-                    break;
-                case 1: // Translation event
-                //
-                default:
-                    System.out.println("Error: Event type ," + eInter.getType() + ",not recognized");
+
+            case 0: // Drag (pick up) event
+                System.out.println("Drag Event " + eInter.getId() + " for spatial " + spatial.getName());
+
+                // Remove it from the physics space
+                bulletAppState.getPhysicsSpace().remove(spatial);
+                // Attatch it to the player
+                playerNode.attachChild(spatial);
+                draggedObject = spatial;
+                break;
+            case 1: // Translation event
+                RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
+                if (rbc == null) System.out.println("No valid physics control found for object: " + spatial.getName());
+//                rbc.setPhysicsRotation(new Quaternion(-2.5f, 0f, 0f, 1f));
+//                System.out.println();
+                spatial.setLocalRotation(new Quaternion(-1f, 0f, 0f, 3f));
+//                rbc.setAngularVelocity(new Vector3f(0f,-1f,0f));
+//                rbc.applyTorqueImpulse(new Vector3f(0f,-1f,0f).mult(100f));
+                
+                break;
+            default:
+                System.out.println("Error: Event type: " + eInter.getType() + " not recognized");
             }
         }
     }
@@ -434,7 +470,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
 
     public void chooseRoute() {
         // TODO add calls to our tools here
-        //currentRoute = ...
-        //enterLocation(...)
+        // currentRoute = ...
+        // enterLocation(...)
     }
 }
