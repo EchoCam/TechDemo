@@ -1,5 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
 
@@ -11,7 +12,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -91,7 +91,7 @@ public class Initialiser {
         // ////// Lever Room ////////
         route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
                 new Vector3f(1, 0, 0));
-        route.properties.putBoolean("Lever", false);
+        route.properties.putInt("Lever", 0);
         // LIGHTS
         addLight(app, route, new Vector3f(0, 0, 0), new String[] {"Room"});
 
@@ -134,25 +134,23 @@ public class Initialiser {
             public void onInteract(MainApplication app) {
                 // TODO replace with route (when moved to right position)..?
                 DemoRoute leverRoute = routes.get("LeverRoom");
-                Boolean leverDown = leverRoute.properties.getBoolean("Lever");
+                int leverCount = leverRoute.properties.getInt("Lever");
                 Spatial spatial = getObject().spatial;
-//                RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
-//                // TODO should check parent nodes for physics controls?
-//                if (rbc == null) {
-//                    throw new NullPointerException("No valid physics control found for object: " + spatial.getName());
-//                }
                 if (!(getObject() instanceof DemoKinematic)) {
                     throw new RuntimeException("Translation event called but object: "
                             + spatial.getName() + " is not kinematic");
                 }
                 DemoKinematic kinematicObj = (DemoKinematic) getObject();
-                if (leverDown) {
-                    kinematicObj.queueRotation(app, 0.5f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
-                } else {
+                if (leverCount < 10) {
+                if (leverCount % 2 == 0) {
                     kinematicObj.queueRotation(app, 0.5f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
+                } else {
+                    kinematicObj.queueRotation(app, 0.5f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
+                } } else { // lol
+                    app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
                 }
-                leverDown = !leverDown;
-                leverRoute.properties.putBoolean("Lever", leverDown);
+                ++leverCount;
+                leverRoute.properties.putInt("Lever", leverCount);
             }
             
         };

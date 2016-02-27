@@ -12,7 +12,6 @@ public abstract class DemoObject {
 
     public Spatial spatial;
     public ArrayList<DemoLight> lights = new ArrayList<>();
-    public int physicsType;
     public float mass;
     public boolean isMainParent;
 
