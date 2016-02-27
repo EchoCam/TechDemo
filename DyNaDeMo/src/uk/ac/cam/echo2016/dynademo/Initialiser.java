@@ -1,18 +1,15 @@
 package uk.ac.cam.echo2016.dynademo;
 
-import com.jme3.asset.AssetManager;
-import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
+import com.jme3.bullet.control.RigidBodyControl;
+import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
 import com.jme3.light.PointLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.shadow.PointLightShadowRenderer;
 import java.util.HashMap;
 
@@ -36,7 +33,7 @@ public class Initialiser {
         DemoLight light;
 
         //****** Bedroom ******//
-        route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
+        route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -77,7 +74,7 @@ public class Initialiser {
         routes.put(route.getId(), route);
 
         //****** Puzzle Room ******//
-        route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
+        route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(0, 0, -1));
         route.properties.putBoolean("pressurePlate1", false);
         route.properties.putBoolean("pressurePlate2", false);
@@ -118,14 +115,22 @@ public class Initialiser {
 //        bGeom.setMaterial(bMat);
 //        app.getRootNode().attachChild(bGeom);
         
-        eLoc = new DemoLocEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.81f + CHARHEIGHT/2, 3f) {
+        eLoc = new DemoProximityEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1){
 
             @Override
             public void onDemoEvent(MainApplication app) {
                 if (app.getPlayerControl().onGround()) {
-                    
+                    // TODO - improve similar to levers
+                    DemoRoute route = routes.get("PuzzleRoom");
+                    Boolean plateDown = route.properties.getBoolean("pressurePlate1");
+                    // TODO again hacky like leverRod mesh
+                    if (!plateDown) {
+                        object.spatial.move(0, -0.75f, 0);
+                        route.properties.putBoolean("pressurePlate1",true);
+                    }
+                    DemoKinematic kinematicObj = (DemoKinematic) object;
+                    kinematicObj.queueDelay(app, 1f);
                 }
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
         route.locEvents.add(eLoc);
@@ -149,7 +154,7 @@ public class Initialiser {
         routes.put(route.getId(), route);
 
         //****** Lever Room ******//
-        route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
+        route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
         route.properties.putInt("Lever", 0);
         // LIGHTS
@@ -162,7 +167,7 @@ public class Initialiser {
         
         //****** Button Room ******//
 
-        route = new DemoRoute("ButtonRoom", "Scenes/ButtonRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
+        route = new DemoRoute("ButtonRoom", "Scenes/ButtonRoom.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -195,11 +200,6 @@ public class Initialiser {
                 // TODO replace with route (when moved to right position)..?
                 DemoRoute leverRoute = routes.get("LeverRoom");
                 int leverCount = leverRoute.properties.getInt("Lever");
-                Spatial spatial = getObject().spatial;
-                if (!(getObject() instanceof DemoKinematic)) {
-                    throw new RuntimeException("Translation event called but object: "
-                            + spatial.getName() + " is not kinematic");
-                }
                 DemoKinematic kinematicObj = (DemoKinematic) getObject();
                 if (leverCount < 10) {
                 if (leverCount % 2 == 0) {

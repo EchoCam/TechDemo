@@ -3,6 +3,8 @@ package uk.ac.cam.echo2016.dynademo;
 import com.jme3.math.Vector3f;
 
 /**
+ * When the player's center intersects with this class's bounding box, its action is performed
+ * 
  * @author tr393
  */
 public abstract class DemoLocEvent extends DemoEvent {

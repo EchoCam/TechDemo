@@ -51,6 +51,12 @@ public class DemoRoute {
         return startDir;
     }
 
+    /**
+     * Added the pair to a hash map used to find an object's event
+     * 
+     * @param s
+     * @param e 
+     */
     public void setInteractable(Spatial s, DemoInteractEvent e) {
         // interactableNode.attachChild(s);
         interactions.put(s, e);

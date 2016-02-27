@@ -24,18 +24,19 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.WireBox;
 import com.jme3.shadow.AbstractShadowRenderer;
 
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.spi.sound.SoundDevice;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +55,7 @@ import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
 @SuppressWarnings("deprecation")
 public class MainApplication extends SimpleApplication implements ActionListener {
 
-    public final static float CHARHEIGHT = 3;
+    public final static float HALFCHARHEIGHT = 3;
     public HashMap<String, DemoRoute> routes = new HashMap<>();
     private Node playerNode;
     private BulletAppState bulletAppState;
@@ -139,7 +140,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         
-        bulletAppState.setDebugEnabled(true);
         // Add global Lights //
 
         AmbientLight al = new AmbientLight(); // No current effect on blender scene
@@ -163,12 +163,12 @@ public class MainApplication extends SimpleApplication implements ActionListener
         rootNode.attachChild(playerNode);
 
         // Attach physic control to the character
-        CapsuleCollisionShape capsule = new CapsuleCollisionShape(CHARHEIGHT / 2, CHARHEIGHT, 1);
-        playerControl = new CharacterControl(capsule, 0.2f);
+        CapsuleCollisionShape capsule = new CapsuleCollisionShape(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, 1);
+        playerControl = new CharacterControl(capsule, 0.25f);
         playerControl.setJumpSpeed(20f);
         playerControl.setFallSpeed(30);
         playerControl.setGravity(50);
-        playerControl.setPhysicsLocation(new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0)); // 2.5f vertical lee-way
+        playerControl.setPhysicsLocation(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0)); // 1.0f off the ground
         playerNode.addControl(playerControl);
         bulletAppState.getPhysicsSpace().add(playerControl);
 
@@ -180,6 +180,16 @@ public class MainApplication extends SimpleApplication implements ActionListener
         // Start at Area 0 //
         currentRoute = routes.get("Bedroom");
         loadRoute(currentRoute);
+        
+        // Debug Options//
+//        bulletAppState.setDebugEnabled(true);
+//
+//        Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
+//        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//        mat.getAdditionalRenderState().setWireframe(true);
+//        mat.setColor("Color", ColorRGBA.Green);
+//        g.setMaterial(mat);
+//        playerNode.attachChild(g);
     }
 
     public void loadRoute(DemoRoute route) {
@@ -291,8 +301,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         // System.out.println(spat.getWorldTranslation().y);
         // System.out.println(spat.getWorldTranslation().z);
         // }
-        System.out.println(playerControl.getPhysicsLocation().y);
-        System.out.println(0.81f + CHARHEIGHT/2);
+//        System.out.println(playerControl.getPhysicsLocation().y);
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
@@ -311,9 +320,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
             if (keyDown) {
                 walkDirection.addLocal(-camDir.x, 0, -camDir.z);
             }
-            playerControl.setWalkDirection(walkDirection.mult(25f * tpf));
+            playerControl.setWalkDirection(walkDirection.normalize().mult(25f * tpf));
             // Move camera to correspond to player
-            cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
+            cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT*3/4, 0));
 
             // Position carried items appropriately
             if (draggedObject != null) {

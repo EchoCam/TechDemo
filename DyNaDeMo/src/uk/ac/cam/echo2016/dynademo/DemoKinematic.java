@@ -23,4 +23,8 @@ public class DemoKinematic extends DemoObject {
         tasks.add(new RotationTask(this, completionTime, axis, angle));
         app.addTask(this, tasks);
     }
+    public void queueDelay(MainApplication app, float completionTime) {
+        tasks.add(new DemoKinematicTask(this, completionTime));
+        app.addTask(this, tasks);
+    }
 }
