@@ -94,7 +94,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             //TODO: null check, and get character name from properties
             BaseBundle b = route.getProperties();
             if(b == null) {
-                throw new RuntimeException("The route: " + routeName + " doesn't have any properties.");
+                throw new RuntimeException("Error: The route: " + routeName + " doesn't have any properties.");
             }
 
             // Get which character is playable on each route and show based on that
@@ -131,6 +131,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
 
     @Override
     public void onEndScreen() {
+        app.chooseRoute(app.getGameScreen().getRoute());
     }
 
     // AbstractAppState methods //

@@ -84,8 +84,8 @@ public class Initialiser {
                 System.out.println("");
                 System.out.println(app.getGameScreen().getRoute());
 //                app.loadRoute(route);
-                app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
-                app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the puzzle room"});
+//                app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
+                app.getGameScreen().setDialogueTextSequence(new String[]{"Are you now in the puzzle room?"});
             }
             
         };
@@ -300,7 +300,7 @@ public class Initialiser {
             if (app.getPlayerControl().onGround()) {
                 DemoRoute route = app.routes.get("PuzzleRoute");
                 if (!(route.properties.containsKey(object.getObjId()))) {
-                    throw new RuntimeException("Property not found.");
+                    throw new RuntimeException("Error: Property not found.");
                 }
                 Boolean plateDown = route.properties.getBoolean(object.getObjId());
                 // TODO again hacky like leverRod mesh
@@ -314,7 +314,7 @@ public class Initialiser {
                     kinematicObj.queueProperty(app, 0.0f, route.properties, object.getObjId(), false);
                 }
                 if (kinematicObj.getTasks().isEmpty()) {
-                    throw new RuntimeException("Illegal pressure plate state for: " + object.getObjId());
+                    throw new RuntimeException("Error: Illegal pressure plate state for: " + object.getObjId());
                 } else {
                     DemoTask currentTask = kinematicObj.getTasks().getFirst();
                     if (currentTask instanceof KinematicTask) {

@@ -474,4 +474,12 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public AppStateManager getStateManager() {
         return stateManager;
     }
+    
+    public void chooseRoute(String routeName) {
+        DemoRoute route = routes.get("PuzzleRoom");
+        if (route == null) {
+            throw new RuntimeException("Error: No route found with name: " + routeName);
+        }
+        loadRoute(route);
+    }
 }
