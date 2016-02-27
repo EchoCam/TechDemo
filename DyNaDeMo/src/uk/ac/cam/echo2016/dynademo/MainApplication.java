@@ -377,7 +377,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 break;
             case "Interact":
                 if (isPressed) {
-                    if (gameScreen.isTextShowing()) {
+                    if (gameScreen.isTextShowing() && gameScreen.isEnabled()) {
                         gameScreen.progressThroughText();
                     } else if (draggedObject != null) {
                         // Drop current Object held
