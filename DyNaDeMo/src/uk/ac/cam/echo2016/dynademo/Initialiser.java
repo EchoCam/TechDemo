@@ -33,7 +33,7 @@ public class Initialiser {
         DemoInteractEvent eInter;
         DemoLight light;
 
-        // ////// Bedroom ////////
+        //****** Bedroom ******//
         route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
                 new Vector3f(1, 0, 0));
 
@@ -62,14 +62,15 @@ public class Initialiser {
         route.events.add(eLoc);
         routes.put(route.getId(), route);
 
-        // ////// Puzzle Room ////////
+        //****** Puzzle Room ******//
         route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
                 new Vector3f(0, 0, -1));
-
+        route.properties.putBoolean("pressurePlate1", false);
+        route.properties.putBoolean("pressurePlate2", false);
         // LIGHTS
         light = addLight(app, route, new Vector3f(0, 8f, 0), new String[] {"Room"}); // Cube
 
-        // OBJECTS
+        // Crate
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
         crate.setLocalTranslation(0, 0, -30);
         // object physics
@@ -85,10 +86,39 @@ public class Initialiser {
         };
         eInter.addListener(app);
         route.setInteractable(crate, eInter);
-
+        
+        // PressurePlate
+        Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
+        Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
+        pressPlate1.setLocalTranslation(-5f, 0.1f, 5f);
+        pressPlate2.setLocalTranslation(-5f, 0.1f, -5f);
+        DemoKinematic plateObj1 = new DemoKinematic(pressPlate1, 1f, true);
+        DemoKinematic plateObj2 = new DemoKinematic(pressPlate2, 1f, true);
+        plateObj1.lights.add(light);
+        plateObj2.lights.add(light);
+        route.objects.add(plateObj1);
+        route.objects.add(plateObj2);
+        
+        eInter = new DemoInteractEvent("pressurePlate1", plateObj1) {
+            @Override
+            public void onInteract(MainApplication app) {//TODO finish
+//                // TODO - improve similar to levers
+//                DemoRoute route = routes.get("PuzzleRoom");
+//                Boolean plateDown = route.properties.getBoolean("pressurePlate1");
+//                Spatial spatial = getObject().spatial;
+//                if (plateDown) {
+//                    spatial.setLocalTranslation(0f, 0.8f, 0f);
+//                } else {
+//                    spatial.setLocalTranslation(0f, 0.8f, 0f);
+//                }
+            }
+        };
+        eInter.addListener(app);
+        route.setInteractable(pressPlate1, eInter);
+        
         routes.put(route.getId(), route);
 
-        // ////// Lever Room ////////
+        //****** Lever Room ******//
         route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
                 new Vector3f(1, 0, 0));
         route.properties.putInt("Lever", 0);
@@ -100,7 +130,7 @@ public class Initialiser {
         
         routes.put(route.getId(), route);
         
-        // ////// Button Room ////////
+        //****** Button Room ******//
 
         route = new DemoRoute("ButtonRoom", "Scenes/ButtonRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
                 new Vector3f(1, 0, 0));
@@ -113,7 +143,7 @@ public class Initialiser {
         Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
         lever.setLocalTranslation(0f, 5f, 10f);
         lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
-        // WARNING: Rigid body applied after this transform - local transform offset
+        // WARNING: Rigid body applied after this transform - axis offset
         
         // hacky but it works :)
         Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
