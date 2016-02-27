@@ -164,29 +164,8 @@ public class Initialiser {
         
         // object events
         route.properties.putInt(leverObj.getObjId(), 0);
-        eInter = new InteractionEvent("leverInteraction", leverObj) {
-            
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                // TODO replace with route (when moved to right position)..?
-                DemoRoute leverRoute = routes.get("LeverRoute");
-                int leverCount = leverRoute.properties.getInt(getObject().getObjId());
-                KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
-                if (leverCount < 10) {
-                if (leverCount % 2 == 0) {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
-                } else {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
-                } } else {
-                    app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
-                }
-                ++leverCount;
-                leverRoute.properties.putInt(getObject().getObjId(), leverCount);
-            }
-            
-        };
+        eInter = new LeverEvent("leverInteraction", leverObj);
         route.setInteractable(leverRoot, eInter);
-
         
         routes.put(route.getId(), route);
     }
@@ -224,27 +203,7 @@ public class Initialiser {
         
         // object events
         route.properties.putInt(leverObj.getObjId(), 0);
-        eInter = new InteractionEvent("lever", leverObj) {
-            
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                // TODO replace with route (when moved to right position)..?
-                DemoRoute leverRoute = routes.get("LeverRoute");
-                int leverCount = leverRoute.properties.getInt(getObject().getObjId());
-                KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
-                if (leverCount < 10) {
-                if (leverCount % 2 == 0) {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
-                } else {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
-                } } else {
-                    app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
-                }
-                ++leverCount;
-                leverRoute.properties.putInt(getObject().getObjId(), leverCount);
-            }
-            
-        };
+        eInter = new LeverEvent("lever", leverObj);
         route.setInteractable(lever, eInter);
 
         routes.put(route.getId(), route);
@@ -267,6 +226,33 @@ public class Initialiser {
         
         return dLight;
     }
+    
+    private static class LeverEvent extends InteractionEvent {
+
+        public LeverEvent(String id, DemoObject object) {
+            super(id, object);
+        }
+
+        @Override
+        public void onDemoEvent(MainApplication app) {
+            // TODO replace with route (when moved to right position)..?
+            DemoRoute leverRoute = app.routes.get("LeverRoute");
+            int leverCount = leverRoute.properties.getInt(getObject().getObjId());
+            KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
+            if (leverCount < 10) {
+                if (leverCount % 2 == 0) {
+                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
+                } else {
+                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
+                }
+            } else {
+                app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
+            }
+            ++leverCount;
+            leverRoute.properties.putInt(getObject().getObjId(), leverCount);
+        }
+    };
+    
     private static class PressurePlateEvent extends ProximityEvent {
         public final static int DELAY = 1;
         
@@ -309,6 +295,5 @@ public class Initialiser {
             }
         }
     };
-    
     
 }

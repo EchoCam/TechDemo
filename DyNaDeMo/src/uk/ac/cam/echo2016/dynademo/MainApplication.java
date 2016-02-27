@@ -150,16 +150,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
         al.setColor(new ColorRGBA(0.1f, 0.1f, 0.1f, 1f));
         rootNode.addLight(al);
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
-
         
-        
-        
-        // Initialize Route (as a placeholder) //
+        // Placeholder routes for later initialization
         currentWorld = new Geometry("placeholder", new Box(1,1,1));
         rootNode.attachChild(currentWorld);
         landscape = new RigidBodyControl();//sceneShape, 0f);
         currentWorld.addControl(landscape);
         bulletAppState.getPhysicsSpace().add(landscape);
+        currentRoute = new DemoRoute("", "", null, null);
 
         // Load character //
         playerNode = new Node("playerNode");
@@ -181,11 +179,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(billMurray);
         
         // Start at Area 0 //
-        currentRoute = routes.get("BedroomRoute");
-        loadRoute(currentRoute);
+        loadRoute(routes.get("PuzzleRoute"));
         
         // Debug Options//
-        bulletAppState.setDebugEnabled(true);
+//        bulletAppState.setDebugEnabled(true);
 //
 //        Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
 //        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
