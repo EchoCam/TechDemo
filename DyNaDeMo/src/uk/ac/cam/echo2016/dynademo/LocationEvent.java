@@ -30,6 +30,7 @@ public abstract class LocationEvent extends DemoEvent {
     }
 
     public boolean checkCondition(Vector3f playerLoc) {
+        
         return playerLoc.x > trigLoc.x && playerLoc.x < trigLoc.x + trigWidth && playerLoc.y > trigLoc.y
                 && playerLoc.y < trigLoc.y + trigHeight && playerLoc.z > trigLoc.z
                 && playerLoc.z < trigLoc.z + trigDepth;

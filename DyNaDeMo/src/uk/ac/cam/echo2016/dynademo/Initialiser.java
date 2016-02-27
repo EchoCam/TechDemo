@@ -73,7 +73,7 @@ public class Initialiser {
 
                 //routes.get(gameScreen.getRouteName());
                 //to get the name of the route the player has selected
-                app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
+                app.loadRoute(app.routes.get("ButtonRoute")); // temp functionality
                 app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the puzzle room"});
             }
             
@@ -152,7 +152,7 @@ public class Initialiser {
                     }
                     KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
                     kinematicObj.queueDelay(app, 1f);
-                    kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
+                    kinematicObj.queueDisplacement(app, 1f, Vector3f.UNIT_Y, 0.75f);
                 }
             }
         };
