@@ -8,23 +8,25 @@ import java.util.ArrayDeque;
  * @author tr393
  */
 public class KinematicDemoObject extends DemoObject {
+    private final String objId;
     private final ArrayDeque<DemoTask> tasks = new ArrayDeque<>();
-    public KinematicDemoObject(Spatial spatial, float mass, boolean isMainParent) {
+    public KinematicDemoObject(String objId, Spatial spatial, float mass, boolean isMainParent) {
         super(spatial, isMainParent);
+        this.objId = objId;
         this.mass = mass;
     }
     public void queueDisplacement(MainApplication app, float completionTime, Vector3f direction, float distance) {
         Vector3f start = spatial.getLocalTranslation();
         Vector3f end = spatial.getLocalTranslation().add(direction.normalize().mult(distance));
-        tasks.add(new TranslationTask(spatial.getName(), completionTime, this, end.subtract(start)));
+        tasks.add(new TranslationTask(objId, completionTime, this, end.subtract(start)));
         app.addTask(spatial.getName(), tasks);
     }
     public void queueRotation(MainApplication app, float completionTime, Vector3f axis, float angle) {
-        tasks.add(new RotationTask(spatial.getName(), completionTime, this, axis, angle));
+        tasks.add(new RotationTask(objId, completionTime, this, axis, angle));
         app.addTask(spatial.getName(), tasks);
     }
     public void queueDelay(MainApplication app, float completionTime) {
-        tasks.add(new KinematicTask(spatial.getName(), completionTime, this));
+        tasks.add(new KinematicTask(objId, completionTime, this));
         app.addTask(spatial.getName(), tasks);
     }
 }
