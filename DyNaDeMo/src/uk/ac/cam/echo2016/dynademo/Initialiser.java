@@ -1,6 +1,5 @@
 package uk.ac.cam.echo2016.dynademo;
 
-import com.jme3.bullet.control.RigidBodyControl;
 
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
@@ -12,10 +11,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
-import java.util.ArrayDeque;
 
 import java.util.HashMap;
-import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
 
 /**
  * @author tr393
@@ -189,28 +186,51 @@ public class Initialiser {
         
         // OBJECTS
         
-        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
-        lever.setLocalTranslation(0f, 5f, 10f);
-        lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
-        // WARNING: Rigid body applied after this transform - axis offset
+//        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
+//        lever.setLocalTranslation(0f, 5f, 10f);
+//        lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
+//        // WARNING: Rigid body applied after this transform - axis offset
+//        
+//        // hacky but it works :)
+//        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
+//        
+//        // object physics
+//        StaticDemoObject leverBaseObj = new StaticDemoObject("LeverBase", lever, true);
+//        leverBaseObj.getLights().add(light);
+//        route.objects.add(leverBaseObj);
+//        
+//        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
+//        leverObj.getLights().add(light);
+//        route.objects.add(leverObj);
+//        
+//        // object events
+//        route.properties.putInt(leverObj.getObjId(), 0);
+//        eInter = new LeverEvent("lever", leverObj);
+//        route.setInteractable(lever, eInter);
         
-        // hacky but it works :)
-        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
+        
+        Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
+        button.setLocalTranslation(0f,4f,-7f);
+        button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI/4, 0f,0f));
+        button.move(new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f)));
         
         // object physics
-        StaticDemoObject leverBaseObj = new StaticDemoObject("LeverBase", lever, true);
-        leverBaseObj.getLights().add(light);
-        route.objects.add(leverBaseObj);
-        
-        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
-        leverObj.getLights().add(light);
-        route.objects.add(leverObj);
+        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true);
+        buttonObj.getLights().add(light);
+        route.objects.add(buttonObj);
         
         // object events
-        route.properties.putInt(leverObj.getObjId(), 0);
-        eInter = new LeverEvent("lever", leverObj);
-        route.setInteractable(lever, eInter);
-
+        eInter = new InteractionEvent("buttonInteraction", buttonObj) {
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
+//                if (kinematicObj.getTasks().isEmpty())
+                System.out.println("hi");
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
+        route.setInteractable(button, eInter);
+        
         routes.put(route.getId(), route);
     }
     
@@ -240,7 +260,6 @@ public class Initialiser {
 
         @Override
         public void onDemoEvent(MainApplication app) {
-            // TODO replace with route (when moved to right position)..?
             DemoRoute leverRoute = app.routes.get("LeverRoute");
             int leverCount = leverRoute.properties.getInt(getObject().getObjId());
             KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
