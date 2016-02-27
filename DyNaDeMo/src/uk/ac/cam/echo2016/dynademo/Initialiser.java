@@ -26,7 +26,7 @@ public class Initialiser {
      * @return
      */
     public static HashMap<String, DemoRoute> initialiseRoutes(MainApplication app) {
-        HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
+        final HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
 
         DemoRoute route;
         DemoLocEvent eLoc;
@@ -91,16 +91,15 @@ public class Initialiser {
         // ////// Lever Room ////////
         route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
                 new Vector3f(1, 0, 0));
-
+        route.properties.putBoolean("Lever", false);
         // LIGHTS
         addLight(app, route, new Vector3f(0, 0, 0), new String[] {"Room"});
 
         // OBJECTS
-        // Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
-        // Material leverMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        // lever.setMaterial(leverMat);
-        // lever.setLocalTranslation(0f, 0f, 0f);
 
+        
+        routes.put(route.getId(), route);
+        
         // ////// Button Room ////////
 
         route = new DemoRoute("ButtonRoom", "Scenes/ButtonRoom.j3o", new Vector3f(0, (CHARHEIGHT / 2) + 2.5f, 0),
@@ -133,18 +132,27 @@ public class Initialiser {
             
             @Override
             public void onInteract(MainApplication app) {
+                // TODO replace with route (when moved to right position)..?
+                DemoRoute leverRoute = routes.get("LeverRoom");
+                Boolean leverDown = leverRoute.properties.getBoolean("Lever");
                 Spatial spatial = getObject().spatial;
-                RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
-                // TODO should check parent nodes for physics controls?
-                if (rbc == null) {
-                    throw new NullPointerException("No valid physics control found for object: " + spatial.getName());
-                }
+//                RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
+//                // TODO should check parent nodes for physics controls?
+//                if (rbc == null) {
+//                    throw new NullPointerException("No valid physics control found for object: " + spatial.getName());
+//                }
                 if (!(getObject() instanceof DemoKinematic)) {
                     throw new RuntimeException("Translation event called but object: "
                             + spatial.getName() + " is not kinematic");
                 }
                 DemoKinematic kinematicObj = (DemoKinematic) getObject();
-                kinematicObj.queueRotation(app, 1f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
+                if (leverDown) {
+                    kinematicObj.queueRotation(app, 0.5f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
+                } else {
+                    kinematicObj.queueRotation(app, 0.5f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
+                }
+                leverDown = !leverDown;
+                leverRoute.properties.putBoolean("Lever", leverDown);
             }
             
         };

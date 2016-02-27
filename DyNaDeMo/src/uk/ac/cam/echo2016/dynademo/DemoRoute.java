@@ -1,5 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import android.os.BaseBundle;
 import java.util.ArrayList;
 
 import com.jme3.math.Vector3f;
@@ -12,11 +13,11 @@ import java.util.HashMap;
  * @author tr393
  */
 public class DemoRoute {
-
     private final String id;
     private final String sceneFile;
     private Vector3f startLoc;
     private Vector3f startDir;
+    public BaseBundle properties = new BaseBundle();
     public ArrayList<DemoLocEvent> events = new ArrayList<>();
     public ArrayList<DemoLight> lights = new ArrayList<>();
     public ArrayList<AbstractShadowRenderer> shadowRenderers = new ArrayList<>();

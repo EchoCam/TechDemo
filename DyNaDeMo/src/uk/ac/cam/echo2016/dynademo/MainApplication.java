@@ -306,7 +306,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             if (keyDown) {
                 walkDirection.addLocal(-camDir.x, 0, -camDir.z);
             }
-            playerControl.setWalkDirection(walkDirection.mult(25f * tpf));
+            playerControl.setWalkDirection(walkDirection.normalize().mult(25f * tpf));
             // Move camera to correspond to player
             cam.setLocation(playerControl.getPhysicsLocation().add(0, CHARHEIGHT / 2 + 1f, 0));
 
@@ -372,9 +372,6 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                         draggedObject = null;
 
                         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
-                        System.out.println(spat.getWorldTranslation().x);
-                        System.out.println(spat.getWorldTranslation().y);
-                        System.out.println(spat.getWorldTranslation().z);
                     } else {
                         // Ray Casting (checking for first interactable object)
                         Ray ray = new Ray(cam.getLocation(), cam.getDirection());
