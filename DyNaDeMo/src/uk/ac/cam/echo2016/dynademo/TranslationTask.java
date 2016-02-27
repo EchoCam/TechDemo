@@ -22,7 +22,7 @@ public class TranslationTask extends KinematicTask {
     
     @Override
     public void update(float timePassed) {
-        getObject().spatial.move(displacement.mult(averageSpeed*timePassed));
+        getObject().getSpatial().move(displacement.mult(averageSpeed*timePassed));
         updateTime(timePassed);
     }
 }

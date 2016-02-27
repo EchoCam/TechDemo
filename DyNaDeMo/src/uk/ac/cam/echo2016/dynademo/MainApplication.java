@@ -200,13 +200,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().remove(landscape);
         for (DemoObject object : currentRoute.objects) {
             // TODO clean up physicsSpace (save info?)
-            if (object.isMainParent)
-                rootNode.detachChild(object.spatial);
+            if (object.isIsMainParent())
+                rootNode.detachChild(object.getSpatial());
             
-            bulletAppState.getPhysicsSpace().remove(object.spatial);
+            bulletAppState.getPhysicsSpace().remove(object.getSpatial());
             
-            for(DemoLight dLight : object.lights) {
-                object.spatial.removeLight(dLight.light);
+            for(DemoLight dLight : object.getLights()) {
+                object.getSpatial().removeLight(dLight.light);
             }
         }
         for (DemoLight l : currentRoute.lights) { // FIXME should do a search
@@ -227,16 +227,16 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         // Load route objects and add rigidbodycontrols
         for (DemoObject object : route.objects) {
-            if (object.isMainParent)
-                rootNode.attachChild(object.spatial);
+            if (object.isIsMainParent())
+                rootNode.attachChild(object.getSpatial());
             
-            RigidBodyControl rbc = new RigidBodyControl(object.mass);
-            object.spatial.addControl(rbc);
+            RigidBodyControl rbc = new RigidBodyControl(object.getMass());
+            object.getSpatial().addControl(rbc);
             if (object instanceof KinematicDemoObject) rbc.setKinematic(true);
             if (object instanceof DynamicDemoObject) rbc.setFriction(1.5f);
             bulletAppState.getPhysicsSpace().add(rbc);
-            for (DemoLight dLight : object.lights) {
-                object.spatial.addLight(dLight.light);
+            for (DemoLight dLight : object.getLights()) {
+                object.getSpatial().addLight(dLight.light);
             }
         }
         for (DemoLight l : route.lights) {
