@@ -35,6 +35,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.shadow.AbstractShadowRenderer;
+import com.jme3.system.AppSettings;
 
 import de.lessvoid.nifty.Nifty;
 
@@ -84,6 +85,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public static void main(String[] args) {
         MainApplication app = new MainApplication();
+        AppSettings m_Settings = new AppSettings(true);
+        m_Settings.setFrameRate(75);
+        app.setSettings(m_Settings);
         app.start();
     }
 
@@ -148,7 +152,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
 
         // Initialize World (as a placeholder) //
-        currentWorld = assetManager.loadModel("Scenes/Bedroom.j3o"); // Not used - reloaded later
+        currentWorld = assetManager.loadModel("Scenes/BedroomRoute.j3o"); // Not used - reloaded later
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
         // Make a rigid body from the scene //
@@ -178,7 +182,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(billMurray);
 
         // Start at Area 0 //
-        currentRoute = routes.get("Bedroom");
+        currentRoute = routes.get("BedroomRoute");
         loadRoute(currentRoute);
         
         // Debug Options//
