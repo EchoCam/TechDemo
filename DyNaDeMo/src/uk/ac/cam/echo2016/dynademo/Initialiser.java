@@ -13,6 +13,10 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
+import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 
 /**
  * @author tr393
@@ -68,10 +72,15 @@ public class Initialiser {
                 //could do...
 
                 //routes.get(gameScreen.getRouteName());
-                //to get the name of the route the player has selected
-                app.nifty.gotoScreen("characterSelect");
-                
+                //to get the name of the route the player has selected                
                 DemoRoute route = app.routes.get(app.getGameScreen().getRoute());
+                try {
+                    //Ending the route that was started to show the correct character select screen to the player
+                    app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                } catch (GraphElementNotFoundException ex) {
+                    Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                app.nifty.gotoScreen("characterSelect");
 //                app.loadRoute(route);
                 app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
                 app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the puzzle room"});
