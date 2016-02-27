@@ -33,7 +33,7 @@ public class Initialiser {
         DemoLight light;
 
         //****** Bedroom ******//
-        route = new DemoRoute("Bedroom", "Scenes/Bedroom.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+        route = new DemoRoute("BedroomRoute", "Scenes/BedroomRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -65,8 +65,8 @@ public class Initialiser {
 
                 //routes.get(gameScreen.getRouteName());
                 //to get the name of the route the player has selected
-                app.loadRoute(app.routes.get("PuzzleRoom")); // temp functionality
-                app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the button room"});
+                app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
+                app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the puzzle room"});
             }
             
         };
@@ -74,12 +74,16 @@ public class Initialiser {
         routes.put(route.getId(), route);
 
         //****** Puzzle Room ******//
-        route = new DemoRoute("PuzzleRoom", "Scenes/PuzzleRoom.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
-                new Vector3f(0, 0, -1));
+        route = new DemoRoute("PuzzleRoute", "Scenes/PuzzleRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45),
+                new Vector3f(0, 0, 1));
         route.properties.putBoolean("pressurePlate1", false);
         route.properties.putBoolean("pressurePlate2", false);
         // LIGHTS
-        light = addLight(app, route, new Vector3f(0, 8f, 0), new String[] {"Room"}); // Cube
+        light = addLight(app, route, new Vector3f(0, 8f, 0), new String[] {"Room"});
+        addLight(app, route, new Vector3f(0,6,-35), new String[] {"Corridor1"});
+        addLight(app, route, new Vector3f(0,6,35), new String[] {"Corridor2"});
+        addLight(app, route, new Vector3f(20,10,5), new String[] {"TallCorridor1"});
+        addLight(app, route, new Vector3f(40,10,5), new String[] {"TallCorridor2"});
 
         // Crate
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
@@ -121,7 +125,7 @@ public class Initialiser {
             public void onDemoEvent(MainApplication app) {
                 if (app.getPlayerControl().onGround()) {
                     // TODO - improve similar to levers
-                    DemoRoute route = routes.get("PuzzleRoom");
+                    DemoRoute route = routes.get("PuzzleRoute");
                     Boolean plateDown = route.properties.getBoolean("pressurePlate1");
                     // TODO again hacky like leverRod mesh
                     if (!plateDown) {
@@ -139,7 +143,7 @@ public class Initialiser {
 //            @Override
 //            public void onInteract(MainApplication app) {//TODO finish
 //                // TODO - improve similar to levers
-//                DemoRoute route = routes.get("PuzzleRoom");
+//                DemoRoute route = routes.get("PuzzleRoute");
 //                Boolean plateDown = route.properties.getBoolean("pressurePlate1");
 //                Spatial spatial = getObject().spatial;
 //                if (plateDown) {
@@ -154,7 +158,7 @@ public class Initialiser {
         routes.put(route.getId(), route);
 
         //****** Lever Room ******//
-        route = new DemoRoute("LeverRoom", "Scenes/LeverRoom.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+        route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
         route.properties.putInt("Lever", 0);
         // LIGHTS
@@ -167,7 +171,7 @@ public class Initialiser {
         
         //****** Button Room ******//
 
-        route = new DemoRoute("ButtonRoom", "Scenes/ButtonRoom.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+        route = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -198,7 +202,7 @@ public class Initialiser {
             @Override
             public void onDemoEvent(MainApplication app) {
                 // TODO replace with route (when moved to right position)..?
-                DemoRoute leverRoute = routes.get("LeverRoom");
+                DemoRoute leverRoute = routes.get("LeverRoute");
                 int leverCount = leverRoute.properties.getInt("Lever");
                 DemoKinematic kinematicObj = (DemoKinematic) getObject();
                 if (leverCount < 10) {
