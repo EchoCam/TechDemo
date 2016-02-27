@@ -32,6 +32,7 @@ public class Initialiser {
         addBedroomRoute(app, routes);
         addPuzzleRoute(app, routes);
         addLeverRoute(app, routes);
+        addButtonRoute(app, routes);
               
 
         return routes;
