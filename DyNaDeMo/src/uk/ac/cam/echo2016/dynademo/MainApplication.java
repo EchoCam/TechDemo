@@ -343,9 +343,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     ((RigidBodyControl) object).applyCentralForce(camDir.mult(1000f));
                 }
             }
-            // Check global event queue
+            // Check global location event queue
             for (LocationEvent e : locEventBus) {
                 if (e.checkCondition(playerControl.getPhysicsLocation())) {
+                    System.out.println(playerControl.getPhysicsLocation());
                     e.onDemoEvent(this);
                 }
             }
@@ -354,9 +355,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 DemoTask task = queue.peek();
                 task.updateTime(tpf);
                 if (task.isFinished()) {
-                    System.out.println("Task: " + task.getTaskQueueId() + " completed");
+                    System.out.println("TaskType: " + task.getClass() + " from queue: " + task.getTaskQueueId() + " completed");
                     task.complete();
-                    queue.remove(task);
                     if (queue.isEmpty()) taskEventBus.remove(task.getTaskQueueId());
                 }
             }
