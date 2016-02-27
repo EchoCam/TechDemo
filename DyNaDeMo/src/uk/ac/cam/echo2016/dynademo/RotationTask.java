@@ -13,8 +13,8 @@ public class RotationTask extends DemoKinematicTask {
     private float angularSpeed; // Rad/s
     private Vector3f axis;
     
-    public RotationTask(DemoKinematic object, float completionTime, Vector3f axis, float angle) {
-        super(object, completionTime);
+    public RotationTask(String taskQueueId, float completionTime, DemoKinematic object, Vector3f axis, float angle) {
+        super(taskQueueId, completionTime, object);
         this.angularSpeed = angle/completionTime;
         this.axis = axis.normalize();
     }

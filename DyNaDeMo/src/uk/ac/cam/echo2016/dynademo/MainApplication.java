@@ -70,7 +70,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
     private ArrayDeque<DemoLocEvent> locEventBus = new ArrayDeque<>();
-    private HashMap<DemoKinematic, ArrayDeque<DemoKinematicTask>> taskEventBus = new HashMap<>();
+    private HashMap<String, ArrayDeque<DemoTask>> taskEventBus = new HashMap<>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
     // private currentRoute/Character
@@ -248,9 +248,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 room.addLight(l.light);
             }
         }
-        for (AbstractShadowRenderer plsr : route.shadowRenderers) {
-            // viewPort.addProcessor(plsr); // Disabled shadows for now
-        }
+//        for (AbstractShadowRenderer plsr : route.shadowRenderers) {
+//             viewPort.addProcessor(plsr); // Disabled shadows for now
+//        }
         for (DemoLocEvent newEvent : route.locEvents) {
             locEventBus.add(newEvent);
         }
@@ -345,12 +345,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             // Update task queue
-            for (ArrayDeque<DemoKinematicTask> queue : taskEventBus.values()) {
-                DemoKinematicTask task = queue.peek();
-                task.update(tpf);
+            for (ArrayDeque<DemoTask> queue : taskEventBus.values()) {
+                DemoTask task = queue.peek();
+                task.updateTime(tpf);
                 if (task.isFinished()) {
-                    DemoKinematic kinematicObj = queue.pop().getObject();
-                    if (queue.isEmpty()) taskEventBus.remove(kinematicObj);
+                    System.out.println("Task: " + task.getTaskQueueId() + " completed");
+                    task.complete();
+                    if (queue.isEmpty()) taskEventBus.remove(task.getTaskQueueId());
                 }
             }
         }
@@ -384,8 +385,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
                         draggedObject.setLocalTranslation(location);
                         ((RigidBodyControl) draggedObject.getControl(0)).setPhysicsLocation(location);
                         draggedObject = null;
-
-                        Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
                     } else {
                         // Ray Casting (checking for first interactable object)
                         Ray ray = new Ray(cam.getLocation(), cam.getDirection());
@@ -432,9 +431,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
         draggedObject = spatial;
     }
 
-    public void addTask(DemoKinematic object, ArrayDeque<DemoKinematicTask> task) {
-        if (!taskEventBus.containsKey(object)) {
-            taskEventBus.put(object, task);
+    public void addTask(String taskQueueId, ArrayDeque<DemoTask> task) {
+        if (!taskEventBus.containsKey(taskQueueId)) {
+            taskEventBus.put(taskQueueId, task);
         }
     }
     public CharacterControl getPlayerControl() {

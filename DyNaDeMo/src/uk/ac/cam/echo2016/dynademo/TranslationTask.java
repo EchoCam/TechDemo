@@ -13,8 +13,8 @@ public class TranslationTask extends DemoKinematicTask {
     private float averageSpeed;
     private Vector3f displacement;
     
-    public TranslationTask(DemoKinematic object, float completionTime, Vector3f displacement) {
-        super(object, completionTime);
+    public TranslationTask(String taskQueueId, float completionTime, DemoKinematic object, Vector3f displacement) {
+        super(taskQueueId, completionTime, object);
         this.displacement = displacement;
         this.averageSpeed = displacement.length()/completionTime;
         this.displacement = displacement.normalize();

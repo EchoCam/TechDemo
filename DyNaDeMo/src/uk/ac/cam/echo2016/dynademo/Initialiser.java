@@ -1,6 +1,7 @@
 package uk.ac.cam.echo2016.dynademo;
 
 import com.jme3.bullet.control.RigidBodyControl;
+
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
 import com.jme3.light.PointLight;
@@ -11,6 +12,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
+
 import java.util.HashMap;
 
 /**
@@ -115,24 +117,31 @@ public class Initialiser {
 //        bGeom.setMaterial(bMat);
 //        app.getRootNode().attachChild(bGeom);
         
-        eLoc = new DemoProximityEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1){
-
+//        eLoc = new DemoProximityEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1);
+        class PressurePlateEvent extends DemoProximityEvent {
+            public PressurePlateEvent(String id, Vector3f loc, float width, float height, float depth, DemoObject object) {
+                super(id, loc, width, height, depth, object);
+            }
             @Override
             public void onDemoEvent(MainApplication app) {
                 if (app.getPlayerControl().onGround()) {
                     // TODO - improve similar to levers
                     DemoRoute route = routes.get("PuzzleRoom");
-                    Boolean plateDown = route.properties.getBoolean("pressurePlate1");
+                    Boolean plateDown = route.properties.getBoolean(getId());
                     // TODO again hacky like leverRod mesh
                     if (!plateDown) {
                         object.spatial.move(0, -0.75f, 0);
-                        route.properties.putBoolean("pressurePlate1",true);
+                        route.properties.putBoolean(getId(), true);
                     }
                     DemoKinematic kinematicObj = (DemoKinematic) object;
                     kinematicObj.queueDelay(app, 1f);
+                    kinematicObj.queueTranslation(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
                 }
             }
         };
+        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1);
+        route.locEvents.add(eLoc);
+        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0.1f, -6.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj2);
         route.locEvents.add(eLoc);
         // below is for buttons
 //        eInter = new DemoInteractEvent("pressurePlate1", plateObj1) {
