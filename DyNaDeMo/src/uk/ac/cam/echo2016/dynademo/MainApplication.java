@@ -455,7 +455,8 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                 }
                 DemoKinematic kinematicObj = (DemoKinematic) object;
                 System.out.println(camDir.negate());
-                kinematicObj.queueTranslation(this, new Vector3f(0f, 1f, 0f), 10f, 5f);
+                kinematicObj.queueRotation(this, 2f, new Vector3f(1f, 0f, 0), -FastMath.PI/2);
+//                kinematicObj.queueTranslation(this, 5f, new Vector3f(1f, 0f, -1f), 10f);
 //                spatial.rotate(-FastMath.PI/4, 0f, 0f);
 //                spatial.rotate(0f, FastMath.PI, 0f);
 //                spatial.rotate(FastMath.PI/4, 0f, 0f);

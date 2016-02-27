@@ -3,9 +3,12 @@ package uk.ac.cam.echo2016.dynademo;
 import com.jme3.scene.Spatial;
 
 /**
+ * Subclass this class to create tasks for kinematic objects to perform over a specified amount of time.
+ * Instances of this class simply perform a delay function (for padding tasks).
+ * 
  * @author tr393
  */
-public abstract class DemoKinematicTask {
+public class DemoKinematicTask {
     private DemoKinematic object;
     private final float completionTime;
     private float currentTime;
@@ -16,7 +19,12 @@ public abstract class DemoKinematicTask {
         this.currentTime = completionTime;
     }
     
-    public abstract void update(float time);
+    /**
+     * Default implementation is a delay and this function does nothing.
+     * @param time 
+     */
+    public void update(float time) {}
+    
     public boolean isFinished() {
         return (currentTime<0);
     }

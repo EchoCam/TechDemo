@@ -13,10 +13,14 @@ public class DemoKinematic extends DemoObject {
         super(spatial, isMainParent);
         this.mass = mass;
     }
-    public void queueTranslation(MainApplication app, Vector3f direction, float distance, float completionTime) {
+    public void queueTranslation(MainApplication app, float completionTime, Vector3f direction, float distance) {
         Vector3f start = spatial.getLocalTranslation();
         Vector3f end = spatial.getLocalTranslation().add(direction.normalize().mult(distance));
-        tasks.add(new TaskTranslation(this, completionTime, start, end));
+        tasks.add(new TranslationTask(this, completionTime, end.subtract(start)));
+        app.addTask(this, tasks);
+    }
+    public void queueRotation(MainApplication app, float completionTime, Vector3f axis, float angle) {
+        tasks.add(new RotationTask(this, completionTime, axis, angle));
         app.addTask(this, tasks);
     }
 }
