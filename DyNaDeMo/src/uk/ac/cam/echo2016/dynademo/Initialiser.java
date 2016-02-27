@@ -28,13 +28,19 @@ public class Initialiser {
      */
     public static HashMap<String, DemoRoute> initialiseRoutes(MainApplication app) {
         final HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
+        
+        addBedroomRoute(app, routes);
+        addPuzzleRoute(app, routes);
+        addLeverRoute(app, routes);
+              
 
+        return routes;
+    }
+
+    private static void addBedroomRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
         DemoRoute route;
         LocationEvent eLoc;
-        InteractionEvent eInter;
-        DemoLight light;
-
-        //****** Bedroom ******//
+        
         route = new DemoRoute("BedroomRoute", "Scenes/BedroomRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
 
@@ -74,8 +80,14 @@ public class Initialiser {
         };
         route.locEvents.add(eLoc);
         routes.put(route.getId(), route);
-
-        //****** Puzzle Room ******//
+    }
+    
+    private static void addPuzzleRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        DemoRoute route;
+        LocationEvent eLoc;
+        InteractionEvent eInter;
+        DemoLight light;
+        
         route = new DemoRoute("PuzzleRoute", "Scenes/PuzzleRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45),
                 new Vector3f(0, 0, 1));
         // LIGHTS
@@ -150,20 +162,71 @@ public class Initialiser {
         route.locEvents.add(eLoc);
         
         routes.put(route.getId(), route);
-
-        //****** Lever Room ******//
-        route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+    }
+    
+    private static void addLeverRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        DemoRoute route;
+        DemoLight light;
+        InteractionEvent eInter;
+        
+        route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
         // LIGHTS
-        addLight(app, route, new Vector3f(0, 0, 0), new String[] {"Room"});
+        light = addLight(app, route, new Vector3f(0, 0, 0), new String[] {"Room"});
 
         // OBJECTS
+        
+        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
+        lever.setLocalTranslation(0f, 5f, 0f);
+        lever.setLocalRotation(new Quaternion().fromAngles(0, 0f, FastMath.PI/2));
+        // WARNING: Rigid body applied after this transform - axis offset
+        
+        // hacky but it works :)
+        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
+        
+        // object physics
+        StaticDemoObject leverBaseObj = new StaticDemoObject(lever, true);
+        leverBaseObj.lights.add(light);
+        route.objects.add(leverBaseObj);
+        
+        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
+        leverObj.lights.add(light);
+        route.objects.add(leverObj);
+        
+        // object events
+        route.properties.putInt(leverRod.getName(), 0);
+        eInter = new InteractionEvent("lever", leverObj) {
+            
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                // TODO replace with route (when moved to right position)..?
+                DemoRoute leverRoute = routes.get("LeverRoute");
+                int leverCount = leverRoute.properties.getInt(getObject().spatial.getName());
+                KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
+                if (leverCount < 10) {
+                if (leverCount % 2 == 0) {
+                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
+                } else {
+                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
+                } } else { // lol
+                    app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
+                }
+                ++leverCount;
+                leverRoute.properties.putInt(getObject().spatial.getName(), leverCount);
+            }
+            
+        };
+        route.setInteractable(lever, eInter);
 
         
         routes.put(route.getId(), route);
+    }
+    
+    private static void addButtonRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        DemoRoute route;
+        InteractionEvent eInter;
+        DemoLight light;
         
-        //****** Button Room ******//
-
         route = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                
                 new Vector3f(1, 0, 0));
@@ -216,13 +279,8 @@ public class Initialiser {
         route.setInteractable(lever, eInter);
 
         routes.put(route.getId(), route);
-
-        return routes;
     }
-
-    private static void initialiseBedroomRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
-        
-    }
+    
     private static DemoLight addLight(MainApplication app, DemoRoute route, Vector3f loc, String[] spatialNames) {
         PointLight l = new PointLight();
         l.setColor(ColorRGBA.Gray);
