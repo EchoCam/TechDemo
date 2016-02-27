@@ -244,6 +244,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         }
         for (DemoLight l : route.lights) {
             for (String roomName : l.affectedRooms) {
+                // TODO hacky
                 List<Spatial> list = rootNode.descendantMatches(roomName);
                 if (list.isEmpty()) {
                     System.out.println("Spatial not found!");
@@ -355,6 +356,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 if (task.isFinished()) {
                     System.out.println("Task: " + task.getTaskQueueId() + " completed");
                     task.complete();
+                    queue.remove(task);
                     if (queue.isEmpty()) taskEventBus.remove(task.getTaskQueueId());
                 }
             }
