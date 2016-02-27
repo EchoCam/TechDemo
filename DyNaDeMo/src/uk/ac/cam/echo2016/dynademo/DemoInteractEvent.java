@@ -1,14 +1,10 @@
 package uk.ac.cam.echo2016.dynademo;
 
-import com.jme3.scene.Spatial;
-
 /**
  * @author tr393
  */
-public class DemoInteractEvent extends DemoEvent {
-    private final Spatial spatial;
-    private final int interactType;
-
+public abstract class DemoInteractEvent extends DemoEvent {
+    private final DemoObject object;
     /**
      * This is used to store events occuring on interaction, e.g. opening doors, pressing a button, etc.
      * 
@@ -16,35 +12,13 @@ public class DemoInteractEvent extends DemoEvent {
      *            - Final String id of the event used to identify it.
      * @param spatial
      *            - The Spatial object to be affected by the event
-     * @param interactType
-     *            - An int corresponding as follows:
-     * 
-     *            <pre>
-     *      0 - Drag event. e.g. carrying around crate
-     *      1 - Translation event. e.g. pressure plate press
-     * </pre>
      */
-    public DemoInteractEvent(String id, Spatial spatial, int interactType) {
+    public DemoInteractEvent(String id, DemoObject object) {
         super(id);
-        this.spatial = spatial;
-        this.interactType = interactType;
+        this.object = object;
     }
 
-    public Spatial getSpatial() {
-        return spatial;
-    }
-
-    /**
-     * Interactions types correspond to the following:
-     * 
-     * <pre>
-     *      0 - Drag event. e.g. carrying around crate
-     *      1 - Translation event. e.g. pressure plate press
-     * </pre>
-     * 
-     * @return - The type of the interaction
-     */
-    public int getType() {
-        return interactType;
+    public DemoObject getObject() {
+        return object;
     }
 }

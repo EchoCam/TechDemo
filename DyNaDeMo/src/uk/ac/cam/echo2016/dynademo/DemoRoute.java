@@ -1,5 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import android.os.BaseBundle;
 import java.util.ArrayList;
 
 import com.jme3.math.Vector3f;
@@ -12,12 +13,12 @@ import java.util.HashMap;
  * @author tr393
  */
 public class DemoRoute {
-
     private final String id;
     private final String sceneFile;
     private Vector3f startLoc;
     private Vector3f startDir;
-    public ArrayList<DemoLocEvent> events = new ArrayList<>();
+    public BaseBundle properties = new BaseBundle();
+    public ArrayList<DemoLocEvent> locEvents = new ArrayList<>();
     public ArrayList<DemoLight> lights = new ArrayList<>();
     public ArrayList<AbstractShadowRenderer> shadowRenderers = new ArrayList<>();
     public ArrayList<DemoObject> objects = new ArrayList<>();
@@ -50,6 +51,12 @@ public class DemoRoute {
         return startDir;
     }
 
+    /**
+     * Added the pair to a hash map used to find an object's event
+     * 
+     * @param s
+     * @param e 
+     */
     public void setInteractable(Spatial s, DemoInteractEvent e) {
         // interactableNode.attachChild(s);
         interactions.put(s, e);
@@ -61,15 +68,15 @@ public class DemoRoute {
      *
      * @param spatial - The spatial or parent that maps to an {@code DemoInteractEvent}
      */
-    public boolean interactWith(Spatial spatial) {
+    public boolean interactWith(MainApplication app, Spatial spatial) {
         DemoInteractEvent e = interactions.get(spatial);
         if (e != null) {
-            e.fireEvent();
+            e.onDemoEvent(app);
             return true;
         } else {
             Node parent = spatial.getParent();
             if (parent != null) {
-                return interactWith(parent);
+                return interactWith(app, parent);
             }
         }
         return false;
