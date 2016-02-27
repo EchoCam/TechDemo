@@ -24,7 +24,6 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
@@ -33,7 +32,7 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.debug.WireBox;
+import com.jme3.scene.shape.Box;
 import com.jme3.shadow.AbstractShadowRenderer;
 import com.jme3.system.AppSettings;
 
@@ -151,18 +150,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
         rootNode.addLight(al);
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
 
-        // Initialize World (as a placeholder) //
-        currentWorld = assetManager.loadModel("Scenes/BedroomRoute.j3o"); // Not used - reloaded later
-        currentWorld.scale(10f);
+        
+        
+        
+        // Initialize Route (as a placeholder) //
+        currentWorld = new Geometry("placeholder", new Box(1,1,1));
         rootNode.attachChild(currentWorld);
-        // Make a rigid body from the scene //
-        CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
-        landscape = new RigidBodyControl(sceneShape, 0f);
+        landscape = new RigidBodyControl();//sceneShape, 0f);
         currentWorld.addControl(landscape);
-        landscape.setFriction(1f);
         bulletAppState.getPhysicsSpace().add(landscape);
 
-        // Load Character into world //
+        // Load character //
         playerNode = new Node("playerNode");
         rootNode.attachChild(playerNode);
 
@@ -180,7 +178,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         billMurray = new GhostControl(capsule);
         playerNode.addControl(billMurray);
         bulletAppState.getPhysicsSpace().add(billMurray);
-
+        
         // Start at Area 0 //
         currentRoute = routes.get("BedroomRoute");
         loadRoute(currentRoute);
@@ -195,7 +193,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //        g.setMaterial(mat);
 //        playerNode.attachChild(g);
     }
-
     public void loadRoute(DemoRoute route) {
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);

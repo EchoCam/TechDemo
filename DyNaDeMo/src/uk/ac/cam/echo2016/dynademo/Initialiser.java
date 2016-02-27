@@ -73,7 +73,7 @@ public class Initialiser {
 
                 //routes.get(gameScreen.getRouteName());
                 //to get the name of the route the player has selected
-                app.loadRoute(app.routes.get("ButtonRoute")); // temp functionality
+                app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
                 app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the puzzle room"});
             }
             
@@ -134,7 +134,7 @@ public class Initialiser {
 //        eLoc = new DemoProximityEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1);
         
         route.properties.putBoolean(pressPlate1.getName(), false);
-        route.properties.putBoolean(pressPlate1.getName(), false);
+        route.properties.putBoolean(pressPlate2.getName(), false);
         class PressurePlateEvent extends ProximityEvent {
             public PressurePlateEvent(String id, Vector3f loc, float width, float height, float depth, DemoObject object) {
                 super(id, loc, width, height, depth, object);
