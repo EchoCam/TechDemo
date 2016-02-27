@@ -1,5 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import com.jme3.bullet.control.RigidBodyControl;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
 
 import com.jme3.light.PointLight;
@@ -76,7 +77,12 @@ public class Initialiser {
         crateObj.lights.add(light);
         route.objects.add(crateObj);
         // object events
-        eInter = new DemoInteractEvent("crate", crateObj, 0);
+        eInter = new DemoInteractEvent("crate", crateObj){
+            @Override
+            public void onInteract(MainApplication app) {
+                app.drag(getObject().spatial);
+            }
+        };
         eInter.addListener(app);
         route.setInteractable(crate, eInter);
 
@@ -123,7 +129,25 @@ public class Initialiser {
         route.objects.add(leverObj);
         
         // object events
-        eInter = new DemoInteractEvent("lever", leverObj, 1);
+        eInter = new DemoInteractEvent("lever", leverObj) {
+            
+            @Override
+            public void onInteract(MainApplication app) {
+                Spatial spatial = getObject().spatial;
+                RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
+                // TODO should check parent nodes for physics controls?
+                if (rbc == null) {
+                    throw new NullPointerException("No valid physics control found for object: " + spatial.getName());
+                }
+                if (!(getObject() instanceof DemoKinematic)) {
+                    throw new RuntimeException("Translation event called but object: "
+                            + spatial.getName() + " is not kinematic");
+                }
+                DemoKinematic kinematicObj = (DemoKinematic) getObject();
+                kinematicObj.queueRotation(app, 1f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
+            }
+            
+        };
         eInter.addListener(app);
         route.setInteractable(lever, eInter);
 

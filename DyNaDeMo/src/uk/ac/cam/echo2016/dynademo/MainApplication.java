@@ -430,41 +430,15 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             }
         } else if (e instanceof DemoInteractEvent) {
             DemoInteractEvent eInter = (DemoInteractEvent) e;
-            DemoObject object = eInter.getObject();
-            Spatial spatial = object.spatial;
-            switch (eInter.getType()) {
-
-            case 0: // Drag (pick up) event
-                System.out.println("Drag Event " + eInter.getId() + " for spatial " + spatial.getName());
-
-                // Remove it from the physics space
-                bulletAppState.getPhysicsSpace().remove(spatial);
-                // Attatch it to the player
-                playerNode.attachChild(spatial);
-                draggedObject = spatial;
-                break;
-            case 1: // Translation event
-                RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
-                // TODO should check parent nodes for physics controls?
-                if (rbc == null) {
-                    throw new NullPointerException("No valid physics control found for object: " + spatial.getName());
-                }
-                if (!(object instanceof DemoKinematic)) {
-                    throw new RuntimeException("Translation event called but object: "
-                            + spatial.getName() + " is not kinematic");
-                }
-                DemoKinematic kinematicObj = (DemoKinematic) object;
-                System.out.println(camDir.negate());
-                kinematicObj.queueRotation(this, 2f, new Vector3f(1f, 0f, 0), -FastMath.PI/2);
-//                kinematicObj.queueTranslation(this, 5f, new Vector3f(1f, 0f, -1f), 10f);
-//                spatial.rotate(-FastMath.PI/4, 0f, 0f);
-//                spatial.rotate(0f, FastMath.PI, 0f);
-//                spatial.rotate(FastMath.PI/4, 0f, 0f);
-                break;
-            default:
-                System.out.println("Error: Event type: " + eInter.getType() + " not recognized");
-            }
+            eInter.onInteract(this);
         }
+    }
+    public void drag(Spatial spatial) {
+        // Remove it from the physics space
+        bulletAppState.getPhysicsSpace().remove(spatial);
+        // Attatch it to the player
+        playerNode.attachChild(spatial);
+        draggedObject = spatial;
     }
 
     public void addTask(DemoKinematic object, ArrayDeque<DemoKinematicTask> task) {
