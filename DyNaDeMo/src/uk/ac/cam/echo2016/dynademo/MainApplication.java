@@ -179,7 +179,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(billMurray);
         
         // Start at Area 0 //
-        loadRoute(routes.get("ButtonRoute"));
+        loadRoute(routes.get("BedroomRoute"));
         
         // Debug Options//
 //        bulletAppState.setDebugEnabled(true);
@@ -280,8 +280,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Interact", new KeyTrigger(KeyInput.KEY_E));
-        // inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
-        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
+        inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
+        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_ESCAPE));
 
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
@@ -363,69 +363,79 @@ public class MainApplication extends SimpleApplication implements ActionListener
     @Override
     public void onAction(String keyName, boolean isPressed, float tpf) {
         switch (keyName) {
-            case "Left":
-                keyLeft = isPressed;
-                break;
-            case "Right":
-                keyRight = isPressed;
-                break;
-            case "Up":
-                keyUp = isPressed;
-                break;
-            case "Down":
-                keyDown = isPressed;
-                break;
-            case "Interact":
-                if (isPressed) {
-                    if (gameScreen.isTextShowing()) {
-                        gameScreen.progressThroughText();
-                    } else if (draggedObject != null) {
-                        // Drop current Object held
-                        Vector3f location = draggedObject.getWorldTranslation();
-                        bulletAppState.getPhysicsSpace().add(draggedObject);
-                        draggedObject.removeFromParent();
-                        rootNode.attachChild(draggedObject);
-                        draggedObject.setLocalTranslation(location);
-                        ((RigidBodyControl) draggedObject.getControl(0)).setPhysicsLocation(location);
-                        draggedObject = null;
-                    } else {
-                        // Ray Casting (checking for first interactable object)
-                        Ray ray = new Ray(cam.getLocation(), cam.getDirection());
-                        CollisionResults results = new CollisionResults();
-                        rootNode.collideWith(ray, results);
-                        CollisionResult closest = results.getClosestCollision();
+        case "Left":
+            keyLeft = isPressed;
+            break;
+        case "Right":
+            keyRight = isPressed;
+            break;
+        case "Up":
+            keyUp = isPressed;
+            break;
+        case "Down":
+            keyDown = isPressed;
+            break;
+        case "Interact":
+            if (isPressed) {
+                if (gameScreen.isTextShowing()) {
+                    gameScreen.progressThroughText();
+                } else if (draggedObject != null) {
+                    // Drop current Object held
+                    Vector3f location = draggedObject.getWorldTranslation();
+                    bulletAppState.getPhysicsSpace().add(draggedObject);
+                    draggedObject.removeFromParent();
+                    rootNode.attachChild(draggedObject);
+                    draggedObject.setLocalTranslation(location);
+                    ((RigidBodyControl) draggedObject.getControl(0)).setPhysicsLocation(location);
+                    draggedObject = null;
+                } else {
+                    // Ray Casting (checking for first interactable object)
+                    Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+                    CollisionResults results = new CollisionResults();
+                    rootNode.collideWith(ray, results);
+                    CollisionResult closest = results.getClosestCollision();
 
-                        // Gets the closest geometry (if it exists) and attempts to interact with it
-                        if (closest != null) {
-                            System.out.println(closest.getGeometry().getName() + " found!");
-                            if (!currentRoute.interactWith(this, closest.getGeometry())) {
-                                System.out.println(closest.getGeometry().getName() + " is not responding...");
-                            }
+                    // Gets the closest geometry (if it exists) and attempts to interact with it
+                    if (closest != null) {
+                        System.out.println(closest.getGeometry().getName() + " found!");
+                        if (!currentRoute.interactWith(this, closest.getGeometry())) {
+                            System.out.println(closest.getGeometry().getName() + " is not responding...");
                         }
                     }
                 }
-                break;
-            case "Jump":
-                if (isPressed) {
-                    playerControl.jump();
+            }
+            break;
+        case "Jump":
+            if (isPressed) {
+                playerControl.jump();
+            }
+            break;
+        case "Pause":
+            if (isPressed) {
+                if (!isPaused) {
+                    System.out.println("");
+                    nifty.gotoScreen("pauseMenu");
+                } else {
+                    System.out.println("");
+                    nifty.gotoScreen("game");
                 }
-                break;
-            case "Pause":
-                if (isPressed) {
-                    if (!isPaused) {
-                        nifty.gotoScreen("pauseMenu");
-                    } else {
-                        nifty.gotoScreen("game");
-                    }
-                }
-                break;
+            }
+            break;
         }
     }
 
-    public void setIsPaused(boolean isPaused) {
-        this.isPaused = isPaused;
+    public void pauseDemo() {
+        this.isPaused = true;
+        bulletAppState.setEnabled(false);
+        flyCam.setEnabled(false);
     }
-    
+
+    public void unPauseDemo() {
+        this.isPaused = false;
+        bulletAppState.setEnabled(true);
+        flyCam.setEnabled(true);
+    }
+
     public void drag(Spatial spatial) {
         // Remove it from the physics space
         bulletAppState.getPhysicsSpace().remove(spatial);

@@ -81,6 +81,8 @@ public class Initialiser {
                     Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 app.nifty.gotoScreen("characterSelect");
+                System.out.println("");
+                System.out.println(app.getGameScreen().getRoute());
 //                app.loadRoute(route);
                 app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
                 app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the puzzle room"});

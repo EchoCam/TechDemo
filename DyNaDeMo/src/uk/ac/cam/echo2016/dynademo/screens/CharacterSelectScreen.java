@@ -74,7 +74,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
      */
     @Override
     public void onStartScreen() {
-        app.getFlyByCamera().setDragToRotate(true);
+        app.getFlyByCamera().setEnabled(false);
 
         ArrayList<Route> currentRoutes = narrativeInstance.getPlayableRoutes();
 
