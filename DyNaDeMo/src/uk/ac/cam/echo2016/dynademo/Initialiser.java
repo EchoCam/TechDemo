@@ -99,9 +99,13 @@ public class Initialiser {
         route.objects.add(plateObj1);
         route.objects.add(plateObj2);
         
-        eInter = new DemoInteractEvent("pressurePlate1", plateObj1) {
-            @Override
-            public void onInteract(MainApplication app) {//TODO finish
+        eLoc = new DemoLocEvent("pressurePlate1", new Vector3f(-5f, 0.1f, 5f), 3f, 0.8f, 3f);
+        eLoc.addListener(app);
+        route.events.add(eLoc);
+        // below is for buttons
+//        eInter = new DemoInteractEvent("pressurePlate1", plateObj1) {
+//            @Override
+//            public void onInteract(MainApplication app) {//TODO finish
 //                // TODO - improve similar to levers
 //                DemoRoute route = routes.get("PuzzleRoom");
 //                Boolean plateDown = route.properties.getBoolean("pressurePlate1");
@@ -111,8 +115,8 @@ public class Initialiser {
 //                } else {
 //                    spatial.setLocalTranslation(0f, 0.8f, 0f);
 //                }
-            }
-        };
+//            }
+//        };
         eInter.addListener(app);
         route.setInteractable(pressPlate1, eInter);
         

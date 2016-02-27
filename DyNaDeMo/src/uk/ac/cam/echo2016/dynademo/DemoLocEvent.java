@@ -7,11 +7,19 @@ import com.jme3.math.Vector3f;
  */
 public class DemoLocEvent extends DemoEvent {
     Vector3f trigLoc;
-    int trigWidth; // x
-    int trigHeight; // y
-    int trigDepth; // z
+    float trigWidth; // x
+    float trigHeight; // y
+    float trigDepth; // z
 
-    public DemoLocEvent(String id, Vector3f loc, int width, int height, int depth) {
+    /**
+     * 
+     * @param id - id of event
+     * @param loc - lowest corner of bounding box
+     * @param width - width of bounding box
+     * @param height - height of bounding box
+     * @param depth - depth of bounding box
+     */
+    public DemoLocEvent(String id, Vector3f loc, float width, float height, float depth) {
         super(id);
         trigLoc = loc;
         trigWidth = width;
