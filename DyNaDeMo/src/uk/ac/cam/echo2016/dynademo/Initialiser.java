@@ -236,6 +236,9 @@ public class Initialiser {
         return routes;
     }
 
+    private static void initialiseBedroomRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
+        
+    }
     private static DemoLight addLight(MainApplication app, DemoRoute route, Vector3f loc, String[] spatialNames) {
         PointLight l = new PointLight();
         l.setColor(ColorRGBA.Gray);
