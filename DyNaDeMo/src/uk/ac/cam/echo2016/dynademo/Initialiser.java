@@ -15,6 +15,7 @@ import com.jme3.shadow.PointLightShadowRenderer;
 import java.util.ArrayDeque;
 
 import java.util.HashMap;
+import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
 
 /**
  * @author tr393
@@ -71,6 +72,10 @@ public class Initialiser {
 
                 //routes.get(gameScreen.getRouteName());
                 //to get the name of the route the player has selected
+                app.nifty.gotoScreen("characterSelect");
+                
+                DemoRoute route = app.routes.get(app.getGameScreen().getRoute());
+//                app.loadRoute(route);
                 app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
                 app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the puzzle room"});
             }

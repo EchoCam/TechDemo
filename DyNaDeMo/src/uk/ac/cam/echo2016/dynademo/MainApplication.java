@@ -75,7 +75,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private Spatial currentWorld;
     private DemoRoute currentRoute;
     // private currentRoute/Character
-    private Nifty nifty;
+    public Nifty nifty;
     // Screens
     private MainMenuScreen mainMenuScreen;
     private CharacterSelectScreen characterSelectScreen;
@@ -179,7 +179,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(billMurray);
         
         // Start at Area 0 //
-        loadRoute(routes.get("PuzzleRoute"));
+        loadRoute(routes.get("BedroomRoute"));
         
         // Debug Options//
 //        bulletAppState.setDebugEnabled(true);
@@ -463,11 +463,5 @@ public class MainApplication extends SimpleApplication implements ActionListener
     @Override
     public AppStateManager getStateManager() {
         return stateManager;
-    }
-
-    public void chooseRoute() {
-        // TODO add calls to our tools here
-        // currentRoute = ...
-        // enterLocation(...)
     }
 }
