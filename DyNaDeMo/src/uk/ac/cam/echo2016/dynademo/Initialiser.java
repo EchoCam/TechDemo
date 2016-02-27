@@ -1,16 +1,18 @@
 package uk.ac.cam.echo2016.dynademo;
 
-import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.asset.AssetManager;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.CHARHEIGHT;
 
 import com.jme3.light.PointLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import com.jme3.shadow.PointLightShadowRenderer;
 import java.util.HashMap;
 
@@ -66,12 +68,12 @@ public class Initialiser {
 
                 //routes.get(gameScreen.getRouteName());
                 //to get the name of the route the player has selected
-                app.loadRoute(app.routes.get("ButtonRoom")); // temp functionality
+                app.loadRoute(app.routes.get("PuzzleRoom")); // temp functionality
                 app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the button room"});
             }
             
         };
-        route.events.add(eLoc);
+        route.locEvents.add(eLoc);
         routes.put(route.getId(), route);
 
         //****** Puzzle Room ******//
@@ -110,15 +112,23 @@ public class Initialiser {
         route.objects.add(plateObj1);
         route.objects.add(plateObj2);
         
-        eLoc = new DemoLocEvent("pressurePlate1", new Vector3f(-5f, 0.1f, 5f), 3f, 0.8f, 3f) {
+//        Box bMesh = new Box(new Vector3f(-5,1.6f,5), 1.5f, 1.5f, 1.5f);
+//        Geometry bGeom = new Geometry("box", bMesh);
+//        Material bMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//        bGeom.setMaterial(bMat);
+//        app.getRootNode().attachChild(bGeom);
+        
+        eLoc = new DemoLocEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.81f + CHARHEIGHT/2, 3f) {
 
             @Override
             public void onDemoEvent(MainApplication app) {
+                if (app.getPlayerControl().onGround()) {
+                    
+                }
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
         };
-        route.events.add(eLoc);
+        route.locEvents.add(eLoc);
         // below is for buttons
 //        eInter = new DemoInteractEvent("pressurePlate1", plateObj1) {
 //            @Override

@@ -35,6 +35,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.AbstractShadowRenderer;
 
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.spi.sound.SoundDevice;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,7 +138,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         // Initialize physics engine //
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
-
+        
+        bulletAppState.setDebugEnabled(true);
         // Add global Lights //
 
         AmbientLight al = new AmbientLight(); // No current effect on blender scene
@@ -202,7 +204,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         for (AbstractShadowRenderer plsr : currentRoute.shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-        for (DemoLocEvent oldEvent : currentRoute.events) {
+        for (DemoLocEvent oldEvent : currentRoute.locEvents) {
             locEventBus.remove(oldEvent);
         }
 
@@ -239,7 +241,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         for (AbstractShadowRenderer plsr : route.shadowRenderers) {
             // viewPort.addProcessor(plsr); // Disabled shadows for now
         }
-        for (DemoLocEvent newEvent : route.events) {
+        for (DemoLocEvent newEvent : route.locEvents) {
             locEventBus.add(newEvent);
         }
 
@@ -289,6 +291,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         // System.out.println(spat.getWorldTranslation().y);
         // System.out.println(spat.getWorldTranslation().z);
         // }
+        System.out.println(playerControl.getPhysicsLocation().y);
+        System.out.println(0.81f + CHARHEIGHT/2);
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
@@ -423,6 +427,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
         if (!taskEventBus.containsKey(object)) {
             taskEventBus.put(object, task);
         }
+    }
+    public CharacterControl getPlayerControl() {
+        return playerControl;
     }
     
     public MainMenuScreen getMainMenuScreen() {

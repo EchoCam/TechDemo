@@ -18,7 +18,7 @@ public class DemoRoute {
     private Vector3f startLoc;
     private Vector3f startDir;
     public BaseBundle properties = new BaseBundle();
-    public ArrayList<DemoLocEvent> events = new ArrayList<>();
+    public ArrayList<DemoLocEvent> locEvents = new ArrayList<>();
     public ArrayList<DemoLight> lights = new ArrayList<>();
     public ArrayList<AbstractShadowRenderer> shadowRenderers = new ArrayList<>();
     public ArrayList<DemoObject> objects = new ArrayList<>();
