@@ -21,9 +21,4 @@ public abstract class DemoInteractEvent extends DemoEvent {
     public DemoObject getObject() {
         return object;
     }
-
-    /**
-     * onInteract is a custom function called when the interaction is performed.
-     */
-    public abstract void onInteract(MainApplication app);
 }

@@ -57,8 +57,20 @@ public class Initialiser {
             addLight(app, route, lightCoords[i], spatialNames[i]);
         }
         // EVENTS
-        eLoc = new DemoLocEvent("Node1", new Vector3f(-80, 1, -40), 40, 14, 50);
-        eLoc.addListener(app);
+        eLoc = new DemoLocEvent("Node1", new Vector3f(-80, 1, -40), 40, 14, 50) {
+
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                //TODO first meeting
+                //could do...
+
+                //routes.get(gameScreen.getRouteName());
+                //to get the name of the route the player has selected
+                app.loadRoute(app.routes.get("ButtonRoom")); // temp functionality
+                app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the button room"});
+            }
+            
+        };
         route.events.add(eLoc);
         routes.put(route.getId(), route);
 
@@ -80,11 +92,10 @@ public class Initialiser {
         // object events
         eInter = new DemoInteractEvent("crate", crateObj){
             @Override
-            public void onInteract(MainApplication app) {
+            public void onDemoEvent(MainApplication app) {
                 app.drag(getObject().spatial);
             }
         };
-        eInter.addListener(app);
         route.setInteractable(crate, eInter);
         
         // PressurePlate
@@ -99,8 +110,14 @@ public class Initialiser {
         route.objects.add(plateObj1);
         route.objects.add(plateObj2);
         
-        eLoc = new DemoLocEvent("pressurePlate1", new Vector3f(-5f, 0.1f, 5f), 3f, 0.8f, 3f);
-        eLoc.addListener(app);
+        eLoc = new DemoLocEvent("pressurePlate1", new Vector3f(-5f, 0.1f, 5f), 3f, 0.8f, 3f) {
+
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+            
+        };
         route.events.add(eLoc);
         // below is for buttons
 //        eInter = new DemoInteractEvent("pressurePlate1", plateObj1) {
@@ -117,7 +134,6 @@ public class Initialiser {
 //                }
 //            }
 //        };
-        eInter.addListener(app);
         route.setInteractable(pressPlate1, eInter);
         
         routes.put(route.getId(), route);
@@ -165,7 +181,7 @@ public class Initialiser {
         eInter = new DemoInteractEvent("lever", leverObj) {
             
             @Override
-            public void onInteract(MainApplication app) {
+            public void onDemoEvent(MainApplication app) {
                 // TODO replace with route (when moved to right position)..?
                 DemoRoute leverRoute = routes.get("LeverRoom");
                 int leverCount = leverRoute.properties.getInt("Lever");
@@ -177,9 +193,9 @@ public class Initialiser {
                 DemoKinematic kinematicObj = (DemoKinematic) getObject();
                 if (leverCount < 10) {
                 if (leverCount % 2 == 0) {
-                    kinematicObj.queueRotation(app, 0.5f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
+                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
                 } else {
-                    kinematicObj.queueRotation(app, 0.5f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
+                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
                 } } else { // lol
                     app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
                 }
@@ -188,7 +204,6 @@ public class Initialiser {
             }
             
         };
-        eInter.addListener(app);
         route.setInteractable(lever, eInter);
 
         routes.put(route.getId(), route);

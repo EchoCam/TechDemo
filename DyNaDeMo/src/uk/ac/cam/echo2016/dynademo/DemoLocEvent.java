@@ -5,7 +5,7 @@ import com.jme3.math.Vector3f;
 /**
  * @author tr393
  */
-public class DemoLocEvent extends DemoEvent {
+public abstract class DemoLocEvent extends DemoEvent {
     Vector3f trigLoc;
     float trigWidth; // x
     float trigHeight; // y

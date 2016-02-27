@@ -21,6 +21,7 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
@@ -50,7 +51,7 @@ import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
  * @author tr393
  */
 @SuppressWarnings("deprecation")
-public class MainApplication extends SimpleApplication implements DemoListener {
+public class MainApplication extends SimpleApplication implements ActionListener {
 
     public final static float CHARHEIGHT = 3;
     public HashMap<String, DemoRoute> routes = new HashMap<>();
@@ -179,7 +180,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         loadRoute(currentRoute);
     }
 
-    private void loadRoute(DemoRoute route) {
+    public void loadRoute(DemoRoute route) {
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
@@ -327,7 +328,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
             // Check global event queue
             for (DemoLocEvent e : locEventBus) {
                 if (e.checkCondition(playerControl.getPhysicsLocation())) {
-                    e.fireEvent();
+                    e.onDemoEvent(this);
                 }
             }
             // Update task queue
@@ -382,7 +383,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
                         // Gets the closest geometry (if it exists) and attempts to interact with it
                         if (closest != null) {
                             System.out.println(closest.getGeometry().getName() + " found!");
-                            if (!currentRoute.interactWith(closest.getGeometry())) {
+                            if (!currentRoute.interactWith(this, closest.getGeometry())) {
                                 System.out.println(closest.getGeometry().getName() + " is not responding...");
                             }
                         }
@@ -409,27 +410,7 @@ public class MainApplication extends SimpleApplication implements DemoListener {
     public void setIsPaused(boolean isPaused) {
         this.isPaused = isPaused;
     }
-
-    @Override
-    public void demoEventAction(DemoEvent e) {
-        if (e instanceof DemoLocEvent) {
-            switch (e.getId()) {
-            case "Node1": // TODO first meeting
-                //could do...
-
-                //routes.get(gameScreen.getRouteName());
-                //to get the name of the route the player has selected
-                loadRoute(routes.get("PuzzleRoom")); // temp functionality
-                gameScreen.setDialogueTextSequence(new String[]{"You are now in the button room"});
-                break;
-            default:
-                System.out.println("Error: Event name: " + e.getId() + " not recognized");
-            }
-        } else if (e instanceof DemoInteractEvent) {
-            DemoInteractEvent eInter = (DemoInteractEvent) e;
-            eInter.onInteract(this);
-        }
-    }
+    
     public void drag(Spatial spatial) {
         // Remove it from the physics space
         bulletAppState.getPhysicsSpace().remove(spatial);

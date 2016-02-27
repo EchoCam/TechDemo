@@ -62,15 +62,15 @@ public class DemoRoute {
      *
      * @param spatial - The spatial or parent that maps to an {@code DemoInteractEvent}
      */
-    public boolean interactWith(Spatial spatial) {
+    public boolean interactWith(MainApplication app, Spatial spatial) {
         DemoInteractEvent e = interactions.get(spatial);
         if (e != null) {
-            e.fireEvent();
+            e.onDemoEvent(app);
             return true;
         } else {
             Node parent = spatial.getParent();
             if (parent != null) {
-                return interactWith(parent);
+                return interactWith(app, parent);
             }
         }
         return false;
