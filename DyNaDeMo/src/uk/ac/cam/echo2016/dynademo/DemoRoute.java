@@ -18,7 +18,7 @@ public class DemoRoute {
     private Vector3f startLoc;
     private Vector3f startDir;
     public BaseBundle properties = new BaseBundle();
-    public ArrayList<DemoLocEvent> locEvents = new ArrayList<>();
+    public ArrayList<LocationEvent> locEvents = new ArrayList<>();
     public ArrayList<DemoLight> lights = new ArrayList<>();
     public ArrayList<AbstractShadowRenderer> shadowRenderers = new ArrayList<>();
     public ArrayList<DemoObject> objects = new ArrayList<>();
@@ -26,7 +26,7 @@ public class DemoRoute {
 //    public ArrayList<Spatial> kinematicObjects = new ArrayList<>();
 //    public ArrayList<Spatial> staticObjects = new ArrayList<>();
     // public Node interactableNode = new Node("Interactables");
-    public HashMap<Spatial, DemoInteractEvent> interactions = new HashMap<>();
+    public HashMap<Spatial, InteractionEvent> interactions = new HashMap<>();
 
     public DemoRoute(String id, String sceneFile, Vector3f startLoc, Vector3f startDir) {
         this.id = id;
@@ -57,7 +57,7 @@ public class DemoRoute {
      * @param s
      * @param e 
      */
-    public void setInteractable(Spatial s, DemoInteractEvent e) {
+    public void setInteractable(Spatial s, InteractionEvent e) {
         // interactableNode.attachChild(s);
         interactions.put(s, e);
     }
@@ -69,7 +69,7 @@ public class DemoRoute {
      * @param spatial - The spatial or parent that maps to an {@code DemoInteractEvent}
      */
     public boolean interactWith(MainApplication app, Spatial spatial) {
-        DemoInteractEvent e = interactions.get(spatial);
+        InteractionEvent e = interactions.get(spatial);
         if (e != null) {
             e.onDemoEvent(app);
             return true;

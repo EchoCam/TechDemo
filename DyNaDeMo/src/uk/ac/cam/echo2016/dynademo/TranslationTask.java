@@ -9,11 +9,11 @@ import com.jme3.math.Vector3f;
 /**
  * @author tr393
  */
-public class TranslationTask extends DemoKinematicTask {
+public class TranslationTask extends KinematicTask {
     private float averageSpeed;
     private Vector3f displacement;
     
-    public TranslationTask(String taskQueueId, float completionTime, DemoKinematic object, Vector3f displacement) {
+    public TranslationTask(String taskQueueId, float completionTime, KinematicDemoObject object, Vector3f displacement) {
         super(taskQueueId, completionTime, object);
         this.displacement = displacement;
         this.averageSpeed = displacement.length()/completionTime;

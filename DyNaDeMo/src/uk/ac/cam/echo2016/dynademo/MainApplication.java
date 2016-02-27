@@ -70,7 +70,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
-    private ArrayDeque<DemoLocEvent> locEventBus = new ArrayDeque<>();
+    private ArrayDeque<LocationEvent> locEventBus = new ArrayDeque<>();
     private HashMap<String, ArrayDeque<DemoTask>> taskEventBus = new HashMap<>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
@@ -186,7 +186,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         loadRoute(currentRoute);
         
         // Debug Options//
-//        bulletAppState.setDebugEnabled(true);
+        bulletAppState.setDebugEnabled(true);
 //
 //        Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
 //        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -218,7 +218,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         for (AbstractShadowRenderer plsr : currentRoute.shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-        for (DemoLocEvent oldEvent : currentRoute.locEvents) {
+        for (LocationEvent oldEvent : currentRoute.locEvents) {
             locEventBus.remove(oldEvent);
         }
 
@@ -235,8 +235,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
             
             RigidBodyControl rbc = new RigidBodyControl(object.mass);
             object.spatial.addControl(rbc);
-            if (object instanceof DemoKinematic) rbc.setKinematic(true);
-            if (object instanceof DemoDynamic) rbc.setFriction(1.5f);
+            if (object instanceof KinematicDemoObject) rbc.setKinematic(true);
+            if (object instanceof DynamicDemoObject) rbc.setFriction(1.5f);
             bulletAppState.getPhysicsSpace().add(rbc);
             for (DemoLight dLight : object.lights) {
                 object.spatial.addLight(dLight.light);
@@ -255,7 +255,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //        for (AbstractShadowRenderer plsr : route.shadowRenderers) {
 //             viewPort.addProcessor(plsr); // Disabled shadows for now
 //        }
-        for (DemoLocEvent newEvent : route.locEvents) {
+        for (LocationEvent newEvent : route.locEvents) {
             locEventBus.add(newEvent);
         }
 
@@ -343,7 +343,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             // Check global event queue
-            for (DemoLocEvent e : locEventBus) {
+            for (LocationEvent e : locEventBus) {
                 if (e.checkCondition(playerControl.getPhysicsLocation())) {
                     e.onDemoEvent(this);
                 }
@@ -440,6 +440,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             taskEventBus.put(taskQueueId, task);
         }
     }
+    
     public CharacterControl getPlayerControl() {
         return playerControl;
     }

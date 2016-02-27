@@ -7,11 +7,11 @@ package uk.ac.cam.echo2016.dynademo;
  * 
  * @author tr393
  */
-public class DemoKinematicTask extends DemoTask{
+public class KinematicTask extends DemoTask{
     
-    private DemoKinematic object;
+    private KinematicDemoObject object;
     
-    public DemoKinematicTask(String taskQueueId, float completionTime, DemoKinematic object) {
+    public KinematicTask(String taskQueueId, float completionTime, KinematicDemoObject object) {
         super(taskQueueId, completionTime);
         this.object = object;
     }
@@ -19,7 +19,7 @@ public class DemoKinematicTask extends DemoTask{
     /**
      * @return the object
      */
-    public DemoKinematic getObject() {
+    public KinematicDemoObject getObject() {
         return object;
     }
 }

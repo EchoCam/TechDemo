@@ -7,13 +7,13 @@ import java.util.ArrayDeque;
 /**
  * @author tr393
  */
-public class DemoKinematic extends DemoObject {
+public class KinematicDemoObject extends DemoObject {
     private final ArrayDeque<DemoTask> tasks = new ArrayDeque<>();
-    public DemoKinematic(Spatial spatial, float mass, boolean isMainParent) {
+    public KinematicDemoObject(Spatial spatial, float mass, boolean isMainParent) {
         super(spatial, isMainParent);
         this.mass = mass;
     }
-    public void queueTranslation(MainApplication app, float completionTime, Vector3f direction, float distance) {
+    public void queueDisplacement(MainApplication app, float completionTime, Vector3f direction, float distance) {
         Vector3f start = spatial.getLocalTranslation();
         Vector3f end = spatial.getLocalTranslation().add(direction.normalize().mult(distance));
         tasks.add(new TranslationTask(spatial.getName(), completionTime, this, end.subtract(start)));
@@ -24,7 +24,7 @@ public class DemoKinematic extends DemoObject {
         app.addTask(spatial.getName(), tasks);
     }
     public void queueDelay(MainApplication app, float completionTime) {
-        tasks.add(new DemoKinematicTask(spatial.getName(), completionTime, this));
+        tasks.add(new KinematicTask(spatial.getName(), completionTime, this));
         app.addTask(spatial.getName(), tasks);
     }
 }

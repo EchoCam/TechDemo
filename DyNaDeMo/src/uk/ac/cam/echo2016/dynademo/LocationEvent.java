@@ -7,7 +7,7 @@ import com.jme3.math.Vector3f;
  * 
  * @author tr393
  */
-public abstract class DemoLocEvent extends DemoEvent {
+public abstract class LocationEvent extends DemoEvent {
     Vector3f trigLoc;
     float trigWidth; // x
     float trigHeight; // y
@@ -21,7 +21,7 @@ public abstract class DemoLocEvent extends DemoEvent {
      * @param height - height of bounding box
      * @param depth - depth of bounding box
      */
-    public DemoLocEvent(String id, Vector3f loc, float width, float height, float depth) {
+    public LocationEvent(String id, Vector3f loc, float width, float height, float depth) {
         super(id);
         trigLoc = loc;
         trigWidth = width;

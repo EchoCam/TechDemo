@@ -30,8 +30,8 @@ public class Initialiser {
         final HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
 
         DemoRoute route;
-        DemoLocEvent eLoc;
-        DemoInteractEvent eInter;
+        LocationEvent eLoc;
+        InteractionEvent eInter;
         DemoLight light;
 
         //****** Bedroom ******//
@@ -58,7 +58,7 @@ public class Initialiser {
             addLight(app, route, lightCoords[i], spatialNames[i]);
         }
         // EVENTS
-        eLoc = new DemoLocEvent("Node1", new Vector3f(-80, 1, -40), 40, 14, 50) {
+        eLoc = new LocationEvent("Node1", new Vector3f(-80, 1, -40), 40, 14, 50) {
 
             @Override
             public void onDemoEvent(MainApplication app) {
@@ -78,8 +78,6 @@ public class Initialiser {
         //****** Puzzle Room ******//
         route = new DemoRoute("PuzzleRoute", "Scenes/PuzzleRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45),
                 new Vector3f(0, 0, 1));
-        route.properties.putBoolean("pressurePlate1", false);
-        route.properties.putBoolean("pressurePlate2", false);
         // LIGHTS
         light = addLight(app, route, new Vector3f(0, 8f, 0), new String[] {"Room"});
         addLight(app, route, new Vector3f(0,6,-35), new String[] {"Corridor1"});
@@ -91,11 +89,11 @@ public class Initialiser {
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
         crate.setLocalTranslation(0, 0, -30);
         // object physics
-        DemoDynamic crateObj = new DemoDynamic(crate, 5f, true);
+        DynamicDemoObject crateObj = new DynamicDemoObject(crate, 5f, true);
         crateObj.lights.add(light);
         route.objects.add(crateObj);
         // object events
-        eInter = new DemoInteractEvent("crate", crateObj){
+        eInter = new InteractionEvent("crate", crateObj){
             @Override
             public void onDemoEvent(MainApplication app) {
                 app.drag(getObject().spatial);
@@ -108,8 +106,8 @@ public class Initialiser {
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         pressPlate1.setLocalTranslation(-5f, 0.1f, 5f);
         pressPlate2.setLocalTranslation(-5f, 0.1f, -5f);
-        DemoKinematic plateObj1 = new DemoKinematic(pressPlate1, 1f, true);
-        DemoKinematic plateObj2 = new DemoKinematic(pressPlate2, 1f, true);
+        KinematicDemoObject plateObj1 = new KinematicDemoObject(pressPlate1, 1f, true);
+        KinematicDemoObject plateObj2 = new KinematicDemoObject(pressPlate2, 1f, true);
         plateObj1.lights.add(light);
         plateObj2.lights.add(light);
         route.objects.add(plateObj1);
@@ -122,7 +120,10 @@ public class Initialiser {
 //        app.getRootNode().attachChild(bGeom);
         
 //        eLoc = new DemoProximityEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1);
-        class PressurePlateEvent extends DemoProximityEvent {
+        
+        route.properties.putBoolean(pressPlate1.getName(), false);
+        route.properties.putBoolean(pressPlate1.getName(), false);
+        class PressurePlateEvent extends ProximityEvent {
             public PressurePlateEvent(String id, Vector3f loc, float width, float height, float depth, DemoObject object) {
                 super(id, loc, width, height, depth, object);
             }
@@ -130,16 +131,16 @@ public class Initialiser {
             public void onDemoEvent(MainApplication app) {
                 if (app.getPlayerControl().onGround()) {
                     // TODO - improve similar to levers
-                    DemoRoute route = routes.get("PuzzleRoom");
-                    Boolean plateDown = route.properties.getBoolean(getId());
+                    DemoRoute route = routes.get("PuzzleRoute");
+                    Boolean plateDown = route.properties.getBoolean(object.spatial.getName());
                     // TODO again hacky like leverRod mesh
                     if (!plateDown) {
                         object.spatial.move(0, -0.75f, 0);
                         route.properties.putBoolean(getId(), true);
                     }
-                    DemoKinematic kinematicObj = (DemoKinematic) object;
+                    KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
                     kinematicObj.queueDelay(app, 1f);
-                    kinematicObj.queueTranslation(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
+                    kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
                 }
             }
         };
@@ -181,6 +182,7 @@ public class Initialiser {
         //****** Button Room ******//
 
         route = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+               
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -197,23 +199,23 @@ public class Initialiser {
         Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
         
         // object physics
-        DemoStatic leverBaseObj = new DemoStatic(lever, true);
+        StaticDemoObject leverBaseObj = new StaticDemoObject(lever, true);
         leverBaseObj.lights.add(light);
         route.objects.add(leverBaseObj);
         
-        DemoKinematic leverObj = new DemoKinematic(leverRod, 1f, false);
+        KinematicDemoObject leverObj = new KinematicDemoObject(leverRod, 1f, false);
         leverObj.lights.add(light);
         route.objects.add(leverObj);
         
         // object events
-        eInter = new DemoInteractEvent("lever", leverObj) {
+        eInter = new InteractionEvent("lever", leverObj) {
             
             @Override
             public void onDemoEvent(MainApplication app) {
                 // TODO replace with route (when moved to right position)..?
                 DemoRoute leverRoute = routes.get("LeverRoute");
                 int leverCount = leverRoute.properties.getInt("Lever");
-                DemoKinematic kinematicObj = (DemoKinematic) getObject();
+                KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
                 if (leverCount < 10) {
                 if (leverCount % 2 == 0) {
                     kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
