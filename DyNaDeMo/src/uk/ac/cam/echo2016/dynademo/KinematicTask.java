@@ -7,7 +7,7 @@ package uk.ac.cam.echo2016.dynademo;
  * 
  * @author tr393
  */
-public class KinematicTask extends DemoTask{
+public class KinematicTask extends DemoTask {
     
     private KinematicDemoObject object;
     

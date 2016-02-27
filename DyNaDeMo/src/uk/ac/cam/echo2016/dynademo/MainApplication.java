@@ -40,6 +40,7 @@ import de.lessvoid.nifty.Nifty;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -296,13 +297,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     @Override
     public void simpleUpdate(float tpf) {
-        // if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
-        // Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
-        // System.out.println(spat.getName());
-        // System.out.println(spat.getWorldTranslation().x);
-        // System.out.println(spat.getWorldTranslation().y);
-        // System.out.println(spat.getWorldTranslation().z);
-        // }
+         if (!rootNode.descendantMatches("Models/PressurePlate.blend").isEmpty()) {
+         Spatial spat = rootNode.descendantMatches("Models/PressurePlate.blend").get(0);
+         System.out.println(spat.getName());
+         System.out.println(spat.getWorldTranslation().x);
+         System.out.println(spat.getWorldTranslation().y);
+         System.out.println(spat.getWorldTranslation().z);
+         }
 //        System.out.println(playerControl.getPhysicsLocation().y);
         if (!isPaused) {
             // Find direction of camera (and rotation)
@@ -343,17 +344,19 @@ public class MainApplication extends SimpleApplication implements ActionListener
             // Check global location event queue
             for (LocationEvent e : locEventBus) {
                 if (e.checkCondition(playerControl.getPhysicsLocation())) {
-                    System.out.println(playerControl.getPhysicsLocation());
                     e.onDemoEvent(this);
                 }
             }
             // Update task queue
-            for (ArrayDeque<DemoTask> queue : taskEventBus.values()) {
+            ArrayDeque<ArrayDeque<DemoTask>> x = new ArrayDeque<>(taskEventBus.values());
+            for (ArrayDeque<DemoTask> queue : x) {
                 DemoTask task = queue.peek();
                 task.updateTime(tpf);
+                task.onTimeStep(tpf);
                 if (task.isFinished()) {
                     System.out.println("TaskType: " + task.getClass() + " from queue: " + task.getTaskQueueId() + " completed");
                     task.complete();
+                    queue.pop();
                     if (queue.isEmpty()) taskEventBus.remove(task.getTaskQueueId());
                 }
             }

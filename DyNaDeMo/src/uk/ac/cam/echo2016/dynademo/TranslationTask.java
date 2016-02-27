@@ -10,19 +10,51 @@ import com.jme3.math.Vector3f;
  * @author tr393
  */
 public class TranslationTask extends KinematicTask {
-    private float averageSpeed;
-    private Vector3f displacement;
+    public float averageSpeed;
+    private Vector3f direction;
+    private Vector3f endLocation;
     
-    public TranslationTask(String taskQueueId, float completionTime, KinematicDemoObject object, Vector3f displacement) {
+    /**
+     * 
+     * @param taskQueueId - Id for the event time slot
+     * @param completionTime
+     * @param object
+     * @param displacement
+     * @param endLocation - Optional Vector3f. Set as null if accuracy is not required
+     */
+    public TranslationTask(String taskQueueId, float completionTime, KinematicDemoObject object, Vector3f displacement, Vector3f endLocation) {
         super(taskQueueId, completionTime, object);
-        this.displacement = displacement;
+        this.direction = displacement;
         this.averageSpeed = displacement.length()/completionTime;
-        this.displacement = displacement.normalize();
+        this.direction = displacement.normalize(); // average speed is recorded first
+        this.endLocation = endLocation;
     }
     
     @Override
-    public void update(float timePassed) {
-        getObject().getSpatial().move(displacement.mult(averageSpeed*timePassed));
-        updateTime(timePassed);
+    public void onTimeStep(float timePassed) {
+        getObject().getSpatial().move(direction.mult(averageSpeed*timePassed));
+    }
+    
+    /**
+     * Extending classes should probably call this for accuracy.
+     */
+    @Override
+    public void complete() {
+        if (endLocation != null)
+            getObject().getSpatial().setLocalTranslation(endLocation);
+    }
+
+    /**
+     * @return the endLocation
+     */
+    public Vector3f getEndLocation() {
+        return endLocation;
+    }
+
+    /**
+     * @param endLocation the endLocation to set
+     */
+    public void setEndLocation(Vector3f endLocation) {
+        this.endLocation = endLocation;
     }
 }

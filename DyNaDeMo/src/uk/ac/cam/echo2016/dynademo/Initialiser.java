@@ -12,6 +12,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
+import java.util.ArrayDeque;
 
 import java.util.HashMap;
 
@@ -21,20 +22,16 @@ import java.util.HashMap;
 public class Initialiser {
 
     /**
-     * 
-     * @param app
-     *            - required for event subscribing and renderer attaching
+     * @param app - the application to attach events and renderers to
      * @return
      */
+    
     public static HashMap<String, DemoRoute> initialiseRoutes(MainApplication app) {
         final HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
-        
         addBedroomRoute(app, routes);
         addPuzzleRoute(app, routes);
         addLeverRoute(app, routes);
         addButtonRoute(app, routes);
-              
-
         return routes;
     }
 
@@ -126,40 +123,8 @@ public class Initialiser {
         route.objects.add(plateObj1);
         route.objects.add(plateObj2);
         
-//        Box bMesh = new Box(new Vector3f(-5,1.6f,5), 1.5f, 1.5f, 1.5f);
-//        Geometry bGeom = new Geometry("box", bMesh);
-//        Material bMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-//        bGeom.setMaterial(bMat);
-//        app.getRootNode().attachChild(bGeom);
-        
-//        eLoc = new DemoProximityEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1);
-        
         route.properties.putBoolean(plateObj1.getObjId(), false);
         route.properties.putBoolean(plateObj2.getObjId(), false);
-        class PressurePlateEvent extends ProximityEvent {
-            public PressurePlateEvent(String id, Vector3f loc, float width, float height, float depth, DemoObject object) {
-                super(id, loc, width, height, depth, object);
-            }
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                if (app.getPlayerControl().onGround()) {
-                    // TODO - improve similar to levers
-                    DemoRoute route = routes.get("PuzzleRoute");
-                    Boolean plateDown = route.properties.getBoolean(object.getObjId());
-                    // TODO again hacky like leverRod mesh
-                    if (!plateDown) {
-                        object.getSpatial().move(0, -0.75f, 0);
-                        route.properties.putBoolean(object.getObjId(), true);
-                        KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
-                        kinematicObj.queueDelay(app, 1f);
-                        kinematicObj.queueDisplacement(app, 1f, Vector3f.UNIT_Y, 0.75f);
-                    }
-//                    KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
-//                    kinematicObj.queueDelay(app, 1f);
-//                    kinematicObj.queueDisplacement(app, 1f, Vector3f.UNIT_Y, 0.75f);
-                }
-            }
-        };
         eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1);
         route.locEvents.add(eLoc);
         eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0.1f, -6.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj2);
@@ -212,7 +177,7 @@ public class Initialiser {
                     kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
                 } else {
                     kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
-                } } else { // lol
+                } } else {
                     app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
                 }
                 ++leverCount;
@@ -272,7 +237,7 @@ public class Initialiser {
                     kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
                 } else {
                     kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
-                } } else { // lol
+                } } else {
                     app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
                 }
                 ++leverCount;
@@ -302,4 +267,48 @@ public class Initialiser {
         
         return dLight;
     }
+    private static class PressurePlateEvent extends ProximityEvent {
+        public final static int DELAY = 1;
+        
+        public PressurePlateEvent(String id, Vector3f loc, float width, float height, float depth, DemoObject object) {
+            super(id, loc, width, height, depth, object);
+        }
+
+        @Override
+        public void onDemoEvent(MainApplication app) {
+            if (app.getPlayerControl().onGround()) {
+                DemoRoute route = app.routes.get("PuzzleRoute");
+                if (!(route.properties.containsKey(object.getObjId()))) {
+                    throw new RuntimeException("Property not found.");
+                }
+                Boolean plateDown = route.properties.getBoolean(object.getObjId());
+                // TODO again hacky like leverRod mesh
+                KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
+                if (!plateDown) {
+                    object.getSpatial().move(0, -0.75f, 0);
+                    route.properties.putBoolean(object.getObjId(), true);
+
+                    kinematicObj.queueDelay(app, DELAY);
+                    kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
+                    kinematicObj.queueProperty(app, 0.0f, route.properties, object.getObjId(), false);
+                }
+                if (kinematicObj.getTasks().isEmpty()) {
+                    throw new RuntimeException("Illegal pressure plate state for: " + object.getObjId());
+                } else {
+                    DemoTask currentTask = kinematicObj.getTasks().getFirst();
+                    if (currentTask instanceof KinematicTask) {
+                        currentTask.resetTime();
+                    } else if (currentTask instanceof TranslationTask) {
+                        kinematicObj.getTasks().remove(currentTask);
+                        float x = (-0.75f*currentTask.getCurrentTime()/currentTask.getCompletionTime());
+                        object.getSpatial().move(0, x, 0);
+                    } else if (currentTask instanceof AddPropertyTask) {
+                        kinematicObj.getTasks().remove(currentTask);
+                    }
+                }
+            }
+        }
+    };
+    
+    
 }
