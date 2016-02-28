@@ -1,6 +1,7 @@
 package uk.ac.cam.echo2016.dynademo;
 
 
+import com.jme3.bounding.BoundingBox;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
 import com.jme3.light.PointLight;
@@ -64,7 +65,7 @@ public class Initialiser {
             addLight(app, route, lightCoords[i], spatialNames[i]);
         }
         // EVENTS
-        eLoc = new LocationEvent("Node1", new Vector3f(-80, 1, -40), 40, 14, 50) {
+        eLoc = new LocationEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50)) {
 
             @Override
             public void onDemoEvent(MainApplication app) {
@@ -96,6 +97,7 @@ public class Initialiser {
         LocationEvent eLoc;
         InteractionEvent eInter;
         DemoLight light;
+        BoundingBox bound;
         
         route = new DemoRoute("PuzzleRoute", "Scenes/PuzzleRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45),
                 new Vector3f(0, 0, 1));
@@ -108,11 +110,14 @@ public class Initialiser {
 
         // Crate
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
+        bound = new BoundingBox(new Vector3f(0, 0, 0), 1.5f, 1.5f, 1.5f);
         crate.setLocalTranslation(0, 0, -30);
+        
         // object physics
-        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true);
+        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true, bound);
         crateObj.getLights().add(light);
         route.objects.add(crateObj);
+        
         // object events
         eInter = new InteractionEvent("crateInteraction", crateObj){
             @Override
@@ -125,10 +130,11 @@ public class Initialiser {
         // PressurePlate
         Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
+        bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f);
         pressPlate1.setLocalTranslation(-5f, 0, 5f);
         pressPlate2.setLocalTranslation(-5f, 0, -5f);
-        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true);
-        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true);
+        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound);
+        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound);
         plateObj1.getLights().add(light);
         plateObj2.getLights().add(light);
         route.objects.add(plateObj1);
@@ -136,11 +142,16 @@ public class Initialiser {
         
         route.properties.putBoolean(plateObj1.getObjId(), false);
         route.properties.putBoolean(plateObj2.getObjId(), false);
-        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
+        
+        bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
+//        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f),  3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
+        eLoc = new PressurePlateEvent("pressurePlate1", bound, plateObj1);
         // TODO bad code
         ((PressurePlateEvent)eLoc).activators.add(crateObj);
         route.locEvents.add(eLoc);
-        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0f, -6.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj2);
+        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
+//        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0f, -6.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj2);
+        eLoc = new PressurePlateEvent("pressurePlate2", bound, plateObj2);
         ((PressurePlateEvent)eLoc).activators.add(crateObj);
         route.locEvents.add(eLoc);
         
@@ -172,7 +183,8 @@ public class Initialiser {
         leverBaseObj.getLights().add(light);
         route.objects.add(leverBaseObj);
         
-        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
+        // TODO bounding box actually required? see button
+        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null);
         leverObj.getLights().add(light);
         route.objects.add(leverObj);
         
@@ -227,7 +239,7 @@ public class Initialiser {
         button.move(new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f)));
         
         // object physics
-        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true);
+        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null);
         buttonObj.getLights().add(light);
         route.objects.add(buttonObj);
         
@@ -303,8 +315,8 @@ public class Initialiser {
     private static class PressurePlateEvent extends ProximityEvent {
         public final static int DELAY = 1;
         
-        public PressurePlateEvent(String id, Vector3f loc, float width, float height, float depth, DemoObject object) {
-            super(id, loc, width, height, depth, object);
+        public PressurePlateEvent(String id, BoundingBox bound, DemoObject object) {
+            super(id, bound, object);
         }
 
         @Override

@@ -294,13 +294,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     @Override
     public void simpleUpdate(float tpf) {
-//         if (!rootNode.descendantMatches("Models/PressurePlate.blend").isEmpty()) {
-//         Spatial spat = rootNode.descendantMatches("Models/PressurePlate.blend").get(0);
-//         System.out.println(spat.getName());
-//         System.out.println(spat.getWorldTranslation().x);
-//         System.out.println(spat.getWorldTranslation().y);
-//         System.out.println(spat.getWorldTranslation().z);
-//         }
+         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
+         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
+         System.out.println(spat.getName());
+         System.out.println(spat.getWorldTranslation().x);
+         System.out.println(spat.getWorldTranslation().y);
+         System.out.println(spat.getWorldTranslation().z);
+         }
 //        System.out.println(playerControl.getPhysicsLocation().y);
         if (!isPaused) {
             // Find direction of camera (and rotation)

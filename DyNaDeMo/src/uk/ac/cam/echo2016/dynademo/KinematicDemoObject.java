@@ -1,6 +1,7 @@
 package uk.ac.cam.echo2016.dynademo;
 
 import android.os.BaseBundle;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.ArrayDeque;
@@ -12,8 +13,8 @@ public class KinematicDemoObject extends DemoObject {
     
     private final ArrayDeque<DemoTask> tasks = new ArrayDeque<>();
     
-    public KinematicDemoObject(String objId, Spatial spatial, float mass, boolean isMainParent) {
-        super(objId, spatial, isMainParent);
+    public KinematicDemoObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound) {
+        super(objId, spatial, isMainParent, bound);
         setMass(mass);
     }
     public void queueDisplacement(MainApplication app, float completionTime, Vector3f direction, float distance) {
