@@ -381,7 +381,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             break;
         case "Interact":
             if (isPressed) {
-                if (gameScreen.isTextShowing() && gameScreen.isEnabled()) {
+                if (gameScreen.isTextShowing() && gameScreen == nifty.getCurrentScreen().getScreenController()) {
                     gameScreen.progressThroughText();
                 } else if (draggedObject != null) {
                     // Drop current Object held
