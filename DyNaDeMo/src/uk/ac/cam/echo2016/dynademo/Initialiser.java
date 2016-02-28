@@ -375,13 +375,26 @@ public class Initialiser {
         
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
 //        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f),  3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
-        tLocEvent = new PressurePlateEvent("pressurePlate1", bound, plateObj1);
+        tLocEvent = new PressurePlateEvent("pressurePlate1", bound, plateObj1) {
+
+            @Override
+            public void onPush() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
         // TODO bad code
         ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
 //        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0f, -6.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj2);
-        tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2);
+        tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2) {
+
+            @Override
+            public void onPush() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+            
+        };
         ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
          
@@ -390,8 +403,11 @@ public class Initialiser {
         };
         
         Spatial door1 = extractDoor(app, 0);
-        door1.setLocalTranslation(10f, 2.5f, 0f);
-//        KinematicDemoObject doorObj1 = new KinematicDemoObject(("door1"), door1, 1f, true, bound)
+        
+        door1.setLocalTranslation(10f, 0f, 2.5f);
+        KinematicDemoObject doorObj1 = new KinematicDemoObject(("door1"), door1, 1f, true, null);
+        doorObj1.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(doorObj1);
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -434,9 +450,9 @@ public class Initialiser {
     private static Spatial extractDoor(MainApplication app, int numberOfHandles) {
         Spatial doors = app.getAssetManager().loadModel("Models/Doors.j3o");
         switch (numberOfHandles) {
-        case 0: ((Node) doors).descendantMatches("BlankDoor").get(0);
-        case 1: ((Node) doors).descendantMatches("BlankDoor").get(0);
-        case 2: ((Node) doors).descendantMatches("BlankDoor").get(0);
+        case 0: return ((Node) doors).descendantMatches("BlankDoor").get(0);
+        case 1: return ((Node) doors).descendantMatches("BlankDoor").get(0);
+        case 2: return ((Node) doors).descendantMatches("BlankDoor").get(0);
         default: throw new RuntimeException("Too many door handles");
         }
     }
@@ -467,13 +483,21 @@ public class Initialiser {
         }
     };
     
-    private static class PressurePlateEvent extends ProximityEvent {
+    private abstract static class PressurePlateEvent extends ProximityEvent {
         public final static int DELAY = 1;
         
         public PressurePlateEvent(String id, BoundingBox bound, DemoObject object) {
             super(id, bound, object);
         }
-
+        private abstract class functionTask extends DemoTask {
+            public functionTask(String taskQueueId, float completionTime) {
+                super(taskQueueId, completionTime);
+            }
+            @Override
+            public abstract void complete();
+        }
+        public abstract void onPush();
+        
         @Override
         public void onDemoEvent(MainApplication app) {
             DemoRoute route = app.routes.get("PuzzleRoute");
@@ -506,6 +530,7 @@ public class Initialiser {
                 }
             }
         }
+        
     };
     
     private static class ChoicePointEvent extends LocationEvent {
