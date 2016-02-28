@@ -135,7 +135,7 @@ public class Initialiser {
         
         // object physics
         KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null);
-        buttonObj.getLights().add(lightMap.get("Room"));
+        buttonObj.getLights().add(lightMap.get("RoomLight"));
         route.objects.add(buttonObj);
         
         // EVENTS
@@ -294,12 +294,12 @@ public class Initialiser {
         
         // object physics
         StaticDemoObject leverBaseObj = new StaticDemoObject("leverBase", leverRoot, true);
-        leverBaseObj.getLights().add(lightMap.get("Room"));
+        leverBaseObj.getLights().add(lightMap.get("RoomLight"));
         route.objects.add(leverBaseObj);
         
         // TODO bounding box actually required? see button
         KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null);
-        leverObj.getLights().add(lightMap.get("Room"));
+        leverObj.getLights().add(lightMap.get("RoomLight"));
         route.objects.add(leverObj);
         
         // EVENTS
@@ -605,11 +605,13 @@ public class Initialiser {
         
         public boolean getActionTaken() { return actionTaken; }
         public void setActionTaken(boolean isAction) {
+            System.out.println("actionTaken is now: " + isAction); //TODO remove
             actionTaken = isAction;
         }
         
         @Override
         public void onDemoEvent(MainApplication app) {
+            System.out.println("DemoEvent occurred");
             try {
                 if (actionTaken) {
                     app.getNarrativeInstance().startRoute(routeIfTrue);
