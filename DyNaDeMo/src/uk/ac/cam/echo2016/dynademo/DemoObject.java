@@ -32,6 +32,7 @@ public abstract class DemoObject {
         this.spatial = spatial;
         this.bound = bound;
         this.boundOffset = boundOffset;
+//        this.boundOffset = (bound == null)? null : bound.getCenter();
         this.isMainParent = isMainParent;
     }
 

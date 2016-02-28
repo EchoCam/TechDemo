@@ -1,7 +1,5 @@
 package uk.ac.cam.echo2016.dynademo;
 
-
-import uk.ac.cam.echo2016.dynademo.DemoDialogue;
 import java.util.ArrayDeque;
 import java.util.List;
 
@@ -9,7 +7,6 @@ import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
 import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
 import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 import uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen;
-
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -37,35 +34,19 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.shadow.AbstractShadowRenderer;
-<<<<<<< HEAD
-import com.jme3.shadow.DirectionalLightShadowRenderer;
-import com.jme3.shadow.PointLightShadowRenderer;
-
-import de.lessvoid.nifty.Nifty;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-
-import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
-import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
-import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
-=======
 import com.jme3.system.AppSettings;
-
 import de.lessvoid.nifty.Nifty;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
 import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
->>>>>>> 8c98960dc0a4220acb8d651355a3745d72a40122
+
 
 /**
  * @author tr393

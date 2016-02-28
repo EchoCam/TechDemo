@@ -99,9 +99,9 @@ public class Initialiser {
         addLight(app, tRoute, new Vector3f(20,10,5), new String[] {"TallCorridor1"});
         addLight(app, tRoute, new Vector3f(40,10,5), new String[] {"TallCorridor2"});
 
-        // Crate
+        // OBJECTS
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
-        bound = new BoundingBox(Vector3f.ZERO, 1.5f, 1.5f, 1.5f);
+        bound = new BoundingBox(new Vector3f(0,0.75f,0), 1.5f, 1.5f, 1.5f);
         crate.setLocalTranslation(0, 0, -30);
         
         // object physics
