@@ -31,6 +31,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     private String routeName; //The canonical name of the route the player selected from the character select screen
     private String location;
     private boolean textShowing = false;
+    private boolean progressQueued = false;
     private Deque<String> dialogueDeque = new ArrayDeque<>();
     private NarrativeInstance narrativeInstance;
 
@@ -92,6 +93,10 @@ public class GameScreen extends AbstractAppState implements ScreenController {
      * Simply pops the newest piece of text of the text queue and displays it.
      */
     public void progressThroughText() {
+        if(nifty == null || nifty.getCurrentScreen().getScreenController() != this) {
+            progressQueued = true;
+            return;
+        }
         if (!dialogueDeque.isEmpty()) {
             setDialogueText(dialogueDeque.pollFirst());
         } else {
@@ -140,6 +145,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         // Bind the mouse to the screen so it is used to rotate the camera
         app.getFlyByCamera().setEnabled(true);
         app.getFlyByCamera().setDragToRotate(false); // tr393  - I don't know why we need this
+        if(progressQueued) progressThroughText();
     }
 
     /**

@@ -490,5 +490,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }
         loadRoute(route);
+        gameScreen.flushDialogueTextSequence();
+        gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
 }

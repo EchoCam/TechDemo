@@ -69,6 +69,11 @@ public class Initialiser {
         tLocEvent = new ExitRouteEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
         tRoute.locEvents.add(tLocEvent);
         
+        tRoute.startupTextSequence = new String[]{
+            "Press 'e' on to scroll through this text...",
+            "Pleas enjoy DyNaDeMo!"
+        };
+        
         routes.put(tRoute.getId(), tRoute);
     }
     
@@ -296,6 +301,10 @@ public class Initialiser {
         tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2);
         ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
+        
+        tRoute.startupTextSequence = new String[] {
+            "Press 'e' to interact with objects."
+        };
         
         routes.put(tRoute.getId(), tRoute);
     }
