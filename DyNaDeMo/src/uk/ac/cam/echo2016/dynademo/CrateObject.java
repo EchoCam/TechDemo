@@ -8,6 +8,7 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public class CrateObject extends DynamicDemoObject implements InteractableObject {
+
     public CrateObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound) {
         super(objId, spatial, mass, isMainParent, bound);
     }

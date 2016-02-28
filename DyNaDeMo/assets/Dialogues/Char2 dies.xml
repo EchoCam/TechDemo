@@ -2,7 +2,7 @@
 <protagonist name="Char2">
     <dialogue speaker="You" id="You1">
         <text nextID="END">There is a plaque under the head, read it?</text>
-         <options>
+        <options>
             <option nextID="Plaque1">Yes.</option>
             <option nextID="END">No.</option>
         </options>

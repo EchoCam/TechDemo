@@ -10,17 +10,19 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public abstract class PressurePlateObject extends KinematicDemoObject {
+
     public final static int DELAY = 1;
-    
+
     public PressurePlateObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound) {
         super(objId, spatial, mass, isMainParent, bound);
     }
 
     public abstract void onPressed();
+
     public abstract void onRelease();
 
     public void activate(MainApplication app) {
-        
+
         DemoRoute route = app.routes.get("PuzzleRoute");
         if (!(route.properties.containsKey(getObjId()))) {
             throw new RuntimeException("Error: Property not found.");
@@ -35,7 +37,7 @@ public abstract class PressurePlateObject extends KinematicDemoObject {
             queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
             queueProperty(app, 0.0f, route.properties, getObjId(), false);
             onPressed();
-            app.addTask(new DemoTask(getObjId(), 0f){
+            app.addTask(new DemoTask(getObjId(), 0f) {
                 @Override
                 public void complete() {
                     onRelease();
@@ -57,5 +59,4 @@ public abstract class PressurePlateObject extends KinematicDemoObject {
             }
         }
     }
-    
 }

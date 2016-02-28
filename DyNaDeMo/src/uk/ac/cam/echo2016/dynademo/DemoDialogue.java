@@ -76,13 +76,11 @@ public class DemoDialogue {
         return false;
     }
 
-    
     public String getSpeakingCharacter() {
         Element elem = (Element) currentnode;
         String name = elem.getAttribute("speaker");
         return name;
     }
-    
 
     public NodeList getDialogueOptionsNodes() {
         if (this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
@@ -127,7 +125,7 @@ public class DemoDialogue {
     public String getCurrentCharacter() {
         return currentCharacter;
     }
-    
+
     public void moveToNextDialogue() {
         try {
             if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
@@ -174,5 +172,4 @@ public class DemoDialogue {
         }
 
     }
-
 }

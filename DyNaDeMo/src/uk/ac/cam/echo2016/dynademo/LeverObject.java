@@ -10,14 +10,15 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public class LeverObject extends KinematicDemoObject implements InteractableObject {
+
     private int leverCount = 0;
     private Initialiser.ChoicePointEvent cpe;
-    
-    public LeverObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound,Initialiser.ChoicePointEvent cpe) {
+
+    public LeverObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, Initialiser.ChoicePointEvent cpe) {
         super(objId, spatial, mass, isMainParent, bound);
         this.cpe = cpe;
     }
-    
+
     @Override
     public void interact(MainApplication app) {
         DemoRoute leverRoute = app.routes.get("LeverRoute");

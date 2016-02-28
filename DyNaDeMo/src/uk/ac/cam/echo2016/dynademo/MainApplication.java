@@ -203,8 +203,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().remove(landscape);
         for (DemoObject object : currentRoute.objects) {
             // TODO clean up physicsSpace (save info?)
-            if (object.isIsMainParent())
+            if (object.isIsMainParent()) {
                 rootNode.detachChild(object.getSpatial());
+            }
 
             bulletAppState.getPhysicsSpace().remove(object.getSpatial());
 
@@ -230,15 +231,18 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         // Load route objects and add rigidbodycontrols
         for (DemoObject object : route.objects) {
-            if (object.isIsMainParent())
+            if (object.isIsMainParent()) {
                 rootNode.attachChild(object.getSpatial());
+            }
 
             RigidBodyControl rbc = new RigidBodyControl(object.getMass());
             object.getSpatial().addControl(rbc);
-            if (object instanceof KinematicDemoObject)
+            if (object instanceof KinematicDemoObject) {
                 rbc.setKinematic(true);
-            if (object instanceof DynamicDemoObject)
+            }
+            if (object instanceof DynamicDemoObject) {
                 rbc.setFriction(1.5f);
+            }
             bulletAppState.getPhysicsSpace().add(rbc);
             for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().addLight(dLight.light);
@@ -364,8 +368,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     System.out.println("TaskType: " + task.getClass() + " from queue: " + task.getTaskQueueId() + " completed");
                     task.complete();
                     queue.pop();
-                    if (queue.isEmpty())
+                    if (queue.isEmpty()) {
                         taskEventBus.remove(task.getTaskQueueId());
+                    }
                 }
             }
         }
@@ -382,7 +387,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             taskEventBus.put(task.getTaskQueueId(), taskQueue);
         }
     }
-    
+
     @Override
     public void onAction(String keyName, boolean isPressed, float tpf) {
         switch (keyName) {

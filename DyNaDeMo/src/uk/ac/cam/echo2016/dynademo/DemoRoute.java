@@ -13,6 +13,7 @@ import java.util.HashMap;
  * @author tr393
  */
 public class DemoRoute {
+
     private final String id;
     private final String sceneFile;
     private Vector3f startLoc;
@@ -27,7 +28,6 @@ public class DemoRoute {
 //    public ArrayList<Spatial> staticObjects = new ArrayList<>();
     // public Node interactableNode = new Node("Interactables");
     public HashMap<Spatial, InteractionEvent> interactions = new HashMap<>();
-    
     public String[] startupTextSequence = new String[0];
 
     public DemoRoute(String id, String sceneFile, Vector3f startLoc, Vector3f startDir) {
@@ -55,9 +55,9 @@ public class DemoRoute {
 
     /**
      * Added the pair to a hash map used to find an object's event
-     * 
+     *
      * @param s
-     * @param e 
+     * @param e
      */
     public void setInteractable(Spatial s, InteractionEvent e) {
         // interactableNode.attachChild(s);

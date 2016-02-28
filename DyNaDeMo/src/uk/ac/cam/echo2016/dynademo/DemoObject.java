@@ -7,10 +7,11 @@ import java.util.ArrayList;
 
 /**
  * Represents objects not part of the world mesh. Note specific lights must also be added to lights arraylist.
- * 
+ *
  * @author tr393
  */
 public abstract class DemoObject {
+
     private final String objId;
     private Spatial spatial;
     private ArrayList<DemoLight> lights = new ArrayList<>();
@@ -20,7 +21,7 @@ public abstract class DemoObject {
     private boolean isMainParent;
 
     /**
-     * 
+     *
      * @param spatial - {@code Spatial} associated with this object
      * @param light - {@code DemoLight} used to light this object
      * @param mass - int mass is set to 0f if physicsType set to static
@@ -31,8 +32,8 @@ public abstract class DemoObject {
         this.objId = objId;
         this.spatial = spatial;
         this.bound = bound;
-        this.boundOffset = (bound == null)? null : bound.getCenter().clone();
-        
+        this.boundOffset = (bound == null) ? null : bound.getCenter().clone();
+
         this.isMainParent = isMainParent;
     }
 

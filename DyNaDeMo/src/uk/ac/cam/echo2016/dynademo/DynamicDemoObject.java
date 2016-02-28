@@ -8,6 +8,7 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public class DynamicDemoObject extends DemoObject {
+
     public DynamicDemoObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound) {
         super(objId, spatial, isMainParent, bound);
         setMass(mass);

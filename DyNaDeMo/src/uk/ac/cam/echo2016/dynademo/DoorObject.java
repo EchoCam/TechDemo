@@ -8,12 +8,13 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public class DoorObject extends KinematicDemoObject {
+
     private boolean opening = false;
-    
+
     public DoorObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound) {
         super(objId, spatial, mass, isMainParent, bound);
     }
-    
+
     public void open(MainApplication app) {
         if (!opening) {
             if (getTasks().isEmpty()) {
@@ -31,6 +32,7 @@ public class DoorObject extends KinematicDemoObject {
         }
         opening = true;
     }
+
     public void close(MainApplication app) {
         if (opening) {
             if (getTasks().isEmpty()) {
