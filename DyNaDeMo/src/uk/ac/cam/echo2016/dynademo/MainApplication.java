@@ -300,6 +300,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
          System.out.println(spat.getWorldTranslation().x);
          System.out.println(spat.getWorldTranslation().y);
          System.out.println(spat.getWorldTranslation().z);
+         System.out.println();
          }
 //        System.out.println(playerControl.getPhysicsLocation().y);
         if (!isPaused) {

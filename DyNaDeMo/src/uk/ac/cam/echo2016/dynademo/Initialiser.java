@@ -110,11 +110,11 @@ public class Initialiser {
 
         // Crate
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
-        bound = new BoundingBox(new Vector3f(0, 0, 0), 1.5f, 1.5f, 1.5f);
+        bound = new BoundingBox(Vector3f.ZERO, 1.5f, 1.5f, 1.5f);
         crate.setLocalTranslation(0, 0, -30);
         
         // object physics
-        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true, bound);
+        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true, bound, new Vector3f(0,0.75f,0));
         crateObj.getLights().add(light);
         route.objects.add(crateObj);
         
@@ -130,11 +130,11 @@ public class Initialiser {
         // PressurePlate
         Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
-        bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f);
+        bound = new BoundingBox(Vector3f.ZERO, 1.5f, 0.4f, 1.5f);
         pressPlate1.setLocalTranslation(-5f, 0, 5f);
         pressPlate2.setLocalTranslation(-5f, 0, -5f);
-        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound);
-        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound);
+        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(0,0.4f,0));
+        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound, new Vector3f(0,0.4f,0));
         plateObj1.getLights().add(light);
         plateObj2.getLights().add(light);
         route.objects.add(plateObj1);
@@ -184,7 +184,7 @@ public class Initialiser {
         route.objects.add(leverBaseObj);
         
         // TODO bounding box actually required? see button
-        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null);
+        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null, null);
         leverObj.getLights().add(light);
         route.objects.add(leverObj);
         
@@ -239,7 +239,7 @@ public class Initialiser {
         button.move(new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f)));
         
         // object physics
-        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null);
+        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null, null);
         buttonObj.getLights().add(light);
         route.objects.add(buttonObj);
         

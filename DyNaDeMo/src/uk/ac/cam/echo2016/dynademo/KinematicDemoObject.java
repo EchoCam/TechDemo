@@ -13,8 +13,8 @@ public class KinematicDemoObject extends DemoObject {
     
     private final ArrayDeque<DemoTask> tasks = new ArrayDeque<>();
     
-    public KinematicDemoObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound) {
-        super(objId, spatial, isMainParent, bound);
+    public KinematicDemoObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, Vector3f boundOffset) {
+        super(objId, spatial, isMainParent, bound, boundOffset);
         setMass(mass);
     }
     public void queueDisplacement(MainApplication app, float completionTime, Vector3f direction, float distance) {

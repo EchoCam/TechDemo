@@ -1,6 +1,7 @@
 package uk.ac.cam.echo2016.dynademo;
 
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ public abstract class DemoObject {
     private ArrayList<DemoLight> lights = new ArrayList<>();
     private float mass;
     private BoundingVolume bound;
+    private Vector3f boundOffset;
     private boolean isMainParent;
 
     /**
@@ -25,10 +27,11 @@ public abstract class DemoObject {
      * @param isMainParent - used to prevent separation of node with differnt physics types on load
      * @param boundingVolume - Null for static objects
      */
-    public DemoObject(String objId, Spatial spatial, boolean isMainParent, BoundingVolume bound) {
+    public DemoObject(String objId, Spatial spatial, boolean isMainParent, BoundingVolume bound, Vector3f boundOffset) {
         this.objId = objId;
         this.spatial = spatial;
         this.bound = bound;
+        this.boundOffset = boundOffset;
         this.isMainParent = isMainParent;
     }
 
@@ -71,7 +74,7 @@ public abstract class DemoObject {
      * @return the bound
      */
     public BoundingVolume getBound() {
-        bound.setCenter(spatial.getWorldTranslation());
+        bound.setCenter(spatial.getWorldTranslation().add(boundOffset));
         return bound;
     }
 
