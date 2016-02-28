@@ -32,6 +32,7 @@ public class Initialiser {
     public static HashMap<String, DemoRoute> initialiseRoutes(MainApplication app) {
         final HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
         addBedroomRoute(app, routes);
+        addObesrvationRoute(app, routes);
         addPuzzleRoute(app, routes);
         addLeverRoute(app, routes);
         addButtonRoute(app, routes);
@@ -89,6 +90,20 @@ public class Initialiser {
             
         };
         route.locEvents.add(eLoc);
+        routes.put(route.getId(), route);
+    }
+    
+    private static void addObesrvationRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
+        DemoRoute route;
+        LocationEvent eLoc;
+        DemoLight light;
+
+        route = new DemoRoute("ObservationRoute", "Scenes/ObservationRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+                new Vector3f(1, 0, 0));
+
+        // LIGHTS
+        light = addLight(app, route, new Vector3f(0, 3f, 0), new String[] {"Room"});
+        
         routes.put(route.getId(), route);
     }
     
