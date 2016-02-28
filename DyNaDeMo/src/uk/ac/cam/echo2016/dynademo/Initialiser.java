@@ -145,11 +145,13 @@ public class Initialiser {
         // PressurePlate
         Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
-        bound = new BoundingBox(Vector3f.ZERO, 1.5f, 0.4f, 1.5f);
+        Vector3f v = new Vector3f(0,0.4f,0);
+        bound = new BoundingBox(v, 1.5f, 0.4f, 1.5f);
         pressPlate1.setLocalTranslation(-5f, 0, 5f);
         pressPlate2.setLocalTranslation(-5f, 0, -5f);
-        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(0,0.4f,0));
-        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound, new Vector3f(0,0.4f,0));
+        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound, v);
+        bound = new BoundingBox(new Vector3f(0,0.4f,0), 1.5f, 0.4f, 1.5f);
+        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound, v);
         plateObj1.getLights().add(lightMap.get("RoomLight"));
         plateObj2.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(plateObj1);
