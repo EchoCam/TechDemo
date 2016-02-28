@@ -20,21 +20,25 @@ public class KinematicDemoObject extends DemoObject {
     public void queueDisplacement(MainApplication app, float completionTime, Vector3f direction, float distance) {
         Vector3f start = getSpatial().getLocalTranslation();
         Vector3f end = getSpatial().getLocalTranslation().add(direction.normalize().mult(distance));
-        getTasks().add(new TranslationTask(getObjId(), completionTime, this, end.subtract(start), end));
-        app.addTask(getObjId(), getTasks());
+        DemoTask task = new TranslationTask(getObjId(), completionTime, this, end.subtract(start), end);
+        getTasks().add(task);
+        app.addTask(task);
     }
     public void queueRotation(MainApplication app, float completionTime, Vector3f axis, float angle) {
         Vector3f end = axis.normalize().mult(angle/2);
-        getTasks().add(new RotationTask(getObjId(), completionTime, this, axis, angle, null));
-        app.addTask(getObjId(), getTasks());
+        DemoTask task = new RotationTask(getObjId(), completionTime, this, axis, angle, null);
+        getTasks().add(task);
+        app.addTask(task);
     }
     public void queueDelay(MainApplication app, float completionTime) {
-        getTasks().add(new KinematicTask(getObjId(), completionTime, this));
-        app.addTask(getObjId(), getTasks());
+        DemoTask task = new KinematicTask(getObjId(), completionTime, this);
+        getTasks().add(task);
+        app.addTask(task);
     }
     public void queueProperty(MainApplication app, float completionTime, BaseBundle properties, String key, Object property) {
-        getTasks().add(new AddPropertyTask(getObjId(), completionTime, properties, key, property));
-        app.addTask(getObjId(), getTasks());
+        DemoTask task = new AddPropertyTask(getObjId(), completionTime, properties, key, property);
+        getTasks().add(task);
+        app.addTask(task);
     }
 
     /**

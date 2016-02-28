@@ -367,8 +367,8 @@ public class Initialiser {
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         bound = new BoundingBox(new Vector3f(0,0.4f,0), 1.5f, 0.4f, 1.5f);
         
-        pressPlate1.setLocalTranslation(-5f, 0, 5f);
-        pressPlate2.setLocalTranslation(-5f, 0, -5f);
+        pressPlate1.setLocalTranslation(-5f, 0, -5f);
+        pressPlate2.setLocalTranslation(-5f, 0, 5f);
         
         KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound);
         bound = new BoundingBox(new Vector3f(0,0.4f,0), 1.5f, 0.4f, 1.5f);
@@ -381,25 +381,39 @@ public class Initialiser {
         tRoute.properties.putBoolean(plateObj1.getObjId(), false);
         tRoute.properties.putBoolean(plateObj2.getObjId(), false);
         
-        bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
+        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
 //        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f),  3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
         tLocEvent = new PressurePlateEvent("pressurePlate1", bound, plateObj1) {
 
             @Override
-            public void onPush() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            public void onPressed() {
+                System.out.println("Hi");
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void onRelease() {
+                System.out.println("Bye");
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
         // TODO bad code
         ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
-        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
+        bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
 //        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0f, -6.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj2);
         tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2) {
+            
+            @Override
+            public void onPressed() {
+                System.out.println("Hi");
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
 
             @Override
-            public void onPush() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            public void onRelease() {
+                System.out.println("Bye");
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
             
         };
@@ -500,14 +514,8 @@ public class Initialiser {
         public PressurePlateEvent(String id, BoundingBox bound, DemoObject object) {
             super(id, bound, object);
         }
-        private abstract class functionTask extends DemoTask {
-            public functionTask(String taskQueueId, float completionTime) {
-                super(taskQueueId, completionTime);
-            }
-            @Override
-            public abstract void complete();
-        }
-        public abstract void onPush();
+        public abstract void onPressed();
+        public abstract void onRelease();
         
         @Override
         public void onDemoEvent(MainApplication app) {
@@ -521,10 +529,17 @@ public class Initialiser {
             if (!plateDown) {
                 object.getSpatial().move(0, -0.75f, 0);
                 route.properties.putBoolean(object.getObjId(), true);
-
+                
                 kinematicObj.queueDelay(app, DELAY);
                 kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
                 kinematicObj.queueProperty(app, 0.0f, route.properties, object.getObjId(), false);
+                onPressed();
+                app.addTask(new DemoTask(object.getObjId(), 0f){
+                    @Override
+                    public void complete() {
+                        onRelease();
+                    }
+                });
             }
             if (kinematicObj.getTasks().isEmpty()) {
                 throw new RuntimeException("Error: Illegal pressure plate state for: " + object.getObjId());
