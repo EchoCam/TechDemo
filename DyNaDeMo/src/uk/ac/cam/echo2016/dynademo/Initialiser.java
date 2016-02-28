@@ -23,9 +23,12 @@ import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
  * @author tr393
  */
 public class Initialiser {
+    private static DemoRoute tRoute;
     private static String[] tLightNames;
     private static Vector3f[] tLightCoords;
     private static String[][] tLightAffected;
+    private static LocationEvent tLocEvent;
+    private static InteractionEvent tInterEvent;
     /**
      * @param app - the application to attach events and renderers to
      * @return
@@ -41,11 +44,8 @@ public class Initialiser {
         return routes;
     }
 
-    private static void addBedroomRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
-        LocationEvent eLoc;
-        
-        route = new DemoRoute("BedroomRoute", "Scenes/BedroomRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+    private static void addBedroomRoute(MainApplication app, HashMap<String, DemoRoute> routes) {        
+        tRoute = new DemoRoute("BedroomRoute", "Scenes/BedroomRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -62,13 +62,13 @@ public class Initialiser {
             {"Room1"}, {"Room2"}, {"Room3"}, {"Room4"},
             {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor"},};
         
-        addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        eLoc = new ExitRouteEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
-        route.locEvents.add(eLoc);
+        tLocEvent = new ExitRouteEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
+        tRoute.locEvents.add(tLocEvent);
         
-        routes.put(route.getId(), route);
+        routes.put(tRoute.getId(), tRoute);
     }
     
     private static void addObesrvationRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
@@ -86,20 +86,18 @@ public class Initialiser {
     }
     
     private static void addPuzzleRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
-        LocationEvent eLoc;
-        InteractionEvent eInter;
+        InteractionEvent tInterEvent;
         DemoLight light;
         BoundingBox bound;
         
-        route = new DemoRoute("PuzzleRoute", "Scenes/PuzzleRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45),
+        tRoute = new DemoRoute("PuzzleRoute", "Scenes/PuzzleRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45),
                 new Vector3f(0, 0, 1));
         // LIGHTS
-        light = addLight(app, route, new Vector3f(0, 8f, 0), new String[] {"Room"});
-        addLight(app, route, new Vector3f(0,6,-35), new String[] {"Corridor1"});
-        addLight(app, route, new Vector3f(0,6,35), new String[] {"Corridor2"});
-        addLight(app, route, new Vector3f(20,10,5), new String[] {"TallCorridor1"});
-        addLight(app, route, new Vector3f(40,10,5), new String[] {"TallCorridor2"});
+        light = addLight(app, tRoute, new Vector3f(0, 8f, 0), new String[] {"Room"});
+        addLight(app, tRoute, new Vector3f(0,6,-35), new String[] {"Corridor1"});
+        addLight(app, tRoute, new Vector3f(0,6,35), new String[] {"Corridor2"});
+        addLight(app, tRoute, new Vector3f(20,10,5), new String[] {"TallCorridor1"});
+        addLight(app, tRoute, new Vector3f(40,10,5), new String[] {"TallCorridor2"});
 
         // Crate
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
@@ -109,16 +107,16 @@ public class Initialiser {
         // object physics
         DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true, bound, new Vector3f(0,0.75f,0));
         crateObj.getLights().add(light);
-        route.objects.add(crateObj);
+        tRoute.objects.add(crateObj);
         
         // object events
-        eInter = new InteractionEvent("crateInteraction", crateObj){
+        tInterEvent = new InteractionEvent("crateInteraction", crateObj){
             @Override
             public void onDemoEvent(MainApplication app) {
                 app.drag(getObject().getSpatial());
             }
         };
-        route.setInteractable(crate, eInter);
+        tRoute.setInteractable(crate, tInterEvent);
         
         // PressurePlate
         Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
@@ -130,25 +128,25 @@ public class Initialiser {
         KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound, new Vector3f(0,0.4f,0));
         plateObj1.getLights().add(light);
         plateObj2.getLights().add(light);
-        route.objects.add(plateObj1);
-        route.objects.add(plateObj2);
+        tRoute.objects.add(plateObj1);
+        tRoute.objects.add(plateObj2);
         
-        route.properties.putBoolean(plateObj1.getObjId(), false);
-        route.properties.putBoolean(plateObj2.getObjId(), false);
+        tRoute.properties.putBoolean(plateObj1.getObjId(), false);
+        tRoute.properties.putBoolean(plateObj2.getObjId(), false);
         
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
 //        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f),  3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
-        eLoc = new PressurePlateEvent("pressurePlate1", bound, plateObj1);
+        tLocEvent = new PressurePlateEvent("pressurePlate1", bound, plateObj1);
         // TODO bad code
-        ((PressurePlateEvent)eLoc).activators.add(crateObj);
-        route.locEvents.add(eLoc);
+        ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
+        tRoute.locEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
 //        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0f, -6.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj2);
-        eLoc = new PressurePlateEvent("pressurePlate2", bound, plateObj2);
-        ((PressurePlateEvent)eLoc).activators.add(crateObj);
-        route.locEvents.add(eLoc);
+        tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2);
+        ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
+        tRoute.locEvents.add(tLocEvent);
         
-        routes.put(route.getId(), route);
+        routes.put(tRoute.getId(), tRoute);
     }
     
     private static void addLeverRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
