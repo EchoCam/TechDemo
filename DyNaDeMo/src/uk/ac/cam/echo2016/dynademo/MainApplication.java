@@ -71,7 +71,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private HashMap<String, ArrayDeque<DemoTask>> taskEventBus = new HashMap<>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
-
     // private currentRoute/Character
     public Nifty nifty;
     // Screens
@@ -119,7 +118,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         nifty.addXml("Interface/Nifty/characterSelect.xml");
         nifty.addXml("Interface/Nifty/pauseMenu.xml");
         nifty.addXml("Interface/Nifty/game.xml");
-     // nifty.addXml("Interface/Nifty/dialogue.xml");
+        // nifty.addXml("Interface/Nifty/dialogue.xml");
 
 
         mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
@@ -158,7 +157,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
 
         // Placeholder routes for later initialization
-        currentWorld = new Geometry("placeholder", new Box(1,1,1));
+        currentWorld = new Geometry("placeholder", new Box(1, 1, 1));
         rootNode.attachChild(currentWorld);
         landscape = new RigidBodyControl();//sceneShape, 0f);
         currentWorld.addControl(landscape);
@@ -197,6 +196,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //        g.setMaterial(mat);
 //        playerNode.attachChild(g);
     }
+
     public void loadRoute(DemoRoute route) {
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
@@ -209,7 +209,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
             bulletAppState.getPhysicsSpace().remove(object.getSpatial());
 
-            for(DemoLight dLight : object.getLights()) {
+            for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().removeLight(dLight.light);
             }
         }
@@ -236,8 +236,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
             RigidBodyControl rbc = new RigidBodyControl(object.getMass());
             object.getSpatial().addControl(rbc);
-            if (object instanceof KinematicDemoObject) rbc.setKinematic(true);
-            if (object instanceof DynamicDemoObject) rbc.setFriction(1.5f);
+            if (object instanceof KinematicDemoObject)
+                rbc.setKinematic(true);
+            if (object instanceof DynamicDemoObject)
+                rbc.setFriction(1.5f);
             bulletAppState.getPhysicsSpace().add(rbc);
             for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().addLight(dLight.light);
@@ -329,7 +331,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             }
             playerControl.setWalkDirection(walkDirection.normalize().mult(25f * tpf));
             // Move camera to correspond to player
-            cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT*3/4, 0));
+            cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT * 3 / 4, 0));
 
             // Position carried items appropriately
             if (draggedObject != null) {
@@ -363,7 +365,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     System.out.println("TaskType: " + task.getClass() + " from queue: " + task.getTaskQueueId() + " completed");
                     task.complete();
                     queue.pop();
-                    if (queue.isEmpty()) taskEventBus.remove(task.getTaskQueueId());
+                    if (queue.isEmpty())
+                        taskEventBus.remove(task.getTaskQueueId());
                 }
             }
         }
