@@ -232,12 +232,22 @@ public class Initialiser {
         
         // object events
         eInter = new InteractionEvent("buttonInteraction", buttonObj) {
+            public final static int DELAY = 1;
+            public Vector3f displacement = new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f));
             @Override
             public void onDemoEvent(MainApplication app) {
+                // TODO hack removal
+                DemoRoute route = app.routes.get("ButtonRoute");
                 KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
-//                if (kinematicObj.getTasks().isEmpty())
-                System.out.println("hi");
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                
+                // TODO different property/affect?
+                route.properties.putBoolean(getObject().getObjId(), true);
+                
+                if (kinematicObj.getTasks().isEmpty()) {
+                    getObject().getSpatial().move(displacement.negate());
+                    kinematicObj.queueDelay(app, DELAY);
+                    kinematicObj.queueDisplacement(app, 0.1f, displacement, displacement.length());
+                }
             }
         };
         route.setInteractable(button, eInter);
