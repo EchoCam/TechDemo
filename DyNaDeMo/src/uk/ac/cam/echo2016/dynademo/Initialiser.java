@@ -492,6 +492,6 @@ public class Initialiser {
                 Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
             }
             app.nifty.gotoScreen("characterSelect");
-            app.getGameScreen().setDialogueTextSequence(new String[]{"Are you now in the puzzle room?"});        }
+        }
     }
 }
