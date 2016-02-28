@@ -3,8 +3,8 @@ package uk.ac.cam.echo2016.dynademo;
 /**
  * @author tr393
  */
-public abstract class InteractionEvent extends DemoEvent {
-    private final DemoObject object;
+public class InteractionEvent extends DemoEvent {
+    private final InteractableObject object;
     /**
      * This is used to store events occuring on interaction, e.g. opening doors, pressing a button, etc.
      * 
@@ -13,12 +13,17 @@ public abstract class InteractionEvent extends DemoEvent {
      * @param spatial
      *            - The Spatial object to be affected by the event
      */
-    public InteractionEvent(String id, DemoObject object) {
+    public InteractionEvent(String id, InteractableObject object) {
         super(id);
         this.object = object;
     }
+    
+    @Override
+    public void onDemoEvent(MainApplication app) {
+        object.interact(app);
+    }
 
-    public DemoObject getObject() {
+    public InteractableObject getObject() {
         return object;
     }
 }
