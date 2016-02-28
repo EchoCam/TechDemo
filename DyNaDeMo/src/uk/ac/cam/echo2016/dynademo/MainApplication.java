@@ -383,7 +383,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
         } else {
             taskQueue = new ArrayDeque<>();
             taskQueue.add(task);
-            System.out.println(task.getTaskQueueId() + " added");
             taskEventBus.put(task.getTaskQueueId(), taskQueue);
         }
     }
