@@ -125,8 +125,8 @@ public class Initialiser {
         // PressurePlate
         Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
-        pressPlate1.setLocalTranslation(-5f, 0.1f, 5f);
-        pressPlate2.setLocalTranslation(-5f, 0.1f, -5f);
+        pressPlate1.setLocalTranslation(-5f, 0, 5f);
+        pressPlate2.setLocalTranslation(-5f, 0, -5f);
         KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true);
         KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true);
         plateObj1.getLights().add(light);
@@ -136,9 +136,12 @@ public class Initialiser {
         
         route.properties.putBoolean(plateObj1.getObjId(), false);
         route.properties.putBoolean(plateObj2.getObjId(), false);
-        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1);
+        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
+        // TODO bad code
+        ((PressurePlateEvent)eLoc).activators.add(crateObj);
         route.locEvents.add(eLoc);
-        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0.1f, -6.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj2);
+        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0f, -6.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj2);
+        ((PressurePlateEvent)eLoc).activators.add(crateObj);
         route.locEvents.add(eLoc);
         
         routes.put(route.getId(), route);
@@ -306,35 +309,33 @@ public class Initialiser {
 
         @Override
         public void onDemoEvent(MainApplication app) {
-            if (app.getPlayerControl().onGround()) {
-                DemoRoute route = app.routes.get("PuzzleRoute");
-                if (!(route.properties.containsKey(object.getObjId()))) {
-                    throw new RuntimeException("Error: Property not found.");
-                }
-                Boolean plateDown = route.properties.getBoolean(object.getObjId());
-                // TODO again hacky like leverRod mesh
-                KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
-                if (!plateDown) {
-                    object.getSpatial().move(0, -0.75f, 0);
-                    route.properties.putBoolean(object.getObjId(), true);
+            DemoRoute route = app.routes.get("PuzzleRoute");
+            if (!(route.properties.containsKey(object.getObjId()))) {
+                throw new RuntimeException("Error: Property not found.");
+            }
+            Boolean plateDown = route.properties.getBoolean(object.getObjId());
+            // TODO again hacky like leverRod mesh
+            KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
+            if (!plateDown) {
+                object.getSpatial().move(0, -0.75f, 0);
+                route.properties.putBoolean(object.getObjId(), true);
 
-                    kinematicObj.queueDelay(app, DELAY);
-                    kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
-                    kinematicObj.queueProperty(app, 0.0f, route.properties, object.getObjId(), false);
-                }
-                if (kinematicObj.getTasks().isEmpty()) {
-                    throw new RuntimeException("Error: Illegal pressure plate state for: " + object.getObjId());
-                } else {
-                    DemoTask currentTask = kinematicObj.getTasks().getFirst();
-                    if (currentTask instanceof KinematicTask) {
-                        currentTask.resetTime();
-                    } else if (currentTask instanceof TranslationTask) {
-                        kinematicObj.getTasks().remove(currentTask);
-                        float x = (-0.75f*currentTask.getCurrentTime()/currentTask.getCompletionTime());
-                        object.getSpatial().move(0, x, 0);
-                    } else if (currentTask instanceof AddPropertyTask) {
-                        kinematicObj.getTasks().remove(currentTask);
-                    }
+                kinematicObj.queueDelay(app, DELAY);
+                kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
+                kinematicObj.queueProperty(app, 0.0f, route.properties, object.getObjId(), false);
+            }
+            if (kinematicObj.getTasks().isEmpty()) {
+                throw new RuntimeException("Error: Illegal pressure plate state for: " + object.getObjId());
+            } else {
+                DemoTask currentTask = kinematicObj.getTasks().getFirst();
+                if (currentTask instanceof KinematicTask) {
+                    currentTask.resetTime();
+                } else if (currentTask instanceof TranslationTask) {
+                    kinematicObj.getTasks().remove(currentTask);
+                    float x = (-0.75f * currentTask.getCurrentTime() / currentTask.getCompletionTime());
+                    object.getSpatial().move(0, x, 0);
+                } else if (currentTask instanceof AddPropertyTask) {
+                    kinematicObj.getTasks().remove(currentTask);
                 }
             }
         }

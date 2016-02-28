@@ -1,5 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import com.jme3.bounding.BoundingBox;
 import com.jme3.math.Vector3f;
 
 /**
@@ -28,11 +29,14 @@ public abstract class LocationEvent extends DemoEvent {
         trigHeight = height;
         trigDepth = depth;
     }
-
-    public boolean checkCondition(Vector3f playerLoc) {
-        
-        return playerLoc.x > trigLoc.x && playerLoc.x < trigLoc.x + trigWidth && playerLoc.y > trigLoc.y
-                && playerLoc.y < trigLoc.y + trigHeight && playerLoc.z > trigLoc.z
-                && playerLoc.z < trigLoc.z + trigDepth;
+    
+    public void checkAndFireEvent(MainApplication app, Vector3f playerLoc) {
+        if (overlapsThis(playerLoc)) onDemoEvent(app);
+    }
+    
+    public boolean overlapsThis(Vector3f location) {
+        return (location.x > trigLoc.x && location.x < trigLoc.x + trigWidth && location.y > trigLoc.y
+                && location.y < trigLoc.y + trigHeight && location.z > trigLoc.z
+                && location.z < trigLoc.z + trigDepth);
     }
 }

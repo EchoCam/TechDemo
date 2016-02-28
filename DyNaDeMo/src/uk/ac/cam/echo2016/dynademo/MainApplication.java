@@ -340,9 +340,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
             }
             // Check global location event queue
             for (LocationEvent e : locEventBus) {
-                if (e.checkCondition(playerControl.getPhysicsLocation())) {
-                    e.onDemoEvent(this);
-                }
+                // TODO cleanup
+                e.checkAndFireEvent(this, playerControl.getPhysicsLocation());
+//                if (e.checkCondition(playerControl.getPhysicsLocation())) {
+//                    e.onDemoEvent(this);
+//                }
             }
             // Update task queue
             ArrayDeque<ArrayDeque<DemoTask>> x = new ArrayDeque<>(taskEventBus.values());
@@ -474,7 +476,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void chooseRoute(String routeName) {
-        DemoRoute route = routes.get("ButtonRoute");
+        DemoRoute route = routes.get("PuzzleRoute");
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }
