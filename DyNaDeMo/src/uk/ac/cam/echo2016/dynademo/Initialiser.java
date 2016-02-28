@@ -40,8 +40,8 @@ public class Initialiser {
         addBedroomRoute(app, routes);
         addButtonRoute(app, routes);
         addDeathRoute(app, routes);
-        addDoorLeft(app, routes);
-        addDoorRight(app, routes);
+        addDoorLeftRoute(app, routes);
+        addDoorRightRoute(app, routes);
         addEscapeRoute(app, routes);
         addLeverRoute(app, routes);
         addObservationRoute(app, routes);
@@ -176,7 +176,7 @@ public class Initialiser {
         routes.put(route.getId(), route);
     }
     
-    private static void addDoorLeft(MainApplication app, final HashMap<String, DemoRoute> routes) {
+    private static void addDoorLeftRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         DemoRoute route = new DemoRoute("DoorLeft", "Scenes/DoorLeft.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
         
         //LIGHTS
@@ -195,7 +195,7 @@ public class Initialiser {
         routes.put(route.getId(), route);
     }
     
-    private static void addDoorRight(MainApplication app, final HashMap<String, DemoRoute> routes) {
+    private static void addDoorRightRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         DemoRoute route = new DemoRoute("DoorRight", "Scenes/DoorRight.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
         
         //LIGHTS
