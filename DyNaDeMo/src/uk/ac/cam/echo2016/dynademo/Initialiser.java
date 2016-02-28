@@ -303,7 +303,7 @@ public class Initialiser {
         route.objects.add(leverObj);
         
         // EVENTS
-        cpe = new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45,1,0), 5,14,5), "Choose left", "Choose right");
+        cpe = new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-10,1,0), 10,14,10), "Choose left", "Choose right");
         tRoute.locEvents.add(cpe);
         
         // object events
