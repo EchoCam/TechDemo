@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd">
+	<useStyles filename="nifty-default-styles.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+
+	<!-- +++++++++++++++++++++++++++++++++++++++ -->
+	<!-- lay out the HUD -->
+	<!-- +++++++++++++++++++++++++++++++++++++++ -->
+	<screen id="dialogue" controller="uk.ac.cam.echo2016.dynademo.screens.DialogueScreen">
+		<layer id="background" backgroundColor="#0000">
+		</layer>
+		<layer id="foreground" childLayout="vertical">
+			<panel id="panel_top" height="75%" width="75%" align="center"
+				valign="bottom" childLayout="horizontal" backgroundColor="#0000">
+
+			</panel>
+			<panel backgroundColor="#0045" id="dialogue-container" height="20%"
+				width="75%" align="center" childLayout="vertical">
+				<panel id="diag-top" height="20%" width="100%" align="center"
+					valign="center" childLayout="horizontal">
+					<text id="character-name-panel" text=""
+						font="Interface/Fonts/Default.fnt" width="100%" height="100%"
+						textHAlign="center" align="center" valign="center" wrap="true" />
+					<interact onClick="advanceText()" />
+				</panel>
+				<panel id="diag-bottom" height="*" width="100%" align="center"
+					valign="center" childLayout="horizontal">
+					<text id="dialogue-panel" text="" font="Interface/Fonts/Default.fnt"
+						width="100%" height="100%" align="center" valign="center" wrap="true" />
+					<interact onClick="advanceText()" />
+				</panel>
+				<panel id="diag-options" height="*" width="100%" align="center"
+					valign="center" childLayout="horizontal">
+					<!-- <control id="listBoxStatic" name="listBox" horizontal="false"
+						width="*" height="100%" childLayout="vertical" visibleToMouse="true">
+
+					</control> -->
+				</panel>
+
+			</panel>
+			<panel id="panel_bottom_padding" height="5%" width="75%" align="center"
+				valign="bottom" childLayout="horizontal" backgroundColor="#0000">
+			</panel>
+			<!-- </layer> -->
+		</layer>
+	</screen>
+</nifty>
