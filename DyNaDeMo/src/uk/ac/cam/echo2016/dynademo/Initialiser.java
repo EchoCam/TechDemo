@@ -389,6 +389,7 @@ public class Initialiser {
         public void onDemoEvent(MainApplication app) {
             try {
                 //Ending the route that was started to show the correct character select screen to the player
+                app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
                 app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
             } catch (GraphElementNotFoundException ex) {
                 Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
