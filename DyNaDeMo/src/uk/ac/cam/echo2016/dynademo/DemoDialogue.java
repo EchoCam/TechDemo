@@ -60,6 +60,7 @@ public class DemoDialogue {
     
     public void setCharacter(String character) {
         currentCharacter = character;
+        System.out.println(dialoguetracker);
         currentnode = dialoguetracker.get(character);
     }
     
@@ -73,6 +74,12 @@ public class DemoDialogue {
             return false;
         }
         return false;
+    }
+    
+    public String getSpeakingCharacter() {
+        Element elem = (Element) currentnode;
+        String name = elem.getAttribute("speaker");
+        return name;
     }
     
     public NodeList getDialogueOptionsNodes() {
@@ -108,7 +115,9 @@ public class DemoDialogue {
         Element elem = (Element) currentnode;
         NodeList nlist = elem.getElementsByTagName("text");
         if (nlist.getLength() > 0) {
-            return nlist.item(0).getTextContent();
+            String text = nlist.item(0).getTextContent();
+            System.out.println(text);
+            return text;
         }
         return null;
     }
@@ -121,7 +130,8 @@ public class DemoDialogue {
         try {
             if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
                 Element elem = (Element) currentnode;
-                String nextid = elem.getAttribute("nextID");
+                Element text = (Element) elem.getElementsByTagName("text").item(0);
+                String nextid = text.getAttribute("nextID");
                 XPathFactory charxPathfactory = XPathFactory.newInstance();
                 XPath charxpath = charxPathfactory.newXPath();
                 XPathExpression charexpr;

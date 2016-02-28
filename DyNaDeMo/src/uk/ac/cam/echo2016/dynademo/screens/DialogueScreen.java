@@ -9,6 +9,8 @@ import uk.ac.cam.echo2016.dynademo.MainApplication;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 
 public class DialogueScreen extends AbstractAppState implements ScreenController {
     
@@ -23,6 +25,21 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     
     public void setDialogue(String filepath) {
         dialogue = new DemoDialogue(filepath);
+    }
+    
+    public void advanceText() {
+        if (!dialogue.hasOptions()) {
+            String text = dialogue.getDialogueText();
+            System.out.println("text = " + text);
+            Screen screen = nifty.getScreen("dialogue");
+            Element foreground = screen.findElementByName("foreground");
+            Element container = foreground.findElementByName("dialogue-container").findElementByName("dialogue-panel");
+            TextRenderer textRenderer = container.getRenderer(TextRenderer.class);
+            textRenderer.setText(text);
+            dialogue.moveToNextDialogue();
+        }
+        
+        
     }
     
     public void setCharacter(String name) {
