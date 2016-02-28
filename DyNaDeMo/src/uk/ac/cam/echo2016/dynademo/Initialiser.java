@@ -23,7 +23,9 @@ import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
  * @author tr393
  */
 public class Initialiser {
-
+    private static String[] tLightNames;
+    private static Vector3f[] tLightCoords;
+    private static String[][] tLightAffected;
     /**
      * @param app - the application to attach events and renderers to
      * @return
@@ -47,28 +49,25 @@ public class Initialiser {
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
-        Vector3f[] lightCoords = { new Vector3f(0f, 6f, 0f), new Vector3f(25f, 6f, 0f), new Vector3f(25f, 6f, -30f),
-                new Vector3f(0f, 6f, -30f), new Vector3f(-25f, 6f, -30f), new Vector3f(-25f, 6f, 0f),
+        tLightNames = new String[]{
+            "RoomLight1", "RoomLight2", "RoomLight3", "RoomLight4",
+            "RoomLight5", "RoomLight6", "CorridorLight1", "CorridorLight2"};
+        
+        tLightCoords = new Vector3f[]{
+            new Vector3f(0f, 6f, 0f), new Vector3f(25f, 6f, 0f), new Vector3f(25f, 6f, -30f),
+            new Vector3f(0f, 6f, -30f), new Vector3f(-25f, 6f, -30f), new Vector3f(-25f, 6f, 0f),
+            new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f)};
+        
+        tLightAffected = new String[][]{
+            {"Room1"}, {"Room2"}, {"Room3"}, {"Room4"},
+            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor"},};
+        
+        addLights(app, route, tLightNames, tLightCoords, tLightAffected);
 
-                new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f),
-        //
-        // new Vector3f(-60f,6f,0f),
-        // new Vector3f(-60f,6f,-30f)
-        };
-        String[][] spatialNames = { { "Room1" },// ,"Corridor"},
-                { "Room2" },// ,"Corridor"},
-                { "Room3" },// ,"Corridor"},
-                { "Room4" },// ,"Corridor"},
-                { "Room5" },// ,"Corridor"},
-                { "Room6" },// ,"Corridor"}
-                { "Corridor" }, { "Corridor" }, };
-        for (int i = 0; i < spatialNames.length; ++i) {
-            addLight(app, route, lightCoords[i], spatialNames[i]);
-        }
         // EVENTS
         eLoc = new ExitRouteEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
-
         route.locEvents.add(eLoc);
+        
         routes.put(route.getId(), route);
     }
     
@@ -278,6 +277,18 @@ public class Initialiser {
         route.shadowRenderers.add(plsr);
         
         return dLight;
+    }
+    
+    private static HashMap<String, DemoLight> addLights(MainApplication app, DemoRoute route, String[] lightNames, Vector3f[] lightCoords, String[][] spatialNames) {
+        HashMap<String, DemoLight> result = new HashMap<>();
+        
+        if (lightNames.length != lightCoords.length || lightNames.length != spatialNames.length)
+            throw new RuntimeException("Error: incorrect number of light properties");
+        
+        for (int i = 0; i < spatialNames.length; ++i) {
+            result.put(lightNames[i], addLight(app, route, lightCoords[i], spatialNames[i]));
+        }
+        return result;
     }
     
     private static class LeverEvent extends InteractionEvent {
