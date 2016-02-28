@@ -12,6 +12,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
+import com.oracle.xmlns.internal.webservices.jaxws_databinding.ExistingAnnotationsType;
 
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -70,7 +71,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tLocEvent = new SyncPointEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
+        tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
         tRoute.locEvents.add(tLocEvent);
         
         tRoute.startupTextSequence = new String[]{
@@ -84,6 +85,7 @@ public class Initialiser {
     private static void addButtonRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         DemoRoute route;
         InteractionEvent eInter;
+        final ChoicePointEvent cpe;
         
         route = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
@@ -136,6 +138,9 @@ public class Initialiser {
         buttonObj.getLights().add(lightMap.get("Room"));
         route.objects.add(buttonObj);
         
+        // EVENTS
+        cpe = new ChoicePointEvent("Third Select", new BoundingBox(new Vector3f(40,1,0), 10,14,5), "Button pressed", "Button not pressed");
+        
         // object events
         eInter = new InteractionEvent("buttonInteraction", buttonObj) {
             public final static int DELAY = 1;
@@ -146,8 +151,9 @@ public class Initialiser {
                 DemoRoute route = app.routes.get("ButtonRoute");
                 KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
                 
-                // TODO different property/affect?
-                route.properties.putBoolean(getObject().getObjId(), true);
+                /*// TODO different property/affect?
+                route.properties.putBoolean(getObject().getObjId(), true);*/
+                cpe.setActionTaken(true);
                 
                 if (kinematicObj.getTasks().isEmpty()) {
                     getObject().getSpatial().move(displacement.negate());
@@ -182,6 +188,8 @@ public class Initialiser {
     }
     
     private static void addDoorLeftRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        SyncPointEvent spe;
+        
         DemoRoute route = new DemoRoute("DoorLeft", "Scenes/DoorLeft.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
         
         //LIGHTS
@@ -197,10 +205,15 @@ public class Initialiser {
         
         lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
         
+        // EVENTS
+        spe = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0,1,-45),5,14,5));
+        
         routes.put(route.getId(), route);
     }
     
     private static void addDoorRightRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        SyncPointEvent spe;
+        
         DemoRoute route = new DemoRoute("DoorRight", "Scenes/DoorRight.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
         
         //LIGHTS
@@ -216,10 +229,15 @@ public class Initialiser {
         
         lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
         
+        // EVENTS
+        spe = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0,1,45),5,14,5));
+        
         routes.put(route.getId(), route);
     }
     
     private static void addEscapeRoute(MainApplication app, HashMap<String,DemoRoute> routes) {
+        SyncPointEvent spe;
+        
         DemoRoute route = new DemoRoute("EscapeRoute", "Scenes/EscapeRoute.j3o", new Vector3f(25,0,0), new Vector3f(-1,0,0));
         
         // LIGHTS
@@ -235,12 +253,16 @@ public class Initialiser {
         
         lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
         
+        // EVENTS
+        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0, 1, 15), 5,14,5));
+        
         routes.put(route.getId(), route);
     }
     
     private static void addLeverRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         DemoRoute route;
         InteractionEvent eInter;
+        final ChoicePointEvent cpe;
         
         route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
@@ -277,9 +299,11 @@ public class Initialiser {
         leverObj.getLights().add(lightMap.get("Room"));
         route.objects.add(leverObj);
         
+        // EVENTS
+        cpe = new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45,1,0), 5,14,5), "Choose left", "Choose right");
         // object events
         route.properties.putInt(leverObj.getObjId(), 0);
-        eInter = new LeverEvent("leverInteraction", leverObj);
+        eInter = new LeverEvent("leverInteraction", leverObj, cpe);
         route.setInteractable(leverRoot, eInter);
         
         routes.put(route.getId(), route);
@@ -313,8 +337,10 @@ public class Initialiser {
     }
     
     private static void addPuzzleRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        LocationEvent eLoc;
-        InteractionEvent eInter;
+        SyncPointEvent spe;
+        ConditionalSyncPointEvent cspe1;
+        ConditionalSyncPointEvent cspe2;
+        ConditionalSyncPointEvent cspe3;
         BoundingBox bound;
         
         tRoute = new DemoRoute("PuzzleRoute", "Scenes/PuzzleRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45),
@@ -423,6 +449,12 @@ public class Initialiser {
         doorObj1.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(doorObj1);
         
+        // EVENTS
+        spe = new SyncPointEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45,1,5),5,14,5));
+        cspe1 = new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0,1,45),5,14,5), "See puzzle first time");
+        cspe2 = new ConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0,1,-45),5,14,5), "Puzzle again");
+        cspe3 = new ConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0,1,-45),5,14,5), "Puzzle unsolvable");
+        
         routes.put(tRoute.getId(), tRoute);
     }
     
@@ -473,9 +505,11 @@ public class Initialiser {
     
     private static class LeverEvent extends InteractionEvent {
         private int leverCount;
+        private ChoicePointEvent CPE;
 
-        public LeverEvent(String id, DemoObject object) {
+        public LeverEvent(String id, DemoObject object, ChoicePointEvent cpe) {
             super(id, object);
+            CPE = cpe;
         }
 
         @Override
@@ -484,6 +518,7 @@ public class Initialiser {
 //            int leverCount = leverRoute.properties.getInt(getObject().getObjId());
             KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
             if (leverCount < 10) {
+                CPE.setActionTaken(!CPE.getActionTaken());
                 if (leverCount % 2 == 0) {
                     kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
                 } else {
@@ -559,6 +594,7 @@ public class Initialiser {
             routeIfFalse = RouteOtherwise;
         }
         
+        public boolean getActionTaken() { return actionTaken; }
         public void setActionTaken(boolean isAction) {
             actionTaken = isAction;
         }
@@ -595,6 +631,21 @@ public class Initialiser {
                 Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
             }
             app.nifty.gotoScreen("characterSelect");
+        }
+    }
+
+    private static class ConditionalSyncPointEvent extends SyncPointEvent {
+        private String correctRoute;
+        public ConditionalSyncPointEvent(String id, BoundingBox bound, String theCorrectRoute) {
+            super(id, bound);
+            correctRoute = theCorrectRoute;
+        }
+        
+        @Override 
+        public void onDemoEvent(MainApplication app) {
+            if (app.getGameScreen().getRoute() == correctRoute) {
+                super.onDemoEvent(app);
+            }
         }
     }
 }
