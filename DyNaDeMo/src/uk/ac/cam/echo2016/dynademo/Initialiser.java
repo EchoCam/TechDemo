@@ -70,8 +70,13 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tLocEvent = new ExitRouteEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
+        tLocEvent = new SyncPointEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
         tRoute.locEvents.add(tLocEvent);
+        
+        tRoute.startupTextSequence = new String[]{
+            "Press 'e' on to scroll through this text...",
+            "Pleas enjoy DyNaDeMo!"
+        };
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -127,7 +132,7 @@ public class Initialiser {
         button.move(new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f)));
         
         // object physics
-        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null, null);
+        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null);
         buttonObj.getLights().add(lightMap.get("Room"));
         route.objects.add(buttonObj);
         
@@ -268,7 +273,7 @@ public class Initialiser {
         route.objects.add(leverBaseObj);
         
         // TODO bounding box actually required? see button
-        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null, null);
+        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null);
         leverObj.getLights().add(lightMap.get("Room"));
         route.objects.add(leverObj);
         
@@ -301,7 +306,7 @@ public class Initialiser {
         addLights(app, route, tLightNames, tLightCoords, tLightAffected);
         
         // EVENTS
-        eLoc = new ExitRouteEvent("LeverOrButton", new BoundingBox(new Vector3f(-40,1,-5),5,14,5));
+        eLoc = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40,1,-5),5,14,5));
         route.locEvents.add(eLoc);
         
         routes.put(route.getId(), route);
@@ -336,7 +341,7 @@ public class Initialiser {
         crate.setLocalTranslation(0, 0, -30);
         
         // object physics
-        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true, bound, new Vector3f(0,0.75f,0));
+        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true, bound);
         crateObj.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(crateObj);
         
@@ -352,11 +357,14 @@ public class Initialiser {
         // PressurePlate
         Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
-        bound = new BoundingBox(Vector3f.ZERO, 1.5f, 0.4f, 1.5f);
+        bound = new BoundingBox(new Vector3f(0,0.4f,0), 1.5f, 0.4f, 1.5f);
+        
         pressPlate1.setLocalTranslation(-5f, 0, 5f);
         pressPlate2.setLocalTranslation(-5f, 0, -5f);
-        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(0,0.4f,0));
-        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound, new Vector3f(0,0.4f,0));
+        
+        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound);
+        bound = new BoundingBox(new Vector3f(0,0.4f,0), 1.5f, 0.4f, 1.5f);
+        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound);
         plateObj1.getLights().add(lightMap.get("RoomLight"));
         plateObj2.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(plateObj1);
@@ -376,6 +384,10 @@ public class Initialiser {
         tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2);
         ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
+        
+        tRoute.startupTextSequence = new String[] {
+            "Press 'e' to interact with objects."
+        };
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -509,8 +521,8 @@ public class Initialiser {
         }
     }
     
-    private static class ExitRouteEvent extends LocationEvent {
-        public ExitRouteEvent(String id, BoundingBox bound) {
+    private static class SyncPointEvent extends LocationEvent {
+        public SyncPointEvent(String id, BoundingBox bound) {
             super(id, bound);
         }
 

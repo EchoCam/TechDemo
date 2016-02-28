@@ -27,6 +27,8 @@ public class DemoRoute {
 //    public ArrayList<Spatial> staticObjects = new ArrayList<>();
     // public Node interactableNode = new Node("Interactables");
     public HashMap<Spatial, InteractionEvent> interactions = new HashMap<>();
+    
+    public String[] startupTextSequence = new String[0];
 
     public DemoRoute(String id, String sceneFile, Vector3f startLoc, Vector3f startDir) {
         this.id = id;
