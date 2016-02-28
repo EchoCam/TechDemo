@@ -143,6 +143,7 @@ public class Initialiser {
         eInter = new InteractionEvent("buttonInteraction", buttonObj);
         tRoute.setInteractable(button, eInter);
         
+        tRoute.objects.add(buttonObj);
         routes.put(tRoute.getId(), tRoute);
     }
    
