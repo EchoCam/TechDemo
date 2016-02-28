@@ -135,8 +135,7 @@ public class Initialiser {
         
         // object physics
         ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null);
-        buttonObj.getLights().add(lightMap.get("Room"));
-        route.objects.add(buttonObj);
+        buttonObj.getLights().add(lightMap.get("RoomLight"));
         
         // EVENTS
         cpe = new ChoicePointEvent("Third Select", new BoundingBox(new Vector3f(40,1,0), 10,14,5), "Button pressed", "Button not pressed");
@@ -275,15 +274,14 @@ public class Initialiser {
         
         // object physics
         StaticDemoObject leverBaseObj = new StaticDemoObject("leverBase", leverRoot, true);
-        leverBaseObj.getLights().add(lightMap.get("Room"));
+        leverBaseObj.getLights().add(lightMap.get("RoomLight"));
         route.objects.add(leverBaseObj);
         
         cpe = new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45,1,0), 5,14,5), "Choose left", "Choose right");
 
         // TODO bounding box actually required? see button
         LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, cpe);
-        leverObj.getLights().add(lightMap.get("Room"));
-        route.objects.add(leverObj);
+        leverObj.getLights().add(lightMap.get("RoomLight"));
         
         // EVENTS
         tRoute.locEvents.add(cpe);
@@ -553,11 +551,13 @@ public class Initialiser {
         
         public boolean getActionTaken() { return actionTaken; }
         public void setActionTaken(boolean isAction) {
+            System.out.println("actionTaken is now: " + isAction); //TODO remove
             actionTaken = isAction;
         }
         
         @Override
         public void onDemoEvent(MainApplication app) {
+            System.out.println("DemoEvent occurred");
             try {
                 if (actionTaken) {
                     app.getNarrativeInstance().startRoute(routeIfTrue);

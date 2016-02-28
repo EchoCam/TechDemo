@@ -230,6 +230,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         // Load route objects and add rigidbodycontrols
         for (DemoObject object : route.objects) {
+            System.out.println("Object id: " + object.getObjId());// TODO remove
             if (object.isIsMainParent())
                 rootNode.attachChild(object.getSpatial());
 
@@ -240,7 +241,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
             if (object instanceof DynamicDemoObject)
                 rbc.setFriction(1.5f);
             bulletAppState.getPhysicsSpace().add(rbc);
+            System.out.println("Number of lights: " + object.getLights().size());
             for (DemoLight dLight : object.getLights()) {
+                System.out.println("The light: " + dLight);
                 object.getSpatial().addLight(dLight.light);
             }
         }
