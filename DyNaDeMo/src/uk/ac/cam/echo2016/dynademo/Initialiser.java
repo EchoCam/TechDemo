@@ -141,7 +141,7 @@ public class Initialiser {
         tRoute.locEvents.add(cpe);
         
         eInter = new InteractionEvent("buttonInteraction", buttonObj);
-        route.setInteractable(button, eInter);
+        tRoute.setInteractable(button, eInter);
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -169,7 +169,7 @@ public class Initialiser {
     private static void addDoorLeftRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
         
-        tRoute = new DemoRoute("DoorLeft", "Scenes/DoorLeft.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
+        tRoute = new DemoRoute("DoorLeft", "Scenes/DoorLeftRoute.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
         
         //LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight", "CorridorLeftLight"};
@@ -194,7 +194,7 @@ public class Initialiser {
     private static void addDoorRightRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
         
-        tRoute = new DemoRoute("DoorRight", "Scenes/DoorRight.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
+        tRoute = new DemoRoute("DoorRight", "Scenes/DoorRightRoute.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
         
         //LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight", "CorridorRightLight"};
@@ -245,7 +245,7 @@ public class Initialiser {
         InteractionEvent eInter;
         final ChoicePointEvent cpe;
         
-        tRoute = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
+        tRoute = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-35, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
         // LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight"};
@@ -285,9 +285,9 @@ public class Initialiser {
         tRoute.locEvents.add(cpe);
         
         // object events
-        route.properties.putInt(leverObj.getObjId(), 0);
+        tRoute.properties.putInt(leverObj.getObjId(), 0);
         eInter = new InteractionEvent("leverInteraction", leverObj);
-        route.setInteractable(leverRoot, eInter);
+        tRoute.setInteractable(leverRoot, eInter);
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -554,6 +554,8 @@ public class Initialiser {
         @Override
         public void onDemoEvent(MainApplication app) {
             try {
+                app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
+                app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
                 if (actionTaken) {
                     app.getNarrativeInstance().startRoute(routeIfTrue);
                     app.getNarrativeInstance().endRoute(routeIfTrue);
