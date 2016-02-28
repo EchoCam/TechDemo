@@ -384,10 +384,14 @@ public class Initialiser {
         tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2);
         ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
-        
+         
         tRoute.startupTextSequence = new String[] {
             "Press 'e' to interact with objects."
         };
+        
+        Spatial door1 = extractDoor(app, 0);
+        door1.setLocalTranslation(10f, 2.5f, 0f);
+//        KinematicDemoObject doorObj1 = new KinematicDemoObject(("door1"), door1, 1f, true, bound)
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -420,6 +424,21 @@ public class Initialiser {
             result.put(lightNames[i], addLight(app, route, lightCoords[i], spatialNames[i]));
         }
         return result;
+    }
+    
+    /**
+     * 
+     * @param type - 0
+     * @return 
+     */
+    private static Spatial extractDoor(MainApplication app, int numberOfHandles) {
+        Spatial doors = app.getAssetManager().loadModel("Models/Doors.j3o");
+        switch (numberOfHandles) {
+        case 0: ((Node) doors).descendantMatches("BlankDoor").get(0);
+        case 1: ((Node) doors).descendantMatches("BlankDoor").get(0);
+        case 2: ((Node) doors).descendantMatches("BlankDoor").get(0);
+        default: throw new RuntimeException("Too many door handles");
+        }
     }
     
     private static class LeverEvent extends InteractionEvent {
