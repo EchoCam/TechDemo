@@ -83,11 +83,10 @@ public class Initialiser {
     }
     
     private static void addButtonRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
         InteractionEvent eInter;
         final ChoicePointEvent cpe;
         
-        route = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+        tRoute = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -101,7 +100,7 @@ public class Initialiser {
             {"Room"}, {"Corridor1"}, {"Corridor2"}
         };
         
-        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // OBJECTS
         
@@ -142,16 +141,14 @@ public class Initialiser {
         tRoute.locEvents.add(cpe);
         
         eInter = new InteractionEvent("buttonInteraction", buttonObj);
-        route.setInteractable(button, eInter);
+        tRoute.setInteractable(button, eInter);
         
-        route.objects.add(buttonObj);
-
-        
-        routes.put(route.getId(), route);
+        tRoute.objects.add(buttonObj);
+        routes.put(tRoute.getId(), tRoute);
     }
    
     private static void addDeathRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        DemoRoute route = new DemoRoute("DeathRoute", "Scenes/DeathRoute.j3o", new Vector3f(-30,0,0), 
+        tRoute = new DemoRoute("DeathRoute", "Scenes/DeathRoute.j3o", new Vector3f(-30,0,0), 
                 new Vector3f(1,0,0));
         
         // LIGHTS
@@ -165,15 +162,15 @@ public class Initialiser {
             {"Room"}, {"Corridor"}
         };
         
-        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
-        routes.put(route.getId(), route);
+        routes.put(tRoute.getId(), tRoute);
     }
     
     private static void addDoorLeftRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
         
-        DemoRoute route = new DemoRoute("DoorLeft", "Scenes/DoorLeft.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
+        tRoute = new DemoRoute("DoorLeft", "Scenes/DoorLeftRoute.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
         
         //LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight", "CorridorLeftLight"};
@@ -186,19 +183,19 @@ public class Initialiser {
             {"Room"}, {"Corridor"}, {"CorridorLeft"}
         };
         
-        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // EVENTS
         spe = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0,1,-45),5,14,5));
         tRoute.locEvents.add(spe);
         
-        routes.put(route.getId(), route);
+        routes.put(tRoute.getId(), tRoute);
     }
     
     private static void addDoorRightRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
         
-        DemoRoute route = new DemoRoute("DoorRight", "Scenes/DoorRight.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
+        tRoute = new DemoRoute("DoorRight", "Scenes/DoorRightRoute.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
         
         //LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight", "CorridorRightLight"};
@@ -211,19 +208,19 @@ public class Initialiser {
             {"Room"}, {"Corridor"}, {"CorridorRight"}
         };
         
-        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // EVENTS
         spe = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0,1,45),5,14,5));
         tRoute.locEvents.add(spe);
         
-        routes.put(route.getId(), route);
+        routes.put(tRoute.getId(), tRoute);
     }
     
     private static void addEscapeRoute(MainApplication app, HashMap<String,DemoRoute> routes) {
         SyncPointEvent spe;
         
-        DemoRoute route = new DemoRoute("EscapeRoute", "Scenes/EscapeRoute.j3o", new Vector3f(25,0,0), new Vector3f(-1,0,0));
+        tRoute = new DemoRoute("EscapeRoute", "Scenes/EscapeRoute.j3o", new Vector3f(25,0,0), new Vector3f(-1,0,0));
         
         // LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight", "Corridor1Light", "Corridor2Light"};
@@ -236,21 +233,20 @@ public class Initialiser {
             {"Room"}, {"Corridor"}, {"Corridor1"}, {"Corridor2"}
         };
         
-        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // EVENTS
         spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0, 1, 15), 5,14,5));
         tRoute.locEvents.add(spe);
         
-        routes.put(route.getId(), route);
+        routes.put(tRoute.getId(), tRoute);
     }
     
     private static void addLeverRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
         InteractionEvent eInter;
         final ChoicePointEvent cpe;
         
-        route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
+        tRoute = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-35, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
         // LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight"};
@@ -263,7 +259,7 @@ public class Initialiser {
             {"Room"}, {"Corridor"}
         };
         
-        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
         
@@ -278,7 +274,7 @@ public class Initialiser {
         // object physics
         StaticDemoObject leverBaseObj = new StaticDemoObject("leverBase", leverRoot, true);
         leverBaseObj.getLights().add(lightMap.get("RoomLight"));
-        route.objects.add(leverBaseObj);
+        tRoute.objects.add(leverBaseObj);
         
         cpe = new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45,1,0), 5,14,5), "Choose left", "Choose right");
 
@@ -290,18 +286,17 @@ public class Initialiser {
         tRoute.locEvents.add(cpe);
         
         // object events
-        route.properties.putInt(leverObj.getObjId(), 0);
+        tRoute.properties.putInt(leverObj.getObjId(), 0);
         eInter = new InteractionEvent("leverInteraction", leverObj);
-        route.setInteractable(leverRoot, eInter);
+        tRoute.setInteractable(leverRoot, eInter);
         
-        routes.put(route.getId(), route);
+        routes.put(tRoute.getId(), tRoute);
     }
     
     private static void addObservationRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
         LocationEvent eLoc;
 
-        route = new DemoRoute("ObservationRoute", "Scenes/ObservationRoute.j3o", new Vector3f(-5, HALFCHARHEIGHT + 1.0f, -30),
+        tRoute = new DemoRoute("ObservationRoute", "Scenes/ObservationRoute.j3o", new Vector3f(-5, HALFCHARHEIGHT + 1.0f, -30),
                 new Vector3f(0, 0, 1));
 
         // LIGHTS
@@ -315,13 +310,13 @@ public class Initialiser {
             {"Room"}, {"Corridor1"}, {"Corridor2"}
         };
         
-        addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // EVENTS
         eLoc = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40,1,-5),5,14,5));
-        route.locEvents.add(eLoc);
+        tRoute.locEvents.add(eLoc);
         
-        routes.put(route.getId(), route);
+        routes.put(tRoute.getId(), tRoute);
     }
     
     private static void addPuzzleRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
@@ -554,14 +549,14 @@ public class Initialiser {
         
         public boolean getActionTaken() { return actionTaken; }
         public void setActionTaken(boolean isAction) {
-            System.out.println("actionTaken is now: " + isAction); //TODO remove
             actionTaken = isAction;
         }
         
         @Override
         public void onDemoEvent(MainApplication app) {
-            System.out.println("DemoEvent occurred");
             try {
+                app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
+                app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
                 if (actionTaken) {
                     app.getNarrativeInstance().startRoute(routeIfTrue);
                     app.getNarrativeInstance().endRoute(routeIfTrue);
@@ -603,8 +598,6 @@ public class Initialiser {
         
         @Override 
         public void onDemoEvent(MainApplication app) {
-            System.out.println(correctRoute);
-            System.out.println(app.getGameScreen().getRoute());
             if (app.getGameScreen().getRoute().equals(correctRoute)) {
                 super.onDemoEvent(app);
             }
