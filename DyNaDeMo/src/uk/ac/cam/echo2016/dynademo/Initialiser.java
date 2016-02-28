@@ -72,159 +72,9 @@ public class Initialiser {
         routes.put(tRoute.getId(), tRoute);
     }
     
-    private static void addObservationRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
-        LocationEvent eLoc;
-
-        route = new DemoRoute("ObservationRoute", "Scenes/ObservationRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
-                new Vector3f(1, 0, 0));
-
-        // LIGHTS
-        tLightNames = new String[] {"RoomLight", "CorridorLight1", "CorridorLight2"};
-        
-        tLightCoords = new Vector3f[] {
-            new Vector3f(0,8,0), new Vector3f(-5, 8, -30), new Vector3f(-30,8,-5)
-        };
-        
-        tLightAffected = new String[][]{
-            {"Room"}, {"Corridor1"}, {"Corridor2"}
-        };
-        
-        addLights(app, route, tLightNames, tLightCoords, tLightAffected);
-        
-        // EVENTS
-        eLoc = new ExitRouteEvent("LeverOrButton", new BoundingBox(new Vector3f(-40,1,-5),5,14,5));
-        route.locEvents.add(eLoc);
-        
-        routes.put(route.getId(), route);
-    }
-    
-    private static void addPuzzleRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
-        LocationEvent eLoc;
-        InteractionEvent eInter;
-        BoundingBox bound;
-        
-        tRoute = new DemoRoute("PuzzleRoute", "Scenes/PuzzleRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45),
-                new Vector3f(0, 0, 1));
-        // LIGHTS
-        tLightNames = new String[] {
-            "RoomLight", "CorridorLight1", "CorridorLight2", "TallCorridorLight1", "TallCorridorLight2"
-        };
-        
-        tLightCoords = new Vector3f[] {
-            new Vector3f(0, 8f, 0), new Vector3f(0,6,-35), new Vector3f(0,6,35),
-            new Vector3f(20,10,5), new Vector3f(40,10,5)
-        };
-        
-        tLightAffected = new String[][] {
-            {"Room"}, {"Corridor1"}, {"Corridor2"}, {"TallCorridor1"}, {"TallCorridor2"}
-        };
-
-        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
-        
-        // Crate
-        Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
-        bound = new BoundingBox(new Vector3f(0,0.75f,0), 1.5f, 1.5f, 1.5f);
-        crate.setLocalTranslation(0, 0, -30);
-        
-        // object physics
-        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true, bound, new Vector3f(0,0.75f,0));
-        crateObj.getLights().add(lightMap.get("RoomLight"));
-        tRoute.objects.add(crateObj);
-        
-        // object events
-        tInterEvent = new InteractionEvent("crateInteraction", crateObj){
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                app.drag(getObject().getSpatial());
-            }
-        };
-        tRoute.setInteractable(crate, tInterEvent);
-        
-        // PressurePlate
-        Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
-        Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
-        bound = new BoundingBox(Vector3f.ZERO, 1.5f, 0.4f, 1.5f);
-        pressPlate1.setLocalTranslation(-5f, 0, 5f);
-        pressPlate2.setLocalTranslation(-5f, 0, -5f);
-        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(0,0.4f,0));
-        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound, new Vector3f(0,0.4f,0));
-        plateObj1.getLights().add(lightMap.get("RoomLight"));
-        plateObj2.getLights().add(lightMap.get("RoomLight"));
-        tRoute.objects.add(plateObj1);
-        tRoute.objects.add(plateObj2);
-        
-        tRoute.properties.putBoolean(plateObj1.getObjId(), false);
-        tRoute.properties.putBoolean(plateObj2.getObjId(), false);
-        
-        bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
-//        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f),  3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
-        tLocEvent = new PressurePlateEvent("pressurePlate1", bound, plateObj1);
-        // TODO bad code
-        ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
-        tRoute.locEvents.add(tLocEvent);
-        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
-//        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0f, -6.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj2);
-        tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2);
-        ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
-        tRoute.locEvents.add(tLocEvent);
-        
-        routes.put(tRoute.getId(), tRoute);
-    }
-    
-    private static void addLeverRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
-        DemoLight light;
-        InteractionEvent eInter;
-        
-        route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
-                new Vector3f(1, 0, 0));
-        // LIGHTS
-        tLightNames = new String[] {"RoomLight", "CorridorLight"};
-        
-        tLightCoords = new Vector3f[] {
-            new Vector3f(-10,8,0), new Vector3f(-35,8,0)
-        };
-        
-        tLightAffected = new String[][] {
-            {"Room"}, {"Corridor"}
-        };
-        
-        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
-
-        // OBJECTS
-        
-        Spatial leverRoot = app.getAssetManager().loadModel("Models/Lever.j3o");
-        leverRoot.setLocalTranslation(0f, 5f, 0f);
-        leverRoot.setLocalRotation(new Quaternion().fromAngles(0, 0f, FastMath.PI/2));
-        // WARNING: Rigid body applied after this transform - axis offset
-        
-        // hacky but it works :)
-        Spatial leverRod = ((Node) leverRoot).descendantMatches("Lever").get(0);
-        
-        // object physics
-        StaticDemoObject leverBaseObj = new StaticDemoObject("leverBase", leverRoot, true);
-        leverBaseObj.getLights().add(lightMap.get("Room"));
-        route.objects.add(leverBaseObj);
-        
-        // TODO bounding box actually required? see button
-        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null, null);
-        leverObj.getLights().add(lightMap.get("Room"));
-        route.objects.add(leverObj);
-        
-        // object events
-        route.properties.putInt(leverObj.getObjId(), 0);
-        eInter = new LeverEvent("leverInteraction", leverObj);
-        route.setInteractable(leverRoot, eInter);
-        
-        routes.put(route.getId(), route);
-    }
-    
     private static void addButtonRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         DemoRoute route;
         InteractionEvent eInter;
-        DemoLight light;
         
         route = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
                
@@ -301,6 +151,153 @@ public class Initialiser {
         route.setInteractable(button, eInter);
         
         routes.put(route.getId(), route);
+    }
+    
+    private static void addLeverRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        DemoRoute route;
+        InteractionEvent eInter;
+        
+        route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
+                new Vector3f(1, 0, 0));
+        // LIGHTS
+        tLightNames = new String[] {"RoomLight", "CorridorLight"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(-10,8,0), new Vector3f(-35,8,0)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room"}, {"Corridor"}
+        };
+        
+        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+
+        // OBJECTS
+        
+        Spatial leverRoot = app.getAssetManager().loadModel("Models/Lever.j3o");
+        leverRoot.setLocalTranslation(0f, 5f, 0f);
+        leverRoot.setLocalRotation(new Quaternion().fromAngles(0, 0f, FastMath.PI/2));
+        // WARNING: Rigid body applied after this transform - axis offset
+        
+        // hacky but it works :)
+        Spatial leverRod = ((Node) leverRoot).descendantMatches("Lever").get(0);
+        
+        // object physics
+        StaticDemoObject leverBaseObj = new StaticDemoObject("leverBase", leverRoot, true);
+        leverBaseObj.getLights().add(lightMap.get("Room"));
+        route.objects.add(leverBaseObj);
+        
+        // TODO bounding box actually required? see button
+        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null, null);
+        leverObj.getLights().add(lightMap.get("Room"));
+        route.objects.add(leverObj);
+        
+        // object events
+        route.properties.putInt(leverObj.getObjId(), 0);
+        eInter = new LeverEvent("leverInteraction", leverObj);
+        route.setInteractable(leverRoot, eInter);
+        
+        routes.put(route.getId(), route);
+    }
+    
+    private static void addObservationRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
+        DemoRoute route;
+        LocationEvent eLoc;
+
+        route = new DemoRoute("ObservationRoute", "Scenes/ObservationRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+                new Vector3f(1, 0, 0));
+
+        // LIGHTS
+        tLightNames = new String[] {"RoomLight", "CorridorLight1", "CorridorLight2"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(0,8,0), new Vector3f(-5, 8, -30), new Vector3f(-30,8,-5)
+        };
+        
+        tLightAffected = new String[][]{
+            {"Room"}, {"Corridor1"}, {"Corridor2"}
+        };
+        
+        addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        
+        // EVENTS
+        eLoc = new ExitRouteEvent("LeverOrButton", new BoundingBox(new Vector3f(-40,1,-5),5,14,5));
+        route.locEvents.add(eLoc);
+        
+        routes.put(route.getId(), route);
+    }
+    
+    private static void addPuzzleRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        LocationEvent eLoc;
+        InteractionEvent eInter;
+        BoundingBox bound;
+        
+        tRoute = new DemoRoute("PuzzleRoute", "Scenes/PuzzleRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45),
+                new Vector3f(0, 0, 1));
+        // LIGHTS
+        tLightNames = new String[] {
+            "RoomLight", "CorridorLight1", "CorridorLight2", "TallCorridorLight1", "TallCorridorLight2"
+        };
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(0, 8f, 0), new Vector3f(0,6,-35), new Vector3f(0,6,35),
+            new Vector3f(20,10,5), new Vector3f(40,10,5)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room"}, {"Corridor1"}, {"Corridor2"}, {"TallCorridor1"}, {"TallCorridor2"}
+        };
+
+        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
+        
+        // Crate
+        Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
+        bound = new BoundingBox(new Vector3f(0,0.75f,0), 1.5f, 1.5f, 1.5f);
+        crate.setLocalTranslation(0, 0, -30);
+        
+        // object physics
+        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true, bound, new Vector3f(0,0.75f,0));
+        crateObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(crateObj);
+        
+        // object events
+        tInterEvent = new InteractionEvent("crateInteraction", crateObj){
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                app.drag(getObject().getSpatial());
+            }
+        };
+        tRoute.setInteractable(crate, tInterEvent);
+        
+        // PressurePlate
+        Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
+        Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
+        bound = new BoundingBox(Vector3f.ZERO, 1.5f, 0.4f, 1.5f);
+        pressPlate1.setLocalTranslation(-5f, 0, 5f);
+        pressPlate2.setLocalTranslation(-5f, 0, -5f);
+        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(0,0.4f,0));
+        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound, new Vector3f(0,0.4f,0));
+        plateObj1.getLights().add(lightMap.get("RoomLight"));
+        plateObj2.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(plateObj1);
+        tRoute.objects.add(plateObj2);
+        
+        tRoute.properties.putBoolean(plateObj1.getObjId(), false);
+        tRoute.properties.putBoolean(plateObj2.getObjId(), false);
+        
+        bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
+//        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f),  3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
+        tLocEvent = new PressurePlateEvent("pressurePlate1", bound, plateObj1);
+        // TODO bad code
+        ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
+        tRoute.locEvents.add(tLocEvent);
+        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
+//        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0f, -6.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj2);
+        tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2);
+        ((PressurePlateEvent)tLocEvent).activators.add(crateObj);
+        tRoute.locEvents.add(tLocEvent);
+        
+        routes.put(tRoute.getId(), tRoute);
     }
     
     private static DemoLight addLight(MainApplication app, DemoRoute route, Vector3f loc, String[] spatialNames) {
