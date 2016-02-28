@@ -20,7 +20,8 @@ public class TranslationTask extends KinematicTask {
      * @param completionTime
      * @param object
      * @param displacement
-     * @param endLocation - Optional Vector3f. Set as null if accuracy is not required
+     * @param endLocation - Optional Vector3f specifying the final location.
+     * Set as null if accuracy is not required
      */
     public TranslationTask(String taskQueueId, float completionTime, KinematicDemoObject object, Vector3f displacement, Vector3f endLocation) {
         super(taskQueueId, completionTime, object);

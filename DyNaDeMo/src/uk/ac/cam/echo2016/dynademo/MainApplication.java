@@ -413,10 +413,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         case "Pause":
             if (isPressed) {
                 if (!isPaused) {
-                    System.out.println("");
                     nifty.gotoScreen("pauseMenu");
                 } else {
-                    System.out.println("");
                     nifty.gotoScreen("game");
                 }
             }

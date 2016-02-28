@@ -81,9 +81,7 @@ public class Initialiser {
                     Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 app.nifty.gotoScreen("characterSelect");
-                System.out.println("");
-                System.out.println(app.getGameScreen().getRoute());
-//                app.loadRoute(route);
+//                System.out.println(app.getGameScreen().getRoute());
 //                app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
                 app.getGameScreen().setDialogueTextSequence(new String[]{"Are you now in the puzzle room?"});
             }
@@ -274,6 +272,7 @@ public class Initialiser {
     }
     
     private static class LeverEvent extends InteractionEvent {
+        private int leverCount;
 
         public LeverEvent(String id, DemoObject object) {
             super(id, object);
@@ -282,7 +281,7 @@ public class Initialiser {
         @Override
         public void onDemoEvent(MainApplication app) {
             DemoRoute leverRoute = app.routes.get("LeverRoute");
-            int leverCount = leverRoute.properties.getInt(getObject().getObjId());
+//            int leverCount = leverRoute.properties.getInt(getObject().getObjId());
             KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
             if (leverCount < 10) {
                 if (leverCount % 2 == 0) {

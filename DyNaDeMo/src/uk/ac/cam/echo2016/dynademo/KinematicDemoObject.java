@@ -23,7 +23,8 @@ public class KinematicDemoObject extends DemoObject {
         app.addTask(getObjId(), getTasks());
     }
     public void queueRotation(MainApplication app, float completionTime, Vector3f axis, float angle) {
-        getTasks().add(new RotationTask(getObjId(), completionTime, this, axis, angle));
+        Vector3f end = axis.normalize().mult(angle/2);
+        getTasks().add(new RotationTask(getObjId(), completionTime, this, axis, angle, null));
         app.addTask(getObjId(), getTasks());
     }
     public void queueDelay(MainApplication app, float completionTime) {
