@@ -140,9 +140,6 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         // Bind the mouse to the screen so it is used to rotate the camera
         app.getFlyByCamera().setEnabled(true);
         app.getFlyByCamera().setDragToRotate(false); // tr393  - I don't know why we need this
-        
-        // TODO: load in maps based on data (eg, selected character etc.)
-        setDialogueTextSequence(new String[] { "Press \"e\" to scroll through text.", "You are playing as " + character + ".", "Please enjoy DyNaDeMo!" });
     }
 
     /**
