@@ -249,7 +249,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 // TODO hacky
                 List<Spatial> list = rootNode.descendantMatches(roomName);
                 if (list.isEmpty()) {
-                    throw new RuntimeException("Spatial not found!");
+                    throw new RuntimeException("Room " + roomName + " not found!");
                 }
                 Spatial room = list.get(0);
                 room.addLight(l.light);
@@ -309,7 +309,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //         System.out.println(spat.getWorldTranslation().z);
 //         System.out.println();
 //         }
-        System.out.println(playerControl.getPhysicsLocation());
+//        System.out.println(playerControl.getPhysicsLocation());
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
@@ -484,7 +484,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         return stateManager;
     }
 
-    public void chooseRoute(String routeName) {
+    public void chooseLocation(String routeName) {
         DemoRoute route = routes.get(routeName);
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);

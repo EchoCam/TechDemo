@@ -22,6 +22,7 @@ public abstract class ProximityEvent extends LocationEvent {
     @Override
     public void checkAndFireEvent(MainApplication app, Vector3f playerLoc) {
         for(DemoObject activator : activators) {
+            System.out.println(activator.getBound().getCenter());
             if (bound.intersects(activator.getBound())) {
                 onDemoEvent(app);
             }

@@ -132,7 +132,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
 
     @Override
     public void onEndScreen() {
-        app.chooseRoute(app.getGameScreen().getLocation());
+        app.chooseLocation(app.getGameScreen().getLocation());
     }
 
     // AbstractAppState methods //

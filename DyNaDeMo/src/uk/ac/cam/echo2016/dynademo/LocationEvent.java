@@ -29,6 +29,7 @@ public abstract class LocationEvent extends DemoEvent {
     public void checkAndFireEvent(MainApplication app, Vector3f playerLoc) {
         // Capsule not supported by jMonkey :(
         BoundingSphere playerBound = new BoundingSphere(MainApplication.HALFCHARHEIGHT, playerLoc);
-        if (bound.intersects(playerBound)) onDemoEvent(app);
+        if (bound.intersects(playerBound))
+            onDemoEvent(app);
     }
 }
