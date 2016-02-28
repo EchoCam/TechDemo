@@ -9,7 +9,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
 
 /**
- *
+ * @author tr395
  */
 public class MainMenuScreen extends AbstractAppState implements ScreenController {
 
@@ -27,7 +27,7 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
     }
 
     public void startGame() {
-        nifty.gotoScreen("game");
+        nifty.gotoScreen("characterSelect");
     }
 
     public void quitGame() {
@@ -52,7 +52,7 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
 
     @Override
     public void onStartScreen() {
-        app.getFlyByCamera().setDragToRotate(true);
+        app.getFlyByCamera().setEnabled(false);
     }
 
     @Override

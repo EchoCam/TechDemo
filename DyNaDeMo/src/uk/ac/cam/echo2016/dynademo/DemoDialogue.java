@@ -17,7 +17,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.*;
 
 public class DemoDialogue {
-    
+
     private HashMap<String, Node> dialoguetracker;
     private Node currentnode;
     private String currentCharacter;
@@ -42,10 +42,10 @@ public class DemoDialogue {
                         tracker.put(name, diags.item(0));
                     }
                 }
-                
+
             }
             dialoguetracker = tracker;
-            
+
         } catch (ParserConfigurationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -57,13 +57,13 @@ public class DemoDialogue {
             e.printStackTrace();
         }
     }
-    
+
     public void setCharacter(String character) {
         currentCharacter = character;
         System.out.println(dialoguetracker);
         currentnode = dialoguetracker.get(character);
     }
-    
+
     public boolean hasOptions() {
         if (currentnode.getNodeType() == Node.ELEMENT_NODE) {
             Element elem = (Element) currentnode;
@@ -75,6 +75,7 @@ public class DemoDialogue {
         }
         return false;
     }
+
     
     public String getSpeakingCharacter() {
         Element elem = (Element) currentnode;
@@ -82,6 +83,7 @@ public class DemoDialogue {
         return name;
     }
     
+
     public NodeList getDialogueOptionsNodes() {
         if (this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
             Element elem = (Element) currentnode;
@@ -92,7 +94,7 @@ public class DemoDialogue {
         }
         return null;
     }
-    
+
     public ArrayList<String> getDialogueOptionsText() {
         NodeList options = getDialogueOptionsNodes();
         ArrayList<String> output = new ArrayList<String>();
@@ -100,7 +102,7 @@ public class DemoDialogue {
             for (int i = 0; i < options.getLength(); i++) {
                 String optiontext = options.item(i).getTextContent();
                 output.add(optiontext);
-            }  
+            }
         }
         return output;
     }
@@ -110,7 +112,7 @@ public class DemoDialogue {
         String nextid = elem.getAttribute("nextID");
         moveToNextDialogue(nextid);
     }
-    
+
     public String getDialogueText() {
         Element elem = (Element) currentnode;
         NodeList nlist = elem.getElementsByTagName("text");
@@ -150,7 +152,7 @@ public class DemoDialogue {
         }
 
     }
-    
+
     public void moveToNextDialogue(String nextID) {
         try {
             if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {

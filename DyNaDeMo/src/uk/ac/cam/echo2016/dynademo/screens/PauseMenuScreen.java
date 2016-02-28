@@ -10,7 +10,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
 
 /**
- *
+ * @author tr395
  */
 public class PauseMenuScreen extends AbstractAppState implements ScreenController {
 
@@ -27,8 +27,8 @@ public class PauseMenuScreen extends AbstractAppState implements ScreenControlle
     }
 
     public void goToMenu() {
-        //TODO: present some kind of warning saying that unsaved data will be lost
-        //Cleanup running game (terminate it)
+        // TODO: present some kind of warning saying that unsaved data will be lost
+        // Cleanup running game (terminate it)
         nifty.gotoScreen("mainMenu");
     }
 
@@ -44,15 +44,21 @@ public class PauseMenuScreen extends AbstractAppState implements ScreenControlle
         this.screen = screen;
     }
 
+    /**
+     * This method is run every time the screen is selected.
+     */
     @Override
     public void onStartScreen() {
-        app.getFlyByCamera().setDragToRotate(true);
-        app.setIsPaused(true);
+        app.getFlyByCamera().setEnabled(false);
+        app.pauseDemo();
     }
 
+    /**
+     * This method is run every time the screen deselected.
+     */
     @Override
     public void onEndScreen() {
-        app.setIsPaused(false);
+        app.unPauseDemo();
     }
 
     // AbstractAppState methods //

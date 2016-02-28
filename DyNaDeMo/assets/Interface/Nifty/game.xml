@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd">
-  <useStyles filename="nifty-default-styles.xml" />
-  <useControls filename="nifty-default-controls.xml" />
+    <useStyles filename="nifty-default-styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
 
-  <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <!-- lay out the HUD                         -->
-  <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <screen id="game" controller="uk.ac.cam.echo2016.dynademo.screens.GameScreen">
-    <layer id="background" childLayout="center" backgroundColor="#0000">
-    </layer>
-  </screen>
+    <!-- +++++++++++++++++++++++++++++++++++++++ -->
+    <!-- lay out the HUD                         -->
+    <!-- +++++++++++++++++++++++++++++++++++++++ -->
+    <screen id="game" controller="uk.ac.cam.echo2016.dynademo.screens.GameScreen">
+        <layer id="background" childLayout="center" backgroundColor="#0000">
+        </layer>
+        <layer id="foreground" childLayout="vertical">
+            <panel id="dialogue_box" height="50%" width="75%" align="center" childLayout="center">       
+                <text id="dialogue_box_text" text="" 
+                      font="Interface/Fonts/Default.fnt" width="100%" height="100%" wrap="true" />
+            </panel>
+        </layer>
+    </screen>
 </nifty>
