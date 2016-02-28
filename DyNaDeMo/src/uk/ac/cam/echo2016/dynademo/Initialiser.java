@@ -430,7 +430,7 @@ public class Initialiser {
         spe = new SyncPointEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45,1,5),5,14,5));
         cspe1 = new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0,1,45),5,14,5), "See puzzle first time");
         cspe2 = new ConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0,1,-45),5,14,5), "Puzzle again");
-        cspe3 = new ConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0,1,-45),5,14,5), "Puzzle unsolvable");
+        cspe3 = new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", new BoundingBox(new Vector3f(0,1,-45),5,14,5), "Puzzle unsolvable");
         tRoute.locEvents.add(spe);
         tRoute.locEvents.add(cspe1);
         tRoute.locEvents.add(cspe2);
