@@ -453,9 +453,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
         draggedObject = spatial;
     }
 
-    public void addTask(String taskQueueId, ArrayDeque<DemoTask> task) {
-        if (!taskEventBus.containsKey(taskQueueId)) {
-            taskEventBus.put(taskQueueId, task);
+    public void addTask(DemoTask task) {
+        ArrayDeque<DemoTask> taskQueue = taskEventBus.get(task.getTaskQueueId());
+        if (taskQueue != null) {
+            taskQueue.push(task);
+        } else {
+            taskQueue = new ArrayDeque<>();
+            taskQueue.add(task);
+            taskEventBus.put(task.getTaskQueueId(), taskQueue);
         }
     }
 
