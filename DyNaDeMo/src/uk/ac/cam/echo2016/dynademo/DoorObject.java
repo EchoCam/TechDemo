@@ -17,12 +17,12 @@ public class DoorObject extends KinematicDemoObject {
     public void open(MainApplication app) {
         if (!opening) {
             if (getTasks().isEmpty()) {
-                queueDisplacement(app, 2f, Vector3f.UNIT_Y.negate(), 0.9f);
+                queueDisplacement(app, 2f, Vector3f.UNIT_Y.negate(), 9f);
             } else {
                 DemoTask currentTask = getTasks().getFirst();
                 if (currentTask instanceof TranslationTask) {
                     getTasks().remove(currentTask);
-                    float x = (-0.9f * currentTask.getCurrentTime() / currentTask.getCompletionTime());
+                    float x = (-9f * currentTask.getCurrentTime() / currentTask.getCompletionTime());
                     queueDisplacement(app, currentTask.getCurrentTime(), Vector3f.UNIT_Y, x);
                 } else if (currentTask instanceof AddPropertyTask) {
                     getTasks().remove(currentTask);
@@ -32,20 +32,20 @@ public class DoorObject extends KinematicDemoObject {
         opening = true;
     }
     public void close(MainApplication app) {
-        opening = false;
-        if (!opening) {
+        if (opening) {
             if (getTasks().isEmpty()) {
-                queueDisplacement(app, 2f, Vector3f.UNIT_Y, 0.9f);
+                queueDisplacement(app, 2f, Vector3f.UNIT_Y, 9f);
             } else {
                 DemoTask currentTask = getTasks().getFirst();
                 if (currentTask instanceof TranslationTask) {
                     getTasks().remove(currentTask);
-                    float x = (-0.9f * currentTask.getCurrentTime() / currentTask.getCompletionTime());
+                    float x = (-9f * currentTask.getCurrentTime() / currentTask.getCompletionTime());
                     queueDisplacement(app, currentTask.getCurrentTime(), Vector3f.UNIT_Y.negate(), x);
                 } else if (currentTask instanceof AddPropertyTask) {
                     getTasks().remove(currentTask);
                 }
             }
         }
+        opening = false;
     }
 }
