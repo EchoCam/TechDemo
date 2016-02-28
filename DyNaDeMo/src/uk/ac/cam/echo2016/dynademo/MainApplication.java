@@ -81,17 +81,22 @@ public class MainApplication extends SimpleApplication implements DemoListener {
         nifty.addXml("Interface/Nifty/characterSelect.xml");
         nifty.addXml("Interface/Nifty/pauseMenu.xml");
         nifty.addXml("Interface/Nifty/game.xml");
+     // nifty.addXml("Interface/Nifty/dialogue.xml");
 
 
         MainMenuScreen mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
         CharacterSelectScreen characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
         PauseMenuScreen pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
         GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
+//      DialogueScreen dialogueScreen = (DialogueScreen) nifty.getScreen("dialogue").getScreenController();
+//      dialogueScreen.setDialogue("Dialogues/Convo1Dialogue.xml");
+//      dialogueScreen.setCharacter("Harry");
 
         stateManager.attach(mainMenuScreen);
         stateManager.attach(characterSelectScreen);
         stateManager.attach(pauseMenuScreen);
         stateManager.attach(gameScreen);
+        //stateManager.attach(dialogueScreen);
 
         //TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
         nifty.gotoScreen("mainMenu");

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter1>
+	<protagonist name="Harry">
+		<dialogue speaker="Harry" id="Harry1">
+			<text nextID="Hermione1">Who are you?</text>
+		</dialogue>
+		<dialogue speaker="Hermione" id="Hermione1">
+			<text nextID="Ron1">Who are you?</text>
+		</dialogue>
+		<dialogue speaker="Ron" id="Ron1">
+			<text>Oh wow! We thought it was just us here. Hi!</text>
+			<options>
+				<option nextID="Hermione2">You didn’t answer my question.</option>
+				<option nextID="Ron2">Where are we?</option>
+				<option nextID="Ron2">What are you doing here?</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Hermione" id="Hermione2">
+			<text nextID="Ron3">You didn’t answer mine.</text>
+		</dialogue>
+		<dialogue speaker="Ron" id="Ron2">
+			<text nextID="Hermione3">We don’t know, we just woke up and found our way
+				here.</text>
+		</dialogue>
+		<dialogue speaker="Hermione" id="Hermione3">
+			<text nextID="Ron4">Now we’re just waiting for something to happen.
+				Nothing else to do.</text>
+		</dialogue>
+		<dialogue speaker="Ron" id="Ron3">
+			<text>All that matters is that we’re together now. Maybe we can find
+				a way out of here!</text>
+			<options>
+				<option nextID="Ron5">Maybe.</option>
+				<option nextID="Hermione4">Got any ideas?</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Ron" id="Ron4">
+			<text nextID="Blackout">We could get to know each other better!</text>
+		</dialogue>
+		<dialogue speaker="Hermione" id="Hermione4">
+			<text nextID="Ron5">Nothing.</text>
+		</dialogue>
+		<dialogue speaker="Ron" id="Ron5">
+			<text nextID="Blackout">I just hope something happens soon; I’m getting
+				bored of waiting.</text>
+		</dialogue>
+		<dialogue speaker="Narration" id="Blackout">
+			<text nextID="END">Blackout. Crashing sounds. Silence.</text>
+		</dialogue>
+	</protagonist>
+
+	<protagonist name="Hermione">
+		<dialogue speaker="Harry" id="Harry1">
+			<text>Who are you?</text>
+			<options>
+				<option nextID="Harry2">Who are you?</option>
+				<option nextID="Ron1">(Remain silent)</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Harry" id="Harry2">
+			<text nextID="Ron2">I asked first.</text>
+		</dialogue>
+		<dialogue speaker="Ron" id="Ron1">
+			<text nextID="Harry3">Um… we just met up too, we don’t know anymore than
+				you about what’s going on.</text>
+		</dialogue>
+		<dialogue speaker="Ron" id="Ron2">
+			<text>All that matters is that we’re together now. Maybe we can find a way out of here!</text>
+			<options>
+				<option nextID="Harry4">We need to take stock. Work out why we’re here first.</option>
+				<option nextID="Harry5">Let’s try and stick together, we’d do better as a team.</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Harry" id="Harry3">
+			<text>Have you tried to get any further?</text>
+			<options>
+				<option nextID="Harry4">We need to think this through, not just run in like maniacs.</option>
+				<option nextID="Ron3">(Remain silent)</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Harry" id="Harry4">
+			<text nextID="Blackout">We don’t have time for that. Which way did you come from?</text>
+		</dialogue>
+		<dialogue speaker="Harry" id="Harry5">
+			<text nextID="Blackout">Just try not to slow me down.</text>
+		</dialogue>
+		<dialogue speaker="Ron" id="Ron3">
+			<text nextID="Harry6">Uh… no, we were just trying to work out where to go when you showed up.</text>
+		</dialogue>
+		<dialogue speaker="Harry" id="Harry6">
+			<text nextID="Blackout">Which ways have you tried?</text>
+		</dialogue>
+		<dialogue speaker="Narration" id="Blackout">
+			<text nextID="END">Blackout. Crashing sounds. Silence.</text>
+		</dialogue>
+	</protagonist>
+
+	<protagonist name="Ron">
+		<dialogue speaker="Harry" id="Harry1">
+			<text>Who are you?</text>
+			<options>
+				<option nextID="Harry2">Oh wow! We thought it was just us here. Hi!
+				</option>
+				<option nextID="Harry2">Yay, someone else! The more the merrier!
+				</option>
+				<option nextID="Harry2">Are you here to save us?</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Harry" id="Harry2">
+			<text nextID="Hermione1">Are you always this annoying?</text>
+		</dialogue>
+		<dialogue speaker="Hermione" id="Hermione1">
+			<text>Be civil. We need to work together.</text>
+			<options>
+				<option nextID="Harry3">That sounds like fun! Where should we start?
+				</option>
+				<option nextID="Harry3">Do you think we’ll get out alright?</option>
+				<option nextID="Harry3">Let’s not split up, I don’t want to be on my
+					own!</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Harry" id="Harry3">
+			<text nextID="Blackout">If you want to be near me you’re going to need to
+				shut up.</text>
+		</dialogue>
+		<dialogue speaker="Narration" id="Blackout">
+			<text nextID="END">Blackout. Crashing sounds. Silence.</text>
+		</dialogue>
+	</protagonist>
+</chapter1>

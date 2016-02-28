@@ -1,48 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<nifty xmlns="http://nifty-gui.sourceforge.net/nifty.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd">
-  <useStyles filename="nifty-default-styles.xml" />
-  <useControls filename="nifty-default-controls.xml" />
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd">
+	<useStyles filename="nifty-default-styles.xml" />
+	<useControls filename="nifty-default-controls.xml" />
 
-  <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <!-- lay out the HUD                         -->
-  <!-- +++++++++++++++++++++++++++++++++++++++ -->
-  <screen id="dialogue" controller="uk.ac.cam.echo2016.dynademo.screens.DialogueScreen">
-    <layer id="background" childLayout="center" backgroundColor="#0000">
-    </layer>
-    <layer id="foreground" childLayout="vertical">
-	<!-- <panel id="panel_top" height="25%" width="75%" align="center" childLayout="center"> 
-		<text text="DyNaDemo" font="Interface/Fonts/Default.fnt" width="100%" height="100%" 
-		/> </panel> <panel id="panel_mid" height="50%" width="75%" align="center" 
-		childLayout="center"> <text text="There must be a better way of adding text..." 
-		font="Interface/Fonts/Default.fnt" width="100%" height="100%" wrap="true" 
-		/> </panel> -->
-	<panel id="panel_top" height="75%" width="75%" align="center"
-		valign="bottom" childLayout="horizontal" backgroundColor="#0000">
+	<!-- +++++++++++++++++++++++++++++++++++++++ -->
+	<!-- lay out the HUD -->
+	<!-- +++++++++++++++++++++++++++++++++++++++ -->
+	<screen id="dialogue" controller="uk.ac.cam.echo2016.dynademo.screens.DialogueScreen">
+		<layer id="background" backgroundColor="#0000">
+		</layer>
+		<layer id="foreground" childLayout="vertical">
+			<panel id="panel_top" height="75%" width="75%" align="center"
+				valign="bottom" childLayout="horizontal" backgroundColor="#0000">
 
-	</panel>
-	<!-- background-color="rgba(35, 36, 84, 0.5)" -->
-	<!-- <layer id="dialogue-background" childLayout="center"background-color="rgba(35, 
-		36, 84, 0.5)"> -->
-	<panel backgroundColor="#0045" id="dialogue-container" height="20%"
-		width="75%" align="center" valign="center" childLayout="horizontal">
-		<panel id="diag-top" height="100%" width="100%" align="center"
-			valign="center" childLayout="horizontal">
-			<text id="character-name-panel" text=""
-				font="Interface/Fonts/Default.fnt" width="100%" height="10%" align="right"
-				valign="center" wrap="true" />
-		</panel>
-		<panel id="diag-bottom" height="80%" width="100%" align="center"
-			valign="center" childLayout="horizontal">
-			<text id="dialogue-panel" text="" font="Interface/Fonts/Default.fnt"
-				width="100%" height="100%" align="center" valign="center" wrap="true" />
-			<interact onClick="advanceText()" />
-		</panel>
-	</panel>
-	<panel id="panel_bottom_padding" height="5%" width="75%" align="center"
-		valign="bottom" childLayout="horizontal" backgroundColor="#0000">
-	</panel>
-	<!-- </layer> -->
-    </layer>
-  </screen>
+			</panel>
+			<panel backgroundColor="#0045" id="dialogue-container" height="20%"
+				width="75%" align="center" childLayout="vertical">
+				<panel id="diag-top" height="20%" width="100%" align="center"
+					valign="center" childLayout="horizontal">
+					<text id="character-name-panel" text=""
+						font="Interface/Fonts/Default.fnt" width="100%" height="100%"
+						textHAlign="center" align="center" valign="center" wrap="true" />
+					<interact onClick="advanceText()" />
+				</panel>
+				<panel id="diag-bottom" height="*" width="100%" align="center"
+					valign="center" childLayout="horizontal">
+					<text id="dialogue-panel" text="" font="Interface/Fonts/Default.fnt"
+						width="100%" height="100%" align="center" valign="center" wrap="true" />
+					<interact onClick="advanceText()" />
+				</panel>
+				<panel id="diag-options" height="*" width="100%" align="center"
+					valign="center" childLayout="horizontal">
+					<!-- <control id="listBoxStatic" name="listBox" horizontal="false"
+						width="*" height="100%" childLayout="vertical" visibleToMouse="true">
+
+					</control> -->
+				</panel>
+
+			</panel>
+			<panel id="panel_bottom_padding" height="5%" width="75%" align="center"
+				valign="bottom" childLayout="horizontal" backgroundColor="#0000">
+			</panel>
+			<!-- </layer> -->
+		</layer>
+	</screen>
 </nifty>
