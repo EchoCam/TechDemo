@@ -168,7 +168,7 @@ public class Initialiser {
         };
         
         tLightAffected = new String[][] {
-            {"Room", "Corridor"}
+            {"Room"}, {"Corridor"}
         };
         
         lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
@@ -476,6 +476,38 @@ public class Initialiser {
             }
         }
     };
+    
+    private static class ChoicePointEvent extends LocationEvent {
+        private boolean actionTaken = false;
+        private String routeIfTrue;
+        private String routeIfFalse;
+        
+        public ChoicePointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
+            super(id, bound);
+            routeIfTrue = RouteIfActionTaken;
+            routeIfFalse = RouteOtherwise;
+        }
+        
+        public void setActionTaken(boolean isAction) {
+            actionTaken = isAction;
+        }
+        
+        @Override
+        public void onDemoEvent(MainApplication app) {
+            try {
+                if (actionTaken) {
+                    app.getNarrativeInstance().startRoute(routeIfTrue);
+                    app.getNarrativeInstance().endRoute(routeIfTrue);
+                } else {
+                    app.getNarrativeInstance().startRoute(routeIfFalse);
+                    app.getNarrativeInstance().endRoute(routeIfFalse);
+                }
+            } catch (GraphElementNotFoundException ex) {
+                Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            app.nifty.gotoScreen("characterSelect");
+        }
+    }
     
     private static class ExitRouteEvent extends LocationEvent {
         public ExitRouteEvent(String id, BoundingBox bound) {
