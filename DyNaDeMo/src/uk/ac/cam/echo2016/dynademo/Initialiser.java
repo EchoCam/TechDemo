@@ -144,6 +144,9 @@ public class Initialiser {
         eInter = new InteractionEvent("buttonInteraction", buttonObj);
         route.setInteractable(button, eInter);
         
+        route.objects.add(buttonObj);
+
+        
         routes.put(route.getId(), route);
     }
    
