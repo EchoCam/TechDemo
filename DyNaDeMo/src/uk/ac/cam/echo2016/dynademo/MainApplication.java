@@ -63,7 +63,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
-    private Spatial draggedObject;
+    private Spatial draggedSpatial;
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
@@ -186,7 +186,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         loadRoute(routes.get("BedroomRoute"));
 
         // Debug Options//
-//        bulletAppState.setDebugEnabled(true);
+        bulletAppState.setDebugEnabled(true);
 //
 //        Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
 //        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -333,11 +333,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
             cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT * 3 / 4, 0));
 
             // Position carried items appropriately
-            if (draggedObject != null) {
-                float distance = draggedObject.getLocalTranslation().length();
+            if (draggedSpatial != null) {
+                float distance = draggedSpatial.getLocalTranslation().length();
                 Vector3f newLoc = camDir.mult(distance);
-                draggedObject.setLocalTranslation(newLoc);
-                draggedObject.setLocalRotation(cam.getRotation());
+                draggedSpatial.setLocalTranslation(newLoc);
+                draggedSpatial.setLocalRotation(cam.getRotation());
             }
 
             // Check character for collisions
@@ -371,6 +371,18 @@ public class MainApplication extends SimpleApplication implements ActionListener
         }
     }
 
+    public void addTask(DemoTask task) {
+        ArrayDeque<DemoTask> taskQueue = taskEventBus.get(task.getTaskQueueId());
+        if (taskQueue != null) {
+            taskQueue.add(task);
+        } else {
+            taskQueue = new ArrayDeque<>();
+            taskQueue.add(task);
+            System.out.println(task.getTaskQueueId() + " added");
+            taskEventBus.put(task.getTaskQueueId(), taskQueue);
+        }
+    }
+    
     @Override
     public void onAction(String keyName, boolean isPressed, float tpf) {
         switch (keyName) {
@@ -390,15 +402,16 @@ public class MainApplication extends SimpleApplication implements ActionListener
             if (isPressed) {
                 if (gameScreen.isTextShowing() && gameScreen == nifty.getCurrentScreen().getScreenController()) {
                     gameScreen.progressThroughText();
-                } else if (draggedObject != null) {
+                } else if (draggedSpatial != null) {
                     // Drop current Object held
-                    Vector3f location = draggedObject.getWorldTranslation();
-                    bulletAppState.getPhysicsSpace().add(draggedObject);
-                    draggedObject.removeFromParent();
-                    rootNode.attachChild(draggedObject);
-                    draggedObject.setLocalTranslation(location);
-                    ((RigidBodyControl) draggedObject.getControl(0)).setPhysicsLocation(location);
-                    draggedObject = null;
+                    Vector3f location = draggedSpatial.getWorldTranslation();
+                    bulletAppState.getPhysicsSpace().add(draggedSpatial);
+                    draggedSpatial.removeFromParent();
+                    rootNode.attachChild(draggedSpatial);
+                    draggedSpatial.setLocalTranslation(location);
+                    draggedSpatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
+                    draggedSpatial.getControl(RigidBodyControl.class).activate();
+                    draggedSpatial = null;
                 } else {
                     // Ray Casting (checking for first interactable object)
                     Ray ray = new Ray(cam.getLocation(), cam.getDirection());
@@ -450,18 +463,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().remove(spatial);
         // Attatch it to the player
         playerNode.attachChild(spatial);
-        draggedObject = spatial;
-    }
-
-    public void addTask(DemoTask task) {
-        ArrayDeque<DemoTask> taskQueue = taskEventBus.get(task.getTaskQueueId());
-        if (taskQueue != null) {
-            taskQueue.push(task);
-        } else {
-            taskQueue = new ArrayDeque<>();
-            taskQueue.add(task);
-            taskEventBus.put(task.getTaskQueueId(), taskQueue);
-        }
+        draggedSpatial = spatial;
     }
 
     public CharacterControl getPlayerControl() {
