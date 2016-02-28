@@ -301,14 +301,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     @Override
     public void simpleUpdate(float tpf) {
-         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
-         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
-         System.out.println(spat.getName());
-         System.out.println(spat.getWorldTranslation().x);
-         System.out.println(spat.getWorldTranslation().y);
-         System.out.println(spat.getWorldTranslation().z);
-         System.out.println();
-         }
+//         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
+//         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
+//         System.out.println(spat.getName());
+//         System.out.println(spat.getWorldTranslation().x);
+//         System.out.println(spat.getWorldTranslation().y);
+//         System.out.println(spat.getWorldTranslation().z);
+//         System.out.println();
+//         }
 //        System.out.println(playerControl.getPhysicsLocation());
         if (!isPaused) {
             // Find direction of camera (and rotation)
@@ -484,7 +484,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         return stateManager;
     }
 
-    public void chooseRoute(String routeName) {
+    public void chooseLocation(String routeName) {
         DemoRoute route = routes.get(routeName);
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);

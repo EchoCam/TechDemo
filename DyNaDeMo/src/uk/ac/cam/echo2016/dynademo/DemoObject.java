@@ -27,23 +27,11 @@ public abstract class DemoObject {
      * @param isMainParent - used to prevent separation of node with differnt physics types on load
      * @param boundingVolume - Null for static objects
      */
-    public DemoObject(String objId, Spatial spatial, boolean isMainParent, BoundingVolume bound, Vector3f boundOffset) {
+    public DemoObject(String objId, Spatial spatial, boolean isMainParent, BoundingVolume bound) {
         this.objId = objId;
         this.spatial = spatial;
         this.bound = bound;
-        
-        this.boundOffset = boundOffset;
-        
-        //TODO work out why the below code actually does anything(and remove boundOffset correspondingly
-//        if (boundOffset == null) this.boundOffset = null;
-//        else {
-//        if (boundOffset.equals(bound.getCenter())) {
-//            this.boundOffset = bound.getCenter();
-//        } else {
-//            System.out.println("");
-//        }
-//        }
-//        this.boundOffset = (boundOffset == null)? null : bound.getCenter();
+        this.boundOffset = (bound == null)? null : bound.getCenter().clone();
         
         this.isMainParent = isMainParent;
     }
