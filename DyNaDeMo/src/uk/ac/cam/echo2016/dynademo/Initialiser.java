@@ -38,10 +38,14 @@ public class Initialiser {
     public static HashMap<String, DemoRoute> initialiseRoutes(MainApplication app) {
         final HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
         addBedroomRoute(app, routes);
+        addButtonRoute(app, routes);
+        addDeathRoute(app, routes);
+        addDoorLeft(app, routes);
+        addDoorRight(app, routes);
+        addEscapeRoute(app, routes);
+        addLeverRoute(app, routes);
         addObservationRoute(app, routes);
         addPuzzleRoute(app, routes);
-        addLeverRoute(app, routes);
-        addButtonRoute(app, routes);
         return routes;
     }
 
@@ -77,7 +81,6 @@ public class Initialiser {
         InteractionEvent eInter;
         
         route = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
-               
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -149,6 +152,83 @@ public class Initialiser {
             }
         };
         route.setInteractable(button, eInter);
+        
+        routes.put(route.getId(), route);
+    }
+   
+    private static void addDeathRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        DemoRoute route = new DemoRoute("DeathRoute", "Scenes/DeathRoute.j3o", new Vector3f(-30,0,0), 
+                new Vector3f(1,0,0));
+        
+        // LIGHTS
+        tLightNames = new String[] {"RoomLight", "CorridorLight"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(0,8,0), new Vector3f(-25,8,0)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room", "Corridor"}
+        };
+        
+        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        
+        routes.put(route.getId(), route);
+    }
+    
+    private static void addDoorLeft(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        DemoRoute route = new DemoRoute("DoorLeft", "Scenes/DoorLeft.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
+        
+        //LIGHTS
+        tLightNames = new String[] {"RoomLight", "CorridorLight", "CorridorLeftLight"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(0,18,0), new Vector3f(-35,8,0), new Vector3f(0,8,-35)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room"}, {"Corridor"}, {"CorridorLeft"}
+        };
+        
+        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        
+        routes.put(route.getId(), route);
+    }
+    
+    private static void addDoorRight(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        DemoRoute route = new DemoRoute("DoorRight", "Scenes/DoorRight.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
+        
+        //LIGHTS
+        tLightNames = new String[] {"RoomLight", "CorridorLight", "CorridorRightLight"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(0,18,0), new Vector3f(-35,8,0), new Vector3f(0,8,35)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room"}, {"Corridor"}, {"CorridorRight"}
+        };
+        
+        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        
+        routes.put(route.getId(), route);
+    }
+    
+    private static void addEscapeRoute(MainApplication app, HashMap<String,DemoRoute> routes) {
+        DemoRoute route = new DemoRoute("EscapeRoute", "Scenes/EscapeRoute.j3o", new Vector3f(25,0,0), new Vector3f(-1,0,0));
+        
+        // LIGHTS
+        tLightNames = new String[] {"RoomLight", "CorridorLight", "Corridor1Light", "Corridor2Light"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(0,8,0), new Vector3f(0,8,25), new Vector3f(-25,8,0), new Vector3f(25,8,0)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room"}, {"Corridor"}, {"Corridor1"}, {"Corridor2"}
+        };
+        
+        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
         
         routes.put(route.getId(), route);
     }
