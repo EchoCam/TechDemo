@@ -66,29 +66,8 @@ public class Initialiser {
             addLight(app, route, lightCoords[i], spatialNames[i]);
         }
         // EVENTS
-        eLoc = new LocationEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50)) {
+        eLoc = new ExitRouteEvent("Node1", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
 
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                //TODO first meeting
-                //could do...
-
-                //routes.get(gameScreen.getRouteName());
-                //to get the name of the route the player has selected                
-                DemoRoute route = app.routes.get(app.getGameScreen().getRoute());
-                try {
-                    //Ending the route that was started to show the correct character select screen to the player
-                    app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
-                } catch (GraphElementNotFoundException ex) {
-                    Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                app.nifty.gotoScreen("characterSelect");
-//                System.out.println(app.getGameScreen().getRoute());
-//                app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
-                app.getGameScreen().setDialogueTextSequence(new String[]{"Are you now in the puzzle room?"});
-            }
-            
-        };
         route.locEvents.add(eLoc);
         routes.put(route.getId(), route);
     }
@@ -368,4 +347,20 @@ public class Initialiser {
         }
     };
     
+    private static class ExitRouteEvent extends LocationEvent {
+        public ExitRouteEvent(String id, BoundingBox bound) {
+            super(id, bound);
+        }
+
+        @Override
+        public void onDemoEvent(MainApplication app) {
+            try {
+                //Ending the route that was started to show the correct character select screen to the player
+                app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+            } catch (GraphElementNotFoundException ex) {
+                Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            app.nifty.gotoScreen("characterSelect");
+            app.getGameScreen().setDialogueTextSequence(new String[]{"Are you now in the puzzle room?"});        }
+    }
 }
