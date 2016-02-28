@@ -134,34 +134,15 @@ public class Initialiser {
         button.move(new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f)));
         
         // object physics
-        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null);
+        ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null);
         buttonObj.getLights().add(lightMap.get("Room"));
         route.objects.add(buttonObj);
         
         // EVENTS
         cpe = new ChoicePointEvent("Third Select", new BoundingBox(new Vector3f(40,1,0), 10,14,5), "Button pressed", "Button not pressed");
         tRoute.locEvents.add(cpe);
-        // object events
-        eInter = new InteractionEvent("buttonInteraction", buttonObj) {
-            public final static int DELAY = 1;
-            public Vector3f displacement = new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f));
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                // TODO hack removal
-                DemoRoute route = app.routes.get("ButtonRoute");
-                KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
-                
-                /*// TODO different property/affect?
-                route.properties.putBoolean(getObject().getObjId(), true);*/
-                cpe.setActionTaken(true);
-                
-                if (kinematicObj.getTasks().isEmpty()) {
-                    getObject().getSpatial().move(displacement.negate());
-                    kinematicObj.queueDelay(app, DELAY);
-                    kinematicObj.queueDisplacement(app, 0.1f, displacement, displacement.length());
-                }
-            }
-        };
+        
+        eInter = new InteractionEvent("buttonInteraction", buttonObj);
         route.setInteractable(button, eInter);
         
         routes.put(route.getId(), route);
@@ -297,18 +278,19 @@ public class Initialiser {
         leverBaseObj.getLights().add(lightMap.get("Room"));
         route.objects.add(leverBaseObj);
         
+        cpe = new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45,1,0), 5,14,5), "Choose left", "Choose right");
+
         // TODO bounding box actually required? see button
-        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null);
+        LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, cpe);
         leverObj.getLights().add(lightMap.get("Room"));
         route.objects.add(leverObj);
         
         // EVENTS
-        cpe = new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45,1,0), 5,14,5), "Choose left", "Choose right");
         tRoute.locEvents.add(cpe);
         
         // object events
         route.properties.putInt(leverObj.getObjId(), 0);
-        eInter = new LeverEvent("leverInteraction", leverObj, cpe);
+        eInter = new InteractionEvent("leverInteraction", leverObj);
         route.setInteractable(leverRoot, eInter);
         
         routes.put(route.getId(), route);
@@ -372,17 +354,12 @@ public class Initialiser {
         crate.setLocalTranslation(0, 0, -30);
         
         // object physics
-        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true, bound);
+        CrateObject crateObj = new CrateObject("crate", crate, 5f, true, bound);
         crateObj.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(crateObj);
         
         // object events
-        tInterEvent = new InteractionEvent("crateInteraction", crateObj){
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                app.drag(getObject().getSpatial());
-            }
-        };
+        tInterEvent = new InteractionEvent("crateInteraction", crateObj);
         tRoute.setInteractable(crate, tInterEvent);
         
         // PressurePlate
@@ -512,35 +489,6 @@ public class Initialiser {
         }
     }
     
-    private static class LeverEvent extends InteractionEvent {
-        private int leverCount;
-        private ChoicePointEvent CPE;
-
-        public LeverEvent(String id, DemoObject object, ChoicePointEvent cpe) {
-            super(id, object);
-            CPE = cpe;
-        }
-
-        @Override
-        public void onDemoEvent(MainApplication app) {
-            DemoRoute leverRoute = app.routes.get("LeverRoute");
-//            int leverCount = leverRoute.properties.getInt(getObject().getObjId());
-            KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
-            if (leverCount < 10) {
-                CPE.setActionTaken(!CPE.getActionTaken());
-                if (leverCount % 2 == 0) {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
-                } else {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
-                }
-            } else {
-                app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
-            }
-            ++leverCount;
-            leverRoute.properties.putInt(getObject().getObjId(), leverCount);
-        }
-    };
-    
     private abstract static class PressurePlateEvent extends ProximityEvent {
         public final static int DELAY = 1;
         
@@ -592,7 +540,7 @@ public class Initialiser {
         
     };
     
-    private static class ChoicePointEvent extends LocationEvent {
+    public static class ChoicePointEvent extends LocationEvent {
         private boolean actionTaken = false;
         private String routeIfTrue;
         private String routeIfFalse;
