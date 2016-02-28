@@ -6,8 +6,8 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public class StaticDemoObject extends DemoObject {
-    public StaticDemoObject(Spatial spatial, boolean isMainParent) {
-        super(spatial, isMainParent);
-        this.mass = 0;
+    public StaticDemoObject(String objId, Spatial spatial, boolean isMainParent) {
+        super(objId, spatial, isMainParent);
+        setMass(0);
     }
 }

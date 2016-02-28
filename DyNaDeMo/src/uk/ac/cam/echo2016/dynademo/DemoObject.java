@@ -9,11 +9,11 @@ import java.util.ArrayList;
  * @author tr393
  */
 public abstract class DemoObject {
-
-    public Spatial spatial;
-    public ArrayList<DemoLight> lights = new ArrayList<>();
-    public float mass;
-    public boolean isMainParent;
+    private final String objId;
+    private Spatial spatial;
+    private ArrayList<DemoLight> lights = new ArrayList<>();
+    private float mass;
+    private boolean isMainParent;
 
     /**
      * 
@@ -22,8 +22,58 @@ public abstract class DemoObject {
      * @param mass - int mass is set to 0f if physicsType set to static
      * @param isMainParent - used to prevent separation of node with differnt physics types on load
      */
-    public DemoObject(Spatial spatial, boolean isMainParent) {
+    public DemoObject(String objId, Spatial spatial, boolean isMainParent) {
+        this.objId = objId;
         this.spatial = spatial;
+        this.isMainParent = isMainParent;
+    }
+
+    /**
+     * @return the objId
+     */
+    public String getObjId() {
+        return objId;
+    }
+
+    /**
+     * @return the spatial
+     */
+    public Spatial getSpatial() {
+        return spatial;
+    }
+
+    /**
+     * @return the lights
+     */
+    public ArrayList<DemoLight> getLights() {
+        return lights;
+    }
+
+    /**
+     * @return the mass
+     */
+    public float getMass() {
+        return mass;
+    }
+
+    /**
+     * @param mass the mass to set
+     */
+    public void setMass(float mass) {
+        this.mass = mass;
+    }
+
+    /**
+     * @return the isMainParent
+     */
+    public boolean isIsMainParent() {
+        return isMainParent;
+    }
+
+    /**
+     * @param isMainParent the isMainParent to set
+     */
+    public void setIsMainParent(boolean isMainParent) {
         this.isMainParent = isMainParent;
     }
 }

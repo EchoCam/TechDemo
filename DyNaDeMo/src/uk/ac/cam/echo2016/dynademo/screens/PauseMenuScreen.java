@@ -49,8 +49,8 @@ public class PauseMenuScreen extends AbstractAppState implements ScreenControlle
      */
     @Override
     public void onStartScreen() {
-        app.getFlyByCamera().setDragToRotate(true);
-        app.setIsPaused(true);
+        app.getFlyByCamera().setEnabled(false);
+        app.pauseDemo();
     }
 
     /**
@@ -58,7 +58,7 @@ public class PauseMenuScreen extends AbstractAppState implements ScreenControlle
      */
     @Override
     public void onEndScreen() {
-        app.setIsPaused(false);
+        app.unPauseDemo();
     }
 
     // AbstractAppState methods //

@@ -52,7 +52,7 @@ public class MainMenuScreen extends AbstractAppState implements ScreenController
 
     @Override
     public void onStartScreen() {
-        app.getFlyByCamera().setDragToRotate(true);
+        app.getFlyByCamera().setEnabled(false);
     }
 
     @Override

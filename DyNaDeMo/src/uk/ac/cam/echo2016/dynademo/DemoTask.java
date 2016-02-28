@@ -23,13 +23,27 @@ public class DemoTask {
      * Default implementation is a delay and this function does nothing.
      * @param time 
      */
-    public void update(float timePassed) {}
+    public void onTimeStep(float timePassed) {}
+    
+    /**
+     * Extend this to specify what should happen at the end of the time period.
+     */
     public void complete() {}
     
     public boolean isFinished() {
         return (currentTime<0);
     }
-
+        
+    public void updateTime(float timePassed) {
+        currentTime -= timePassed;
+    }
+    
+    public void resetTime() {
+        currentTime = completionTime;
+    }
+    public void setCurrentTime(float time) {
+        currentTime = time;
+    }
     public String getTaskQueueId() {
         return taskQueueId;
     }
@@ -46,9 +60,5 @@ public class DemoTask {
      */
     public float getCurrentTime() {
         return currentTime;
-    }
-    
-    public void updateTime(float timePassed) {
-        currentTime -= timePassed;
     }
 }

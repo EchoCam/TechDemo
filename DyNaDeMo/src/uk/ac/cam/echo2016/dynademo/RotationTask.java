@@ -19,9 +19,9 @@ public class RotationTask extends KinematicTask {
         this.axis = axis.normalize();
     }
     @Override
-    public void update(float timePassed) {
+    public void onTimeStep(float timePassed) {
         float delta = angularSpeed*timePassed;
-        getObject().spatial.rotate(axis.x*delta, axis.y*delta, axis.z*delta);
+        getObject().getSpatial().rotate(axis.x*delta, axis.y*delta, axis.z*delta);
         updateTime(timePassed);
     }
 }

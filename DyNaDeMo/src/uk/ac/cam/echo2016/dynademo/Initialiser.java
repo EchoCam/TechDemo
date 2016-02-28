@@ -1,6 +1,5 @@
 package uk.ac.cam.echo2016.dynademo;
 
-import com.jme3.bullet.control.RigidBodyControl;
 
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
@@ -14,6 +13,10 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
+import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 
 /**
  * @author tr393
@@ -21,19 +24,16 @@ import java.util.HashMap;
 public class Initialiser {
 
     /**
-     * 
-     * @param app
-     *            - required for event subscribing and renderer attaching
+     * @param app - the application to attach events and renderers to
      * @return
      */
+    
     public static HashMap<String, DemoRoute> initialiseRoutes(MainApplication app) {
         final HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
-        
         addBedroomRoute(app, routes);
         addPuzzleRoute(app, routes);
         addLeverRoute(app, routes);
-              
-
+        addButtonRoute(app, routes);
         return routes;
     }
 
@@ -72,9 +72,20 @@ public class Initialiser {
                 //could do...
 
                 //routes.get(gameScreen.getRouteName());
-                //to get the name of the route the player has selected
-                app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
-                app.getGameScreen().setDialogueTextSequence(new String[]{"You are now in the puzzle room"});
+                //to get the name of the route the player has selected                
+                DemoRoute route = app.routes.get(app.getGameScreen().getRoute());
+                try {
+                    //Ending the route that was started to show the correct character select screen to the player
+                    app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                } catch (GraphElementNotFoundException ex) {
+                    Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                app.nifty.gotoScreen("characterSelect");
+                System.out.println("");
+                System.out.println(app.getGameScreen().getRoute());
+//                app.loadRoute(route);
+//                app.loadRoute(app.routes.get("PuzzleRoute")); // temp functionality
+                app.getGameScreen().setDialogueTextSequence(new String[]{"Are you now in the puzzle room?"});
             }
             
         };
@@ -101,14 +112,14 @@ public class Initialiser {
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
         crate.setLocalTranslation(0, 0, -30);
         // object physics
-        DynamicDemoObject crateObj = new DynamicDemoObject(crate, 5f, true);
-        crateObj.lights.add(light);
+        DynamicDemoObject crateObj = new DynamicDemoObject("crate", crate, 5f, true);
+        crateObj.getLights().add(light);
         route.objects.add(crateObj);
         // object events
-        eInter = new InteractionEvent("crate", crateObj){
+        eInter = new InteractionEvent("crateInteraction", crateObj){
             @Override
             public void onDemoEvent(MainApplication app) {
-                app.drag(getObject().spatial);
+                app.drag(getObject().getSpatial());
             }
         };
         route.setInteractable(crate, eInter);
@@ -120,42 +131,13 @@ public class Initialiser {
         pressPlate2.setLocalTranslation(-5f, 0.1f, -5f);
         KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true);
         KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true);
-        plateObj1.lights.add(light);
-        plateObj2.lights.add(light);
+        plateObj1.getLights().add(light);
+        plateObj2.getLights().add(light);
         route.objects.add(plateObj1);
         route.objects.add(plateObj2);
         
-//        Box bMesh = new Box(new Vector3f(-5,1.6f,5), 1.5f, 1.5f, 1.5f);
-//        Geometry bGeom = new Geometry("box", bMesh);
-//        Material bMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-//        bGeom.setMaterial(bMat);
-//        app.getRootNode().attachChild(bGeom);
-        
-//        eLoc = new DemoProximityEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1);
-        
-        route.properties.putBoolean(pressPlate1.getName(), false);
-        route.properties.putBoolean(pressPlate1.getName(), false);
-        class PressurePlateEvent extends ProximityEvent {
-            public PressurePlateEvent(String id, Vector3f loc, float width, float height, float depth, DemoObject object) {
-                super(id, loc, width, height, depth, object);
-            }
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                if (app.getPlayerControl().onGround()) {
-                    // TODO - improve similar to levers
-                    DemoRoute route = routes.get("PuzzleRoute");
-                    Boolean plateDown = route.properties.getBoolean(object.spatial.getName());
-                    // TODO again hacky like leverRod mesh
-                    if (!plateDown) {
-                        object.spatial.move(0, -0.75f, 0);
-                        route.properties.putBoolean(object.spatial.getName(), true);
-                    }
-                    KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
-                    kinematicObj.queueDelay(app, 1f);
-                    kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
-                }
-            }
-        };
+        route.properties.putBoolean(plateObj1.getObjId(), false);
+        route.properties.putBoolean(plateObj2.getObjId(), false);
         eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0.1f, 3.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj1);
         route.locEvents.add(eLoc);
         eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0.1f, -6.5f), 3f, 0.8f + HALFCHARHEIGHT, 3f, plateObj2);
@@ -176,48 +158,27 @@ public class Initialiser {
 
         // OBJECTS
         
-        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
-        lever.setLocalTranslation(0f, 5f, 0f);
-        lever.setLocalRotation(new Quaternion().fromAngles(0, 0f, FastMath.PI/2));
+        Spatial leverRoot = app.getAssetManager().loadModel("Models/Lever.j3o");
+        leverRoot.setLocalTranslation(0f, 5f, 0f);
+        leverRoot.setLocalRotation(new Quaternion().fromAngles(0, 0f, FastMath.PI/2));
         // WARNING: Rigid body applied after this transform - axis offset
         
         // hacky but it works :)
-        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
+        Spatial leverRod = ((Node) leverRoot).descendantMatches("Lever").get(0);
         
         // object physics
-        StaticDemoObject leverBaseObj = new StaticDemoObject(lever, true);
-        leverBaseObj.lights.add(light);
+        StaticDemoObject leverBaseObj = new StaticDemoObject("leverBase", leverRoot, true);
+        leverBaseObj.getLights().add(light);
         route.objects.add(leverBaseObj);
         
         KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
-        leverObj.lights.add(light);
+        leverObj.getLights().add(light);
         route.objects.add(leverObj);
         
         // object events
-        route.properties.putInt(leverRod.getName(), 0);
-        eInter = new InteractionEvent("lever", leverObj) {
-            
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                // TODO replace with route (when moved to right position)..?
-                DemoRoute leverRoute = routes.get("LeverRoute");
-                int leverCount = leverRoute.properties.getInt(getObject().spatial.getName());
-                KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
-                if (leverCount < 10) {
-                if (leverCount % 2 == 0) {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
-                } else {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
-                } } else { // lol
-                    app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
-                }
-                ++leverCount;
-                leverRoute.properties.putInt(getObject().spatial.getName(), leverCount);
-            }
-            
-        };
-        route.setInteractable(lever, eInter);
-
+        route.properties.putInt(leverObj.getObjId(), 0);
+        eInter = new LeverEvent("leverInteraction", leverObj);
+        route.setInteractable(leverRoot, eInter);
         
         routes.put(route.getId(), route);
     }
@@ -236,48 +197,51 @@ public class Initialiser {
         
         // OBJECTS
         
-        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
-        lever.setLocalTranslation(0f, 5f, 10f);
-        lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
-        // WARNING: Rigid body applied after this transform - axis offset
+//        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
+//        lever.setLocalTranslation(0f, 5f, 10f);
+//        lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
+//        // WARNING: Rigid body applied after this transform - axis offset
+//        
+//        // hacky but it works :)
+//        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
+//        
+//        // object physics
+//        StaticDemoObject leverBaseObj = new StaticDemoObject("LeverBase", lever, true);
+//        leverBaseObj.getLights().add(light);
+//        route.objects.add(leverBaseObj);
+//        
+//        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
+//        leverObj.getLights().add(light);
+//        route.objects.add(leverObj);
+//        
+//        // object events
+//        route.properties.putInt(leverObj.getObjId(), 0);
+//        eInter = new LeverEvent("lever", leverObj);
+//        route.setInteractable(lever, eInter);
         
-        // hacky but it works :)
-        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
+        
+        Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
+        button.setLocalTranslation(0f,4f,-7f);
+        button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI/4, 0f,0f));
+        button.move(new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f)));
         
         // object physics
-        StaticDemoObject leverBaseObj = new StaticDemoObject(lever, true);
-        leverBaseObj.lights.add(light);
-        route.objects.add(leverBaseObj);
-        
-        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
-        leverObj.lights.add(light);
-        route.objects.add(leverObj);
+        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true);
+        buttonObj.getLights().add(light);
+        route.objects.add(buttonObj);
         
         // object events
-        route.properties.putInt(leverRod.getName(), 0);
-        eInter = new InteractionEvent("lever", leverObj) {
-            
+        eInter = new InteractionEvent("buttonInteraction", buttonObj) {
             @Override
             public void onDemoEvent(MainApplication app) {
-                // TODO replace with route (when moved to right position)..?
-                DemoRoute leverRoute = routes.get("LeverRoute");
-                int leverCount = leverRoute.properties.getInt(getObject().spatial.getName());
                 KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
-                if (leverCount < 10) {
-                if (leverCount % 2 == 0) {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
-                } else {
-                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
-                } } else { // lol
-                    app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
-                }
-                ++leverCount;
-                leverRoute.properties.putInt(getObject().spatial.getName(), leverCount);
+//                if (kinematicObj.getTasks().isEmpty())
+                System.out.println("hi");
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
         };
-        route.setInteractable(lever, eInter);
-
+        route.setInteractable(button, eInter);
+        
         routes.put(route.getId(), route);
     }
     
@@ -298,4 +262,73 @@ public class Initialiser {
         
         return dLight;
     }
+    
+    private static class LeverEvent extends InteractionEvent {
+
+        public LeverEvent(String id, DemoObject object) {
+            super(id, object);
+        }
+
+        @Override
+        public void onDemoEvent(MainApplication app) {
+            DemoRoute leverRoute = app.routes.get("LeverRoute");
+            int leverCount = leverRoute.properties.getInt(getObject().getObjId());
+            KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
+            if (leverCount < 10) {
+                if (leverCount % 2 == 0) {
+                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);
+                } else {
+                    kinematicObj.queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), FastMath.PI / 2);
+                }
+            } else {
+                app.getGameScreen().setDialogueTextSequence(new String[]{"You broke it. Well done."});
+            }
+            ++leverCount;
+            leverRoute.properties.putInt(getObject().getObjId(), leverCount);
+        }
+    };
+    
+    private static class PressurePlateEvent extends ProximityEvent {
+        public final static int DELAY = 1;
+        
+        public PressurePlateEvent(String id, Vector3f loc, float width, float height, float depth, DemoObject object) {
+            super(id, loc, width, height, depth, object);
+        }
+
+        @Override
+        public void onDemoEvent(MainApplication app) {
+            if (app.getPlayerControl().onGround()) {
+                DemoRoute route = app.routes.get("PuzzleRoute");
+                if (!(route.properties.containsKey(object.getObjId()))) {
+                    throw new RuntimeException("Error: Property not found.");
+                }
+                Boolean plateDown = route.properties.getBoolean(object.getObjId());
+                // TODO again hacky like leverRod mesh
+                KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
+                if (!plateDown) {
+                    object.getSpatial().move(0, -0.75f, 0);
+                    route.properties.putBoolean(object.getObjId(), true);
+
+                    kinematicObj.queueDelay(app, DELAY);
+                    kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
+                    kinematicObj.queueProperty(app, 0.0f, route.properties, object.getObjId(), false);
+                }
+                if (kinematicObj.getTasks().isEmpty()) {
+                    throw new RuntimeException("Error: Illegal pressure plate state for: " + object.getObjId());
+                } else {
+                    DemoTask currentTask = kinematicObj.getTasks().getFirst();
+                    if (currentTask instanceof KinematicTask) {
+                        currentTask.resetTime();
+                    } else if (currentTask instanceof TranslationTask) {
+                        kinematicObj.getTasks().remove(currentTask);
+                        float x = (-0.75f*currentTask.getCurrentTime()/currentTask.getCompletionTime());
+                        object.getSpatial().move(0, x, 0);
+                    } else if (currentTask instanceof AddPropertyTask) {
+                        kinematicObj.getTasks().remove(currentTask);
+                    }
+                }
+            }
+        }
+    };
+    
 }
