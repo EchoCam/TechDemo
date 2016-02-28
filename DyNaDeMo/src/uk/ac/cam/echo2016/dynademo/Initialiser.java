@@ -125,7 +125,7 @@ public class Initialiser {
         
         // Crate
         Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
-        bound = new BoundingBox(Vector3f.ZERO, 1.5f, 1.5f, 1.5f);
+        bound = new BoundingBox(new Vector3f(0,0.75f,0), 1.5f, 1.5f, 1.5f);
         crate.setLocalTranslation(0, 0, -30);
         
         // object physics
