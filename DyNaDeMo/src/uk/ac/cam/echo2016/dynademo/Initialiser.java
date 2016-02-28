@@ -57,21 +57,22 @@ public class Initialiser {
         // LIGHTS
         tLightNames = new String[]{
             "RoomLight1", "RoomLight2", "RoomLight3", "RoomLight4",
-            "RoomLight5", "RoomLight6", "CorridorLight1", "CorridorLight2"};
+            "RoomLight5", "RoomLight6", "CorridorLight1", "CorridorLight2",
+            "MeetingRoomLight"};
 
         tLightCoords = new Vector3f[]{
             new Vector3f(0f, 6f, 0f), new Vector3f(25f, 6f, 0f), new Vector3f(25f, 6f, -30f),
             new Vector3f(0f, 6f, -30f), new Vector3f(-25f, 6f, -30f), new Vector3f(-25f, 6f, 0f),
-            new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f)};
+            new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f), new Vector3f(-70,8,-15)};
 
         tLightAffected = new String[][]{
             {"Room1"}, {"Room2"}, {"Room3"}, {"Room4"},
-            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor"},};
+            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor"},{"MeetingRoom"}};
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
+        tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5));
         tRoute.locEvents.add(tLocEvent);
 
         tRoute.startupTextSequence = new String[]{
@@ -86,7 +87,7 @@ public class Initialiser {
         InteractionEvent eInter;
         final ChoicePointEvent cpe;
 
-        tRoute = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+        tRoute = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -281,7 +282,7 @@ public class Initialiser {
         tRoute.objects.add(leverBaseObj);
 
         cpe =
-                new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose left", "Choose right");
+                new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose right", "Choose left");
 
         // TODO bounding box actually required? see button
         LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, cpe);
