@@ -85,7 +85,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
         MainApplication app = new MainApplication();
         AppSettings settings = new AppSettings(true);
         settings.setFrameRate(60);
-        settings.setMinResolution(1280, 720);
         app.setSettings(settings);
         app.start();
     }
