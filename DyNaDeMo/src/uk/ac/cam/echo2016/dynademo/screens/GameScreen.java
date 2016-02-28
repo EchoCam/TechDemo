@@ -143,13 +143,6 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         
         // TODO: load in maps based on data (eg, selected character etc.)
         setDialogueTextSequence(new String[] { "Press \"e\" to scroll through text.", "You are playing as " + character + ".", "Please enjoy DyNaDeMo!" });
-        try {
-            narrativeInstance.startRoute(routeName);
-        } catch (GraphElementNotFoundException e) {
-            System.err.println("IMPOSSIBLE_ERROR");
-            e.printStackTrace();
-            System.exit(1);
-        }
     }
 
     /**

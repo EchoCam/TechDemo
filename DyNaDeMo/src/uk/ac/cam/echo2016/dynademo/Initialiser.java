@@ -72,6 +72,134 @@ public class Initialiser {
         routes.put(tRoute.getId(), tRoute);
     }
     
+    private static void addButtonRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        DemoRoute route;
+        InteractionEvent eInter;
+        
+        route = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+               
+                new Vector3f(1, 0, 0));
+
+        // LIGHTS
+        tLightNames = new String[] {"RoomLight", "CorridorLight1", "CorridorLight2"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(0,8,0), new Vector3f(-35,8,0), new Vector3f(35,8,0)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room"}, {"Corridor1"}, {"Corridor2"}
+        };
+        
+        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+        
+        // OBJECTS
+        
+//        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
+//        lever.setLocalTranslation(0f, 5f, 10f);
+//        lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
+//        // WARNING: Rigid body applied after this transform - axis offset
+//        
+//        // hacky but it works :)
+//        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
+//        
+//        // object physics
+//        StaticDemoObject leverBaseObj = new StaticDemoObject("LeverBase", lever, true);
+//        leverBaseObj.getLights().add(light);
+//        route.objects.add(leverBaseObj);
+//        
+//        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
+//        leverObj.getLights().add(light);
+//        route.objects.add(leverObj);
+//        
+//        // object events
+//        route.properties.putInt(leverObj.getObjId(), 0);
+//        eInter = new LeverEvent("lever", leverObj);
+//        route.setInteractable(lever, eInter);
+        
+        
+        Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
+        button.setLocalTranslation(0f,4f,-7f);
+        button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI/4, 0f,0f));
+        button.move(new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f)));
+        
+        // object physics
+        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null, null);
+        buttonObj.getLights().add(lightMap.get("Room"));
+        route.objects.add(buttonObj);
+        
+        // object events
+        eInter = new InteractionEvent("buttonInteraction", buttonObj) {
+            public final static int DELAY = 1;
+            public Vector3f displacement = new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f));
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                // TODO hack removal
+                DemoRoute route = app.routes.get("ButtonRoute");
+                KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
+                
+                // TODO different property/affect?
+                route.properties.putBoolean(getObject().getObjId(), true);
+                
+                if (kinematicObj.getTasks().isEmpty()) {
+                    getObject().getSpatial().move(displacement.negate());
+                    kinematicObj.queueDelay(app, DELAY);
+                    kinematicObj.queueDisplacement(app, 0.1f, displacement, displacement.length());
+                }
+            }
+        };
+        route.setInteractable(button, eInter);
+        
+        routes.put(route.getId(), route);
+    }
+    
+    private static void addLeverRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
+        DemoRoute route;
+        InteractionEvent eInter;
+        
+        route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
+                new Vector3f(1, 0, 0));
+        // LIGHTS
+        tLightNames = new String[] {"RoomLight", "CorridorLight"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(-10,8,0), new Vector3f(-35,8,0)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room"}, {"Corridor"}
+        };
+        
+        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
+
+        // OBJECTS
+        
+        Spatial leverRoot = app.getAssetManager().loadModel("Models/Lever.j3o");
+        leverRoot.setLocalTranslation(0f, 5f, 0f);
+        leverRoot.setLocalRotation(new Quaternion().fromAngles(0, 0f, FastMath.PI/2));
+        // WARNING: Rigid body applied after this transform - axis offset
+        
+        // hacky but it works :)
+        Spatial leverRod = ((Node) leverRoot).descendantMatches("Lever").get(0);
+        
+        // object physics
+        StaticDemoObject leverBaseObj = new StaticDemoObject("leverBase", leverRoot, true);
+        leverBaseObj.getLights().add(lightMap.get("Room"));
+        route.objects.add(leverBaseObj);
+        
+        // TODO bounding box actually required? see button
+        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null, null);
+        leverObj.getLights().add(lightMap.get("Room"));
+        route.objects.add(leverObj);
+        
+        // object events
+        route.properties.putInt(leverObj.getObjId(), 0);
+        eInter = new LeverEvent("leverInteraction", leverObj);
+        route.setInteractable(leverRoot, eInter);
+        
+        routes.put(route.getId(), route);
+    }
+    
     private static void addObservationRoute(MainApplication app, HashMap<String, DemoRoute> routes) {
         DemoRoute route;
         LocationEvent eLoc;
@@ -100,7 +228,6 @@ public class Initialiser {
     }
     
     private static void addPuzzleRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
         LocationEvent eLoc;
         InteractionEvent eInter;
         BoundingBox bound;
@@ -173,116 +300,6 @@ public class Initialiser {
         tRoute.locEvents.add(tLocEvent);
         
         routes.put(tRoute.getId(), tRoute);
-    }
-    
-    private static void addLeverRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
-        DemoLight light;
-        InteractionEvent eInter;
-        
-        route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
-                new Vector3f(1, 0, 0));
-        // LIGHTS
-        light = addLight(app, route, new Vector3f(0, 0, 0), new String[] {"Room"});
-
-        // OBJECTS
-        
-        Spatial leverRoot = app.getAssetManager().loadModel("Models/Lever.j3o");
-        leverRoot.setLocalTranslation(0f, 5f, 0f);
-        leverRoot.setLocalRotation(new Quaternion().fromAngles(0, 0f, FastMath.PI/2));
-        // WARNING: Rigid body applied after this transform - axis offset
-        
-        // hacky but it works :)
-        Spatial leverRod = ((Node) leverRoot).descendantMatches("Lever").get(0);
-        
-        // object physics
-        StaticDemoObject leverBaseObj = new StaticDemoObject("leverBase", leverRoot, true);
-        leverBaseObj.getLights().add(light);
-        route.objects.add(leverBaseObj);
-        
-        // TODO bounding box actually required? see button
-        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null, null);
-        leverObj.getLights().add(light);
-        route.objects.add(leverObj);
-        
-        // object events
-        route.properties.putInt(leverObj.getObjId(), 0);
-        eInter = new LeverEvent("leverInteraction", leverObj);
-        route.setInteractable(leverRoot, eInter);
-        
-        routes.put(route.getId(), route);
-    }
-    
-    private static void addButtonRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        DemoRoute route;
-        InteractionEvent eInter;
-        DemoLight light;
-        
-        route = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
-               
-                new Vector3f(1, 0, 0));
-
-        // LIGHTS
-        light = addLight(app, route, new Vector3f(0f, 8f, 0f), new String[] {"Room"}); // LeverBase
-        
-        // OBJECTS
-        
-//        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
-//        lever.setLocalTranslation(0f, 5f, 10f);
-//        lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
-//        // WARNING: Rigid body applied after this transform - axis offset
-//        
-//        // hacky but it works :)
-//        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
-//        
-//        // object physics
-//        StaticDemoObject leverBaseObj = new StaticDemoObject("LeverBase", lever, true);
-//        leverBaseObj.getLights().add(light);
-//        route.objects.add(leverBaseObj);
-//        
-//        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
-//        leverObj.getLights().add(light);
-//        route.objects.add(leverObj);
-//        
-//        // object events
-//        route.properties.putInt(leverObj.getObjId(), 0);
-//        eInter = new LeverEvent("lever", leverObj);
-//        route.setInteractable(lever, eInter);
-        
-        
-        Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
-        button.setLocalTranslation(0f,4f,-7f);
-        button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI/4, 0f,0f));
-        button.move(new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f)));
-        
-        // object physics
-        KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null, null);
-        buttonObj.getLights().add(light);
-        route.objects.add(buttonObj);
-        
-        // object events
-        eInter = new InteractionEvent("buttonInteraction", buttonObj) {
-            public final static int DELAY = 1;
-            public Vector3f displacement = new Vector3f(0f,1f,1f).normalize().mult(0.2f/(float)Math.sqrt(2f));
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                // TODO hack removal
-                DemoRoute route = app.routes.get("ButtonRoute");
-                KinematicDemoObject kinematicObj = (KinematicDemoObject) getObject();
-                
-                // TODO different property/affect?
-                route.properties.putBoolean(getObject().getObjId(), true);
-                
-                if (kinematicObj.getTasks().isEmpty()) {
-                    getObject().getSpatial().move(displacement.negate());
-                    kinematicObj.queueDelay(app, DELAY);
-                    kinematicObj.queueDisplacement(app, 0.1f, displacement, displacement.length());
-                }
-            }
-        };
-        route.setInteractable(button, eInter);
-        
-        routes.put(route.getId(), route);
     }
     
     private static DemoLight addLight(MainApplication app, DemoRoute route, Vector3f loc, String[] spatialNames) {
@@ -391,6 +408,7 @@ public class Initialiser {
         public void onDemoEvent(MainApplication app) {
             try {
                 //Ending the route that was started to show the correct character select screen to the player
+                app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
                 app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
             } catch (GraphElementNotFoundException ex) {
                 Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
