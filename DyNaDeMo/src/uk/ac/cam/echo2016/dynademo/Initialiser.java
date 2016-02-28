@@ -140,7 +140,7 @@ public class Initialiser {
         
         // EVENTS
         cpe = new ChoicePointEvent("Third Select", new BoundingBox(new Vector3f(40,1,0), 10,14,5), "Button pressed", "Button not pressed");
-        
+        tRoute.locEvents.add(cpe);
         // object events
         eInter = new InteractionEvent("buttonInteraction", buttonObj) {
             public final static int DELAY = 1;
@@ -207,6 +207,7 @@ public class Initialiser {
         
         // EVENTS
         spe = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0,1,-45),5,14,5));
+        tRoute.locEvents.add(spe);
         
         routes.put(route.getId(), route);
     }
@@ -231,6 +232,7 @@ public class Initialiser {
         
         // EVENTS
         spe = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0,1,45),5,14,5));
+        tRoute.locEvents.add(spe);
         
         routes.put(route.getId(), route);
     }
@@ -255,6 +257,7 @@ public class Initialiser {
         
         // EVENTS
         spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0, 1, 15), 5,14,5));
+        tRoute.locEvents.add(spe);
         
         routes.put(route.getId(), route);
     }
@@ -301,6 +304,8 @@ public class Initialiser {
         
         // EVENTS
         cpe = new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45,1,0), 5,14,5), "Choose left", "Choose right");
+        tRoute.locEvents.add(cpe);
+        
         // object events
         route.properties.putInt(leverObj.getObjId(), 0);
         eInter = new LeverEvent("leverInteraction", leverObj, cpe);
@@ -313,8 +318,8 @@ public class Initialiser {
         DemoRoute route;
         LocationEvent eLoc;
 
-        route = new DemoRoute("ObservationRoute", "Scenes/ObservationRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
-                new Vector3f(1, 0, 0));
+        route = new DemoRoute("ObservationRoute", "Scenes/ObservationRoute.j3o", new Vector3f(-5, HALFCHARHEIGHT + 1.0f, -30),
+                new Vector3f(0, 0, 1));
 
         // LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight1", "CorridorLight2"};
@@ -454,6 +459,10 @@ public class Initialiser {
         cspe1 = new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0,1,45),5,14,5), "See puzzle first time");
         cspe2 = new ConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0,1,-45),5,14,5), "Puzzle again");
         cspe3 = new ConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0,1,-45),5,14,5), "Puzzle unsolvable");
+        tRoute.locEvents.add(spe);
+        tRoute.locEvents.add(cspe1);
+        tRoute.locEvents.add(cspe2);
+        tRoute.locEvents.add(cspe3);
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -643,7 +652,9 @@ public class Initialiser {
         
         @Override 
         public void onDemoEvent(MainApplication app) {
-            if (app.getGameScreen().getRoute() == correctRoute) {
+            System.out.println(correctRoute);
+            System.out.println(app.getGameScreen().getRoute());
+            if (app.getGameScreen().getRoute().equals(correctRoute)) {
                 super.onDemoEvent(app);
             }
         }
