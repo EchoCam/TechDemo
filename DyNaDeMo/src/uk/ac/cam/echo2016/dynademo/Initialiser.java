@@ -181,7 +181,17 @@ public class Initialiser {
         route = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
         // LIGHTS
-        light = addLight(app, route, new Vector3f(0, 0, 0), new String[] {"Room"});
+        tLightNames = new String[] {"RoomLight", "CorridorLight"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(-10,8,0), new Vector3f(-35,8,0)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room"}, {"Corridor"}
+        };
+        
+        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
         
@@ -195,12 +205,12 @@ public class Initialiser {
         
         // object physics
         StaticDemoObject leverBaseObj = new StaticDemoObject("leverBase", leverRoot, true);
-        leverBaseObj.getLights().add(light);
+        leverBaseObj.getLights().add(lightMap.get("Room"));
         route.objects.add(leverBaseObj);
         
         // TODO bounding box actually required? see button
         KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false, null, null);
-        leverObj.getLights().add(light);
+        leverObj.getLights().add(lightMap.get("Room"));
         route.objects.add(leverObj);
         
         // object events
@@ -221,7 +231,17 @@ public class Initialiser {
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
-        light = addLight(app, route, new Vector3f(0f, 8f, 0f), new String[] {"Room"}); // LeverBase
+        tLightNames = new String[] {"RoomLight", "CorridorLight1", "CorridorLight2"};
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(0,8,0), new Vector3f(-35,8,0), new Vector3f(35,8,0)
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room"}, {"Corridor1"}, {"Corridor2"}
+        };
+        
+        lightMap = addLights(app, route, tLightNames, tLightCoords, tLightAffected);
         
         // OBJECTS
         
@@ -255,7 +275,7 @@ public class Initialiser {
         
         // object physics
         KinematicDemoObject buttonObj = new KinematicDemoObject("Button", button, 1f, true, null, null);
-        buttonObj.getLights().add(light);
+        buttonObj.getLights().add(lightMap.get("Room"));
         route.objects.add(buttonObj);
         
         // object events
