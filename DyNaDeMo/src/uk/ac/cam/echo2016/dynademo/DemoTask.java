@@ -12,12 +12,12 @@ public class DemoTask {
 
     private final String taskQueueId;
     private final float completionTime;
-    private float currentTime;
+    private float remainingTime;
 
     public DemoTask(String taskQueueId, float completionTime) {
         this.taskQueueId = taskQueueId;
         this.completionTime = completionTime;
-        this.currentTime = completionTime;
+        this.remainingTime = completionTime;
     }
 
     /**
@@ -35,19 +35,19 @@ public class DemoTask {
     }
 
     public boolean isFinished() {
-        return (currentTime < 0);
+        return (remainingTime < 0);
     }
 
     public void updateTime(float timePassed) {
-        currentTime -= timePassed;
+        remainingTime -= timePassed;
     }
 
     public void resetTime() {
-        currentTime = completionTime;
+        remainingTime = completionTime;
     }
 
     public void setCurrentTime(float time) {
-        currentTime = time;
+        remainingTime = time;
     }
 
     public String getTaskQueueId() {
@@ -62,9 +62,9 @@ public class DemoTask {
     }
 
     /**
-     * @return the currentTime
+     * @return the remainingTime
      */
-    public float getCurrentTime() {
-        return currentTime;
+    public float getRemainingTime() {
+        return remainingTime;
     }
 }

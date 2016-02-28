@@ -37,7 +37,7 @@ public class Initialiser {
      * @return
      */
     public static HashMap<String, DemoRoute> initialiseRoutes(MainApplication app) {
-        final HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
+        final HashMap<String, DemoRoute> routes = new HashMap<>();
         addBedroomRoute(app, routes);
         addButtonRoute(app, routes);
         addDeathRoute(app, routes);
@@ -365,10 +365,11 @@ public class Initialiser {
         tInterEvent = new InteractionEvent("crateInteraction", crateObj);
         tRoute.setInteractable(crate, tInterEvent);
 
+        // Door
         Spatial door1 = extractDoor(app, 0);
 
         door1.setLocalTranslation(10f, 0f, 2.5f);
-        final DoorObject doorObj1 = new DoorObject(("door1"), door1, 1f, true, null);
+        final DoorObject doorObj1 = new DoorObject("door1", door1, 1f, true, null);
         doorObj1.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(doorObj1);
 
@@ -408,7 +409,12 @@ public class Initialiser {
         ((PressurePlateEvent) tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
-//        eLoc = new PressurePlateEvent("pressurePlate2", new Vector3f(-6.5f, 0f, -6.5f), 3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj2);
+//        tLocEvent = new ProximityEvent("pressurePlate2", plateObj2) {
+//            @Override
+//            public void onDemoEvent(MainApplication app) {
+////                ((PressurePlateObject) plateObj2).activate(app);
+//            }
+//        };
         tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2) {
             @Override
             public void onPressed() {
@@ -539,7 +545,7 @@ public class Initialiser {
                     currentTask.resetTime();
                 } else if (currentTask instanceof TranslationTask) {
                     kinematicObj.getTasks().remove(currentTask);
-                    float x = (-0.75f * currentTask.getCurrentTime() / currentTask.getCompletionTime());
+                    float x = (-0.75f * currentTask.getRemainingTime() / currentTask.getCompletionTime());
                     object.getSpatial().move(0, x, 0);
                 } else if (currentTask instanceof AddPropertyTask) {
                     kinematicObj.getTasks().remove(currentTask);

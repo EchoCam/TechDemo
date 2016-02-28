@@ -21,6 +21,7 @@ public class KinematicDemoObject extends DemoObject {
     public void queueDisplacement(MainApplication app, float completionTime, Vector3f direction, float distance) {
         Vector3f start = getSpatial().getLocalTranslation();
         Vector3f end = getSpatial().getLocalTranslation().add(direction.normalize().mult(distance));
+        System.out.println("going to" + end + " distance, " + distance + "(direction) " + direction + "in " + completionTime);
         DemoTask task = new TranslationTask(getObjId(), completionTime, this, end.subtract(start), end);
         getTasks().add(task);
         app.addTask(task);

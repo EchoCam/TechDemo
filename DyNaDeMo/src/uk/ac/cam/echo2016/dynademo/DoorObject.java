@@ -17,14 +17,20 @@ public class DoorObject extends KinematicDemoObject {
 
     public void open(MainApplication app) {
         if (!opening) {
+            System.out.println("Opening");
             if (getTasks().isEmpty()) {
                 queueDisplacement(app, 2f, Vector3f.UNIT_Y.negate(), 9f);
             } else {
                 DemoTask currentTask = getTasks().getFirst();
                 if (currentTask instanceof TranslationTask) {
                     getTasks().remove(currentTask);
-                    float x = (-9f * currentTask.getCurrentTime() / currentTask.getCompletionTime());
-                    queueDisplacement(app, currentTask.getCurrentTime(), Vector3f.UNIT_Y, x);
+                    
+                    float remaining = currentTask.getRemainingTime();
+                    float completion = currentTask.getCompletionTime();
+                    float current = completion - remaining;
+                    float x = (9f * current / completion);
+                    System.out.println("Travel down by " + x);
+                    queueDisplacement(app, current, Vector3f.UNIT_Y.negate(), x);
                 } else if (currentTask instanceof AddPropertyTask) {
                     getTasks().remove(currentTask);
                 }
@@ -35,14 +41,19 @@ public class DoorObject extends KinematicDemoObject {
 
     public void close(MainApplication app) {
         if (opening) {
+            System.out.println("Closing");
             if (getTasks().isEmpty()) {
                 queueDisplacement(app, 2f, Vector3f.UNIT_Y, 9f);
             } else {
                 DemoTask currentTask = getTasks().getFirst();
                 if (currentTask instanceof TranslationTask) {
                     getTasks().remove(currentTask);
-                    float x = (-9f * currentTask.getCurrentTime() / currentTask.getCompletionTime());
-                    queueDisplacement(app, currentTask.getCurrentTime(), Vector3f.UNIT_Y.negate(), x);
+                    float remaining = currentTask.getRemainingTime();
+                    float completion = currentTask.getCompletionTime();
+                    float current = completion - remaining;
+                    float x = (9f * current / completion);
+                    System.out.println("Travel up by " + x);
+                    queueDisplacement(app, current, Vector3f.UNIT_Y, x);
                 } else if (currentTask instanceof AddPropertyTask) {
                     getTasks().remove(currentTask);
                 }
