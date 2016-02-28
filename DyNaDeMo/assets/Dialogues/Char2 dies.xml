@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protagonist name="Char2">
+    <dialogue speaker="You" id="You1">
+        <text nextID="END">There is a plaque under the head, read it?</text>
+         <options>
+            <option nextID="Plaque1">Yes.</option>
+            <option nextID="END">No.</option>
+        </options>
+    </dialogue>
+    
+    <dialogue speaker="Plaque" id="Plaque1">
+        <text nextID="END">This room is empty.</text>
+    </dialogue>
+        
+    <dialogue speaker="Head" id="Head1">
+        <text nextID="Head2">I never said you could actually leave.</text>
+    </dialogue>
+
+    <dialogue speaker="Head" id="Head2">
+        <text>Oh, you didn't think you could actually leave did you?</text>
+        <options>
+            <option nextID="Head3a">...</option>
+            <option nextID="Head3b">No?.</option>
+            <option nextID="Head3c">Yes?</option>
+        </options>
+    </dialogue>
+
+    <dialogue speaker="Head" id="Head3a">
+        <text nextID="Head2">There is no need to be scared, please answer my question.</text>
+    </dialogue>
+    
+    <dialogue speaker="Head" id="Head3b">
+        <text nextID="Head4">You LIE! I could tell by the way you moved to the door.</text>
+    </dialogue>
+    
+    <dialogue speaker="Head" id="Head3c">
+        <text nextID="Head4">You INSOLENT little fool! Mwahahahahaah...</text>
+    </dialogue>
+    
+    
+    <dialogue speaker="Head" id="Head4">
+        <text nextID="END">Feel the taste of my wrath.... :) </text>
+    </dialogue>
+
+</protagonist>
