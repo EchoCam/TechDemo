@@ -29,6 +29,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     private MainApplication app;
     private String character; //currently playable character
     private String routeName; //The canonical name of the route the player selected from the character select screen
+    private String location;
     private boolean textShowing = false;
     private Deque<String> dialogueDeque = new ArrayDeque<>();
     private NarrativeInstance narrativeInstance;
@@ -109,6 +110,14 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     
     public String getRoute() {
         return routeName;
+    }
+    
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    
+    public String getLocation() {
+        return location;
     }
 
     // ScreenController methods //

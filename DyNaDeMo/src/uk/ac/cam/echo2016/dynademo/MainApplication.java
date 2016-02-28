@@ -477,7 +477,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void chooseRoute(String routeName) {
-        DemoRoute route = routes.get("PuzzleRoute");
+        DemoRoute route = routes.get(routeName);
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }

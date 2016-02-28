@@ -47,11 +47,12 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
      * @param routeName The canonical name of the route selected by the player
      * @param character The name of the character being played as
      */
-    public void selectRoute(String routeName, String character) {
+    public void selectRoute(String routeName, String character, String location) {
         // TODO: Choose location loaded based on route
         GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
         gameScreen.setCharacter(character);
         gameScreen.setRoute(routeName);
+        gameScreen.setLocation(location);
         nifty.gotoScreen("game");
     }
 
@@ -101,8 +102,8 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             boolean char1 = b.getBoolean("Char1");
             boolean char2 = b.getBoolean("Char2");
             final String character = char1 ? char2? "Timangelise and Tojamobin" : "Timangelise" : char2?  "Tojamobin": "None";
-
             
+            final String location = b.getString("Location");
             // Add character button to the screen
             PanelBuilder p = new PanelBuilder("route_" + routeName) {
                 {
@@ -120,7 +121,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
                             width("50%");
                             visibleToMouse(true);
 
-                            interactOnClick("selectRoute(" + routeName + ", " + character + ")");
+                            interactOnClick("selectRoute(" + routeName + ", " + character + ", "+ location + ")");
                         }
                     });
                 }
@@ -131,7 +132,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
 
     @Override
     public void onEndScreen() {
-        app.chooseRoute(app.getGameScreen().getRoute());
+        app.chooseRoute(app.getGameScreen().getLocation());
     }
 
     // AbstractAppState methods //
