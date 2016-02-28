@@ -93,7 +93,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public MainApplication() {
         super();
-        try {   
+        try {
             InputStream is = this.getClass().getResourceAsStream("dynademo.dnm");
             NarrativeTemplate narrativeTemplate = SaveReader.loadNarrativeTemplate(is);
             narrativeInstance = narrativeTemplate.generateInstance();
@@ -143,14 +143,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
         // Initialize physics engine //
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
-        
+
         // Add global Lights //
 
         AmbientLight al = new AmbientLight(); // No current effect on blender scene
         al.setColor(new ColorRGBA(0.1f, 0.1f, 0.1f, 1f));
         rootNode.addLight(al);
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
-        
+
         // Placeholder routes for later initialization
         currentWorld = new Geometry("placeholder", new Box(1,1,1));
         rootNode.attachChild(currentWorld);
@@ -177,10 +177,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
         billMurray = new GhostControl(capsule);
         playerNode.addControl(billMurray);
         bulletAppState.getPhysicsSpace().add(billMurray);
-        
+
         // Start at Area 0 //
         loadRoute(routes.get("BedroomRoute"));
-        
+
         // Debug Options//
 //        bulletAppState.setDebugEnabled(true);
 //
@@ -200,9 +200,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
             // TODO clean up physicsSpace (save info?)
             if (object.isIsMainParent())
                 rootNode.detachChild(object.getSpatial());
-            
+
             bulletAppState.getPhysicsSpace().remove(object.getSpatial());
-            
+
             for(DemoLight dLight : object.getLights()) {
                 object.getSpatial().removeLight(dLight.light);
             }
@@ -227,7 +227,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         for (DemoObject object : route.objects) {
             if (object.isIsMainParent())
                 rootNode.attachChild(object.getSpatial());
-            
+
             RigidBodyControl rbc = new RigidBodyControl(object.getMass());
             object.getSpatial().addControl(rbc);
             if (object instanceof KinematicDemoObject) rbc.setKinematic(true);
@@ -377,7 +377,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             break;
         case "Interact":
             if (isPressed) {
-                if (gameScreen.isTextShowing()) {
+                if (gameScreen.isTextShowing() && gameScreen.isEnabled()) {
                     gameScreen.progressThroughText();
                 } else if (draggedObject != null) {
                     // Drop current Object held
@@ -449,11 +449,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
             taskEventBus.put(taskQueueId, task);
         }
     }
-    
+
     public CharacterControl getPlayerControl() {
         return playerControl;
     }
-    
+
     public MainMenuScreen getMainMenuScreen() {
         return mainMenuScreen;
     }
@@ -474,7 +474,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public AppStateManager getStateManager() {
         return stateManager;
     }
-    
+
     public void chooseRoute(String routeName) {
         DemoRoute route = routes.get("PuzzleRoom");
         if (route == null) {
