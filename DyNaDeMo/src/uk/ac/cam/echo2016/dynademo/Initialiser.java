@@ -148,7 +148,7 @@ public class Initialiser {
     }
    
     private static void addDeathRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
-        tRoute = new DemoRoute("DeathRoute", "Scenes/DeathRoute.j3o", new Vector3f(-30,0,0), 
+        tRoute = new DemoRoute("DeathRoute", "Scenes/DeathRoute.j3o", new Vector3f(-30,HALFCHARHEIGHT + 1.0f,0), 
                 new Vector3f(1,0,0));
         
         // LIGHTS
@@ -170,7 +170,8 @@ public class Initialiser {
     private static void addDoorLeftRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
         
-        tRoute = new DemoRoute("DoorLeft", "Scenes/DoorLeftRoute.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
+        tRoute = new DemoRoute("DoorLeft", "Scenes/DoorLeftRoute.j3o", new Vector3f(-30,HALFCHARHEIGHT + 1.0f,0), 
+                new Vector3f(1,0,0));
         
         //LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight", "CorridorLeftLight"};
@@ -195,7 +196,8 @@ public class Initialiser {
     private static void addDoorRightRoute(MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
         
-        tRoute = new DemoRoute("DoorRight", "Scenes/DoorRightRoute.j3o", new Vector3f(-30,0,0), new Vector3f(1,0,0));
+        tRoute = new DemoRoute("DoorRight", "Scenes/DoorRightRoute.j3o", new Vector3f(-30,HALFCHARHEIGHT + 1.0f,0), 
+                new Vector3f(1,0,0));
         
         //LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight", "CorridorRightLight"};
@@ -220,7 +222,8 @@ public class Initialiser {
     private static void addEscapeRoute(MainApplication app, HashMap<String,DemoRoute> routes) {
         SyncPointEvent spe;
         
-        tRoute = new DemoRoute("EscapeRoute", "Scenes/EscapeRoute.j3o", new Vector3f(25,0,0), new Vector3f(-1,0,0));
+        tRoute = new DemoRoute("EscapeRoute", "Scenes/EscapeRoute.j3o", new Vector3f(25,HALFCHARHEIGHT + 1.0f,0), 
+                new Vector3f(-1,0,0));
         
         // LIGHTS
         tLightNames = new String[] {"RoomLight", "CorridorLight", "Corridor1Light", "Corridor2Light"};
