@@ -49,7 +49,7 @@ public class Initialiser {
         addEndingRoute(app, routes);
         return routes;
     }
-
+    
     private static void addBedroomRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0));
