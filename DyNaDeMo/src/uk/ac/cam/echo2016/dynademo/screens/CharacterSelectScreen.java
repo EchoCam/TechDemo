@@ -54,13 +54,13 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         gameScreen.setRoute(routeName);
         gameScreen.setLocation(location);
         //TODO: Uncomment this
-        //nifty.gotoScreen("dialogue");
+        nifty.gotoScreen("game");
         //TODO: Delete this
         //_________________________________________________
-        DialogueScreen diag = app.getDialogueScreen();
-        diag.setDialogue("Convo1Dialogue");
-        diag.setCharacter("Timangelise");
-        nifty.gotoScreen("dialogue");
+        /*DialogueScreen diag = app.getDialogueScreen();
+        diag.setDialogue("Char2LivesRoute");
+        diag.setCharacter("None");
+        nifty.gotoScreen("dialogue");*/
         //_________________________________________________
     }
 
@@ -154,9 +154,9 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         if(jumpToRoute) {
             selectRoute(route.getId(), character, location);
             DialogueScreen theDialogue = app.getDialogueScreen();
+            System.out.println(route.getId());
             theDialogue.setDialogue(route.getId());
             theDialogue.setCharacter("None");
-            theDialogue.jumpToDialogue("You1");
             nifty.gotoScreen("dialogue");
         }
     }
