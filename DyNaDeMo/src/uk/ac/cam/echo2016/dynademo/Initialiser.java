@@ -148,14 +148,14 @@ public class Initialiser {
         button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI / 4, 0f, 0f));
         button.move(new Vector3f(0f, 1f, 1f).normalize().mult(0.2f / (float) Math.sqrt(2f)));
 
-        // object physics
-        ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null);
-        buttonObj.getLights().add(lightMap.get("RoomLight"));
-
         // EVENTS
         cpe =
                 new ChoiceThenSyncPointEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
         tRoute.locEvents.add(cpe);
+        
+        // object physics
+        ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null, cpe);
+        buttonObj.getLights().add(lightMap.get("RoomLight"));
 
         eInter = new InteractionEvent("buttonInteraction", buttonObj);
         tRoute.setInteractable(button, eInter);
@@ -188,7 +188,7 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"MeetingRoom"}
+            {"MeetingRoom", "PillBottle"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
