@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter1>
+	<protagonist name="Timangelise">
+		<dialogue speaker="Timangelise" id="Timangelise0">
+			<text nextID="Timangelise1">(I see someone here...)</text>
+		</dialogue>
+		<dialogue speaker="Timangelise" id="Timangelise1">
+			<text nextID="Rojatom1">Who are you?</text>
+		</dialogue>
+		<dialogue speaker="???" id="Rojatom1">
+			<text>Who are you?</text>
+			<options>
+				<option nextID="Rojatom2">I asked first</option>
+				<option nextID="Rojatom3">I'm Timangelise</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Rojatom" id="Rojatom2">
+			<text nextID="Timangelise2">I'm Rojatom</text>
+		</dialogue>
+		<dialogue speaker="Rojatom" id="Rojatom3">
+			<text nextID="Rojatom4">I'm Rojatom.</text>
+		</dialogue>
+		<dialogue speaker="Timangelise" id="Timangelise2">
+			<text nextID="Rojatom4">I'm Timangelise</text>
+		</dialogue>
+		<dialogue speaker="Rojatom" id="Rojatom4">
+			<text>You know how to get out?</text>
+			<options>
+				<option nextID="Rojatom5">Why do you think I'm still here?</option>
+				<option nextID="Rojatom6">No. You?</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Rojatom" id="Rojatom5">
+			<text nextID="Rojatom7">So you don't know how to get out either.</text>
+		</dialogue>
+		<dialogue speaker="Rojatom" id="Rojatom6">
+			<text nextID="Rojatom7">'Fraid not.</text>
+		</dialogue>
+		<dialogue speaker="Rojatom" id="Rojatom7">
+			<text>By look of this place, we'll have to work together to get out of here.</text>
+			<options>
+				<option nextID="Rojatom8">Nice try, but I don't work with sketchy people like yourself.</option>
+				<option nextID="Rojatom9">Count me in.</option>
+			</options>
+		</dialogue>
+		<dialogue speaker="Rojatom" id="Rojatom8">
+			<text nextID="Blackout">Now you look here you-</text>
+		</dialogue>
+		<dialogue speaker="Rojatom" id="Rojatom9">
+			<text nextID="Blackout">Cool, now let's ge-</text>
+		</dialogue>
+		<dialogue speaker="" id="Blackout">
+			<text nextID="Blackout1">The lights suddenly go out.</text>
+		</dialogue>
+		<dialogue speaker="" id="Blackout1">
+			<text nextID="END">Crashing sounds. Silence.</text>
+		</dialogue>
+		<dialogue id="END"></dialogue>
+	</protagonist>
+</chapter1>
