@@ -399,7 +399,7 @@ public class Initialiser {
         dirList.add(new Vector3f(0, 0, 1));
 
         tRoute = new DemoRoute("ObservationRoute", "Scenes/ObservationRoute.j3o", locList, dirList);
-
+        
         // LIGHTS
         tLightNames = new String[]{"RoomLight", "CorridorLight1", "CorridorLight2"};
 
@@ -408,7 +408,7 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor1"}, {"Corridor2"}
+            {"Room", "Monitor1", "Screen1", "Monitor2", "Screen2"}, {"Corridor1"}, {"Corridor2"}
         };
 
         addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);

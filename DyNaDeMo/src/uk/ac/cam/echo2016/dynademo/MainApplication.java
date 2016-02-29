@@ -513,4 +513,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
         gameScreen.flushDialogueTextSequence();
         gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
+    
+//    public void flickerLights() {
+//        for (DemoLight : currentRoute.lights) {
+//            
+//        }
+//    }
 }
