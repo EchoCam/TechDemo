@@ -129,7 +129,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
         dialogueScreen = (DialogueScreen) nifty.getScreen("dialogue").getScreenController();
         dialogueScreen.setDialogue("Char2 dies");
-//      dialogueScreen.setCharacter("Harry");
+        dialogueScreen.setCharacter("Char2");
 
         stateManager.attach(mainMenuScreen);
         stateManager.attach(characterSelectScreen);

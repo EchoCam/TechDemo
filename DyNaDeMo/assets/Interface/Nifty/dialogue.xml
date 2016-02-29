@@ -29,14 +29,21 @@
 					valign="center" childLayout="horizontal">
 					<text id="dialogue-panel" text="" font="Interface/Fonts/Default.fnt"
 						width="100%" height="100%" align="center" valign="center" wrap="true" />
-					<interact onClick="advanceText()" />
 				</panel>
 				<panel id="diag-options" height="*" width="100%" align="center"
 					valign="center" childLayout="horizontal">
-					<!-- <control id="listBoxStatic" name="listBox" horizontal="false"
-						width="*" height="100%" childLayout="vertical" visibleToMouse="true">
-
-                    </control> -->
+                    <panel id="choice-left-panel" height="*" width="50%" align="center"
+					valign="center" childLayout="horizontal">
+                        <text id="choice-left" text="" font="Interface/Fonts/Default.fnt"
+                            width="100%" height="100%" align="center" valign="center" wrap="true" />
+                        <interact onClick="advanceText()" />
+                    </panel>
+                    <panel id="choice-right-panel" height="*" width="50%" align="center"
+					valign="center" childLayout="horizontal">
+                        <text id="choice-right" text="" font="Interface/Fonts/Default.fnt"
+                            width="100%" height="100%" align="center" valign="center" wrap="true" />
+                        <interact onClick="advanceText()" />
+                    </panel>
                 </panel>
 
             </panel>
