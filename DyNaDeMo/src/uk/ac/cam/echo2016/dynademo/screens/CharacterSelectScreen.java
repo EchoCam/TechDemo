@@ -147,9 +147,9 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             selectRoute(route.getId(), character, location);
             nifty.gotoScreen("dialogue");
             DialogueScreen theDialogue = app.getDialogueScreen();
-            theDialogue.setDialogue("Char2 dies");
-            theDialogue.setCharacter("");
-            theDialogue.jumpToDialogue("Head1");
+            theDialogue.setDialogue(route.getId());
+            theDialogue.setCharacter("None");
+            theDialogue.jumpToDialogue("You1");
         }
     }
 

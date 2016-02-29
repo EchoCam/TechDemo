@@ -34,10 +34,6 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     public void jumpToDialogue(String dialogId) {
         dialogue.jumpToDialogue(dialogId);
     }
-    
-    public void jumpToDialogue(String dialogueId) {
-        dialogue.jumpToDialogue(dialogueId);
-    }
 
     public void chooseOption(String index) {
         int i = Integer.parseInt(index);
