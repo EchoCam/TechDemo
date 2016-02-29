@@ -2,7 +2,6 @@ package uk.ac.cam.echo2016.dynademo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -103,7 +102,7 @@ public class DemoDialogue {
         }
         return output;
     }
-    
+
     public String getID() {
         Element elem = (Element) currentnode;
         String s = elem.getAttribute("id");
@@ -130,7 +129,7 @@ public class DemoDialogue {
     public String getCurrentCharacter() {
         return currentCharacter;
     }
-    
+
     public boolean isEnd() {
         Element elem = (Element) currentnode;
         String id = elem.getAttribute("id");
