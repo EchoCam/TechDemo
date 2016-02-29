@@ -185,7 +185,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(billMurray);
 
         // Start at Area 0 //
-        loadRoute(routes.get("BedroomRoute"));
+        loadRoute(routes.get("BedroomRoute"), 0);
 
         // Debug Options//
 //        bulletAppState.setDebugEnabled(true);
@@ -198,7 +198,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //        playerNode.attachChild(g);
     }
 
-    public void loadRoute(DemoRoute route) {
+    public void loadRoute(DemoRoute route, int entIndex) {
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
@@ -275,8 +275,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(landscape);
 
         // TODO freeze for a second
-        playerControl.setPhysicsLocation(route.getStartLoc());
-        cam.lookAtDirection(route.getStartDir(), Vector3f.UNIT_Y);
+        playerControl.setPhysicsLocation(route.getStartLocs().get(entIndex));
+        cam.lookAtDirection(route.getStartDirs().get(entIndex), Vector3f.UNIT_Y);
         // TODO other initializations
 
     }
@@ -505,7 +505,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }
-        loadRoute(route);
+        int entIndex = narrativeInstance.getRoute(gameScreen.getRoute()).getProperties().getInt("Entrance");
+        loadRoute(route, entIndex);
         gameScreen.flushDialogueTextSequence();
         gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
