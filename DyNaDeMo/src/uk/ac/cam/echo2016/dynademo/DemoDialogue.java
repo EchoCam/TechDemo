@@ -23,12 +23,11 @@ public class DemoDialogue {
     private String currentCharacter;
     private Document doc;
 
-    public DemoDialogue(String xmlfilepath) {
+    public DemoDialogue(InputStream inputStream) {
         try {
-            File inputFile = new File(xmlfilepath);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            doc = builder.parse(inputFile);
+            doc = builder.parse(inputStream);
             doc.getDocumentElement().normalize();
             NodeList protaglist = doc.getElementsByTagName("protagonist");
             HashMap<String, Node> tracker = new HashMap<String, Node>();
@@ -76,13 +75,11 @@ public class DemoDialogue {
         return false;
     }
 
-    
     public String getSpeakingCharacter() {
         Element elem = (Element) currentnode;
         String name = elem.getAttribute("speaker");
         return name;
     }
-    
 
     public NodeList getDialogueOptionsNodes() {
         if (this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
@@ -133,7 +130,7 @@ public class DemoDialogue {
     public String getCurrentCharacter() {
         return currentCharacter;
     }
-    
+
     public void moveToNextDialogue() {
         try {
             if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
@@ -181,5 +178,4 @@ public class DemoDialogue {
         }
 
     }
-
 }

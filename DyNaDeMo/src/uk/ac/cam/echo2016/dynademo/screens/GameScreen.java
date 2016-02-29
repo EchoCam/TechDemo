@@ -31,6 +31,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     private String routeName; //The canonical name of the route the player selected from the character select screen
     private String location;
     private boolean textShowing = false;
+    private boolean progressQueued = false;
     private Deque<String> dialogueDeque = new ArrayDeque<>();
     private NarrativeInstance narrativeInstance;
 
@@ -40,7 +41,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
 
     /**
      * Sets the text that is displayed in the dialogue box.
-     * 
+     *
      * If the string is empty the textShowing bool will be set to false.
      *
      * @param text
@@ -57,11 +58,11 @@ public class GameScreen extends AbstractAppState implements ScreenController {
 
     /**
      * The array of Strings that are passed to this function are queued for displaying to the player.
-     * 
-     * If no text is being shown, the first item in the array is displayed immediately. Otherwise
-     * this array is queued to the end of what is already being shown. The player can hit the
-     * interaction button to "click" through text.
-     * @param textSequence 
+     *
+     * If no text is being shown, the first item in the array is displayed immediately. Otherwise this array is queued
+     * to the end of what is already being shown. The player can hit the interaction button to "click" through text.
+     *
+     * @param textSequence
      */
     public void setDialogueTextSequence(String[] textSequence) {
         for (int i = 0; i < textSequence.length; i++) {
@@ -82,7 +83,8 @@ public class GameScreen extends AbstractAppState implements ScreenController {
 
     /**
      * Simply returns if there is some text currently showing.
-     * @return 
+     *
+     * @return
      */
     public boolean isTextShowing() {
         return textShowing;
@@ -92,6 +94,10 @@ public class GameScreen extends AbstractAppState implements ScreenController {
      * Simply pops the newest piece of text of the text queue and displays it.
      */
     public void progressThroughText() {
+        if (nifty == null || nifty.getCurrentScreen().getScreenController() != this) {
+            progressQueued = true;
+            return;
+        }
         if (!dialogueDeque.isEmpty()) {
             setDialogueText(dialogueDeque.pollFirst());
         } else {
@@ -103,19 +109,19 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     public void setCharacter(String character) {
         this.character = character;
     }
-    
+
     public void setRoute(String routeName) {
         this.routeName = routeName;
     }
-    
+
     public String getRoute() {
         return routeName;
     }
-    
+
     public void setLocation(String location) {
         this.location = location;
     }
-    
+
     public String getLocation() {
         return location;
     }
@@ -129,10 +135,9 @@ public class GameScreen extends AbstractAppState implements ScreenController {
 
     /**
      * This method is run every time this screen is selected.
-     * 
-     * At the moment, it simply locks the mouse to the screen and tells the player
-     * to enjoy DyNaDeMo. It also calls the startRoute method on narrativeInstance
-     * and giving it the canonical name of the route that the player selected
+     *
+     * At the moment, it simply locks the mouse to the screen and tells the player to enjoy DyNaDeMo. It also calls the
+     * startRoute method on narrativeInstance and giving it the canonical name of the route that the player selected
      * from the character select screen.
      */
     @Override
@@ -140,15 +145,8 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         // Bind the mouse to the screen so it is used to rotate the camera
         app.getFlyByCamera().setEnabled(true);
         app.getFlyByCamera().setDragToRotate(false); // tr393  - I don't know why we need this
-        
-        // TODO: load in maps based on data (eg, selected character etc.)
-        setDialogueTextSequence(new String[] { "Press \"e\" to scroll through text.", "You are playing as " + character + ".", "Please enjoy DyNaDeMo!" });
-        try {
-            narrativeInstance.startRoute(routeName);
-        } catch (GraphElementNotFoundException e) {
-            System.err.println("IMPOSSIBLE_ERROR");
-            e.printStackTrace();
-            System.exit(1);
+        if (progressQueued) {
+            progressThroughText();
         }
     }
 

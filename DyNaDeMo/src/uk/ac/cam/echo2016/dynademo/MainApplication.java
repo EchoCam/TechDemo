@@ -17,6 +17,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -42,11 +43,11 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.cam.echo2016.dynademo.screens.DialogueScreen;
 import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
 import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
-
 
 /**
  * @author tr393
@@ -64,7 +65,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
-    private Spatial draggedObject;
+    private Spatial draggedSpatial;
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
@@ -72,7 +73,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private HashMap<String, ArrayDeque<DemoTask>> taskEventBus = new HashMap<>();
     private Spatial currentWorld;
     private DemoRoute currentRoute;
-
     // private currentRoute/Character
     public Nifty nifty;
     // Screens
@@ -80,6 +80,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private CharacterSelectScreen characterSelectScreen;
     private PauseMenuScreen pauseMenuScreen;
     private GameScreen gameScreen;
+    private DialogueScreen dialogueScreen;
     private NarrativeInstance narrativeInstance;
     private DemoDialogue dialogue;
 
@@ -87,7 +88,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
         MainApplication app = new MainApplication();
         AppSettings settings = new AppSettings(true);
         settings.setFrameRate(60);
-        settings.setMinResolution(1280, 720);
         app.setSettings(settings);
         app.start();
     }
@@ -120,22 +120,20 @@ public class MainApplication extends SimpleApplication implements ActionListener
         nifty.addXml("Interface/Nifty/characterSelect.xml");
         nifty.addXml("Interface/Nifty/pauseMenu.xml");
         nifty.addXml("Interface/Nifty/game.xml");
-     // nifty.addXml("Interface/Nifty/dialogue.xml");
+        nifty.addXml("Interface/Nifty/dialogue.xml");
 
 
         mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
         characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
         pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
         gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
-//      DialogueScreen dialogueScreen = (DialogueScreen) nifty.getScreen("dialogue").getScreenController();
-//      dialogueScreen.setDialogue("Dialogues/Convo1Dialogue.xml");
-//      dialogueScreen.setCharacter("Harry");
+        dialogueScreen = (DialogueScreen) nifty.getScreen("dialogue").getScreenController();
 
         stateManager.attach(mainMenuScreen);
         stateManager.attach(characterSelectScreen);
         stateManager.attach(pauseMenuScreen);
         stateManager.attach(gameScreen);
-        //stateManager.attach(dialogueScreen);
+        stateManager.attach(dialogueScreen);
 
         // TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
         nifty.gotoScreen("mainMenu");
@@ -159,7 +157,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
 
         // Placeholder routes for later initialization
-        currentWorld = new Geometry("placeholder", new Box(1,1,1));
+        currentWorld = new Geometry("placeholder", new Box(1, 1, 1));
         rootNode.attachChild(currentWorld);
         landscape = new RigidBodyControl();//sceneShape, 0f);
         currentWorld.addControl(landscape);
@@ -186,7 +184,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(billMurray);
 
         // Start at Area 0 //
-        loadRoute(routes.get("BedroomRoute"));
+        loadRoute(routes.get("BedroomRoute"), 0);
 
         // Debug Options//
 //        bulletAppState.setDebugEnabled(true);
@@ -198,22 +196,25 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //        g.setMaterial(mat);
 //        playerNode.attachChild(g);
     }
-    public void loadRoute(DemoRoute route) {
+
+    public void loadRoute(DemoRoute route, int entIndex) {
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
         for (DemoObject object : currentRoute.objects) {
-            // TODO clean up physicsSpace (save info?)
-            if (object.isIsMainParent())
+            // TODO clean up lights not being removed from rooms?
+            if (object.isIsMainParent()) {
                 rootNode.detachChild(object.getSpatial());
-
-            bulletAppState.getPhysicsSpace().remove(object.getSpatial());
-
-            for(DemoLight dLight : object.getLights()) {
+            }
+            for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().removeLight(dLight.light);
             }
         }
+        for (PhysicsRigidBody r : bulletAppState.getPhysicsSpace().getRigidBodyList()) {
+            bulletAppState.getPhysicsSpace().remove(r);
+        }
+        
         for (DemoLight l : currentRoute.lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
@@ -232,13 +233,18 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         // Load route objects and add rigidbodycontrols
         for (DemoObject object : route.objects) {
-            if (object.isIsMainParent())
+            if (object.isIsMainParent()) {
                 rootNode.attachChild(object.getSpatial());
+            }
 
             RigidBodyControl rbc = new RigidBodyControl(object.getMass());
             object.getSpatial().addControl(rbc);
-            if (object instanceof KinematicDemoObject) rbc.setKinematic(true);
-            if (object instanceof DynamicDemoObject) rbc.setFriction(1.5f);
+            if (object instanceof KinematicDemoObject) {
+                rbc.setKinematic(true);
+            }
+            if (object instanceof DynamicDemoObject) {
+                rbc.setFriction(1.5f);
+            }
             bulletAppState.getPhysicsSpace().add(rbc);
             for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().addLight(dLight.light);
@@ -249,7 +255,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 // TODO hacky
                 List<Spatial> list = rootNode.descendantMatches(roomName);
                 if (list.isEmpty()) {
-                    throw new RuntimeException("Spatial not found!");
+                    throw new RuntimeException("Room " + roomName + " not found!");
                 }
                 Spatial room = list.get(0);
                 room.addLight(l.light);
@@ -268,8 +274,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(landscape);
 
         // TODO freeze for a second
-        playerControl.setPhysicsLocation(route.getStartLoc());
-        cam.lookAtDirection(route.getStartDir(), Vector3f.UNIT_Y);
+        playerControl.setPhysicsLocation(route.getStartLocs().get(entIndex));
+        cam.lookAtDirection(route.getStartDirs().get(entIndex), Vector3f.UNIT_Y);
         // TODO other initializations
 
     }
@@ -309,7 +315,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //         System.out.println(spat.getWorldTranslation().z);
 //         System.out.println();
 //         }
-        System.out.println(playerControl.getPhysicsLocation());
+//        System.out.println(playerControl.getPhysicsLocation());
+//        System.out.println(taskEventBus.get("door1"));
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
@@ -330,14 +337,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
             }
             playerControl.setWalkDirection(walkDirection.normalize().mult(25f * tpf));
             // Move camera to correspond to player
-            cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT*3/4, 0));
+            cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT * 3 / 4, 0));
 
             // Position carried items appropriately
-            if (draggedObject != null) {
-                float distance = draggedObject.getLocalTranslation().length();
+            if (draggedSpatial != null) {
+                float distance = draggedSpatial.getLocalTranslation().length();
                 Vector3f newLoc = camDir.mult(distance);
-                draggedObject.setLocalTranslation(newLoc);
-                draggedObject.setLocalRotation(cam.getRotation());
+                draggedSpatial.setLocalTranslation(newLoc);
+                draggedSpatial.setLocalRotation(cam.getRotation());
             }
 
             // Check character for collisions
@@ -361,12 +368,25 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 task.updateTime(tpf);
                 task.onTimeStep(tpf);
                 if (task.isFinished()) {
-                    System.out.println("TaskType: " + task.getClass() + " from queue: " + task.getTaskQueueId() + " completed");
+//                    System.out.println("TaskType: " + task.getClass() + " from queue: " + task.getTaskQueueId() + " completed");
                     task.complete();
                     queue.pop();
-                    if (queue.isEmpty()) taskEventBus.remove(task.getTaskQueueId());
+                    if (queue.isEmpty()) {
+                        taskEventBus.remove(task.getTaskQueueId());
+                    }
                 }
             }
+        }
+    }
+
+    public void addTask(DemoTask task) {
+        ArrayDeque<DemoTask> taskQueue = taskEventBus.get(task.getTaskQueueId());
+        if (taskQueue != null) {
+            taskQueue.add(task);
+        } else {
+            taskQueue = new ArrayDeque<>();
+            taskQueue.add(task);
+            taskEventBus.put(task.getTaskQueueId(), taskQueue);
         }
     }
 
@@ -389,15 +409,16 @@ public class MainApplication extends SimpleApplication implements ActionListener
             if (isPressed) {
                 if (gameScreen.isTextShowing() && gameScreen == nifty.getCurrentScreen().getScreenController()) {
                     gameScreen.progressThroughText();
-                } else if (draggedObject != null) {
+                } else if (draggedSpatial != null) {
                     // Drop current Object held
-                    Vector3f location = draggedObject.getWorldTranslation();
-                    bulletAppState.getPhysicsSpace().add(draggedObject);
-                    draggedObject.removeFromParent();
-                    rootNode.attachChild(draggedObject);
-                    draggedObject.setLocalTranslation(location);
-                    ((RigidBodyControl) draggedObject.getControl(0)).setPhysicsLocation(location);
-                    draggedObject = null;
+                    Vector3f location = draggedSpatial.getWorldTranslation();
+                    bulletAppState.getPhysicsSpace().add(draggedSpatial);
+                    draggedSpatial.removeFromParent();
+                    rootNode.attachChild(draggedSpatial);
+                    draggedSpatial.setLocalTranslation(location);
+                    draggedSpatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
+                    draggedSpatial.getControl(RigidBodyControl.class).activate();
+                    draggedSpatial = null;
                 } else {
                     // Ray Casting (checking for first interactable object)
                     Ray ray = new Ray(cam.getLocation(), cam.getDirection());
@@ -433,9 +454,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void pauseDemo() {
+        if (!isPaused) {
         this.isPaused = true;
         bulletAppState.setEnabled(false);
-        flyCam.setEnabled(false);
+        flyCam.setEnabled(false);}
     }
 
     public void unPauseDemo() {
@@ -449,13 +471,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().remove(spatial);
         // Attatch it to the player
         playerNode.attachChild(spatial);
-        draggedObject = spatial;
-    }
-
-    public void addTask(String taskQueueId, ArrayDeque<DemoTask> task) {
-        if (!taskEventBus.containsKey(taskQueueId)) {
-            taskEventBus.put(taskQueueId, task);
-        }
+        draggedSpatial = spatial;
     }
 
     public CharacterControl getPlayerControl() {
@@ -477,17 +493,30 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public GameScreen getGameScreen() {
         return gameScreen;
     }
+    
+    public DialogueScreen getDialogueScreen() {
+        return dialogueScreen;
+    }
 
     @Override
     public AppStateManager getStateManager() {
         return stateManager;
     }
 
-    public void chooseRoute(String routeName) {
+    public void chooseLocation(String routeName) {
         DemoRoute route = routes.get(routeName);
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }
-        loadRoute(route);
+        int entIndex = narrativeInstance.getRoute(gameScreen.getRoute()).getProperties().getInt("Entrance");
+        loadRoute(route, entIndex);
+        gameScreen.flushDialogueTextSequence();
+        gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
+    
+//    public void flickerLights() {
+//        for (DemoLight : currentRoute.lights) {
+//            
+//        }
+//    }
 }

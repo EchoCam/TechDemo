@@ -7,39 +7,42 @@ import com.jme3.math.Vector3f;
  * @author tr393
  */
 public class RotationTask extends KinematicTask {
+
     private float angularSpeed; // Rad/s
     private Vector3f axis;
     private Vector3f endRotation;
-    
+
     /**
-     * 
+     *
      * @param taskQueueId - Id for the event time slot
      * @param completionTime
      * @param object
      * @param axis
      * @param angle
-     * @param endRotation - Optional Vector3f specifying the final rotation.
-     * Set as null if accuracy is not required
+     * @param endRotation - Optional Vector3f specifying the final rotation. Set as null if accuracy is not required
      */
     public RotationTask(String taskQueueId, float completionTime, KinematicDemoObject object, Vector3f axis, float angle, Vector3f endRotation) {
         super(taskQueueId, completionTime, object);
-        this.angularSpeed = angle/completionTime;
+        this.angularSpeed = angle / completionTime;
         this.axis = axis.normalize();
         this.endRotation = endRotation;
     }
+
     @Override
     public void onTimeStep(float timePassed) {
-        float delta = angularSpeed*timePassed;
-        getObject().getSpatial().rotate(axis.x*delta, axis.y*delta, axis.z*delta);
+        float delta = angularSpeed * timePassed;
+        getObject().getSpatial().rotate(axis.x * delta, axis.y * delta, axis.z * delta);
     }
+
     /**
      *
      * WARNING: Probably incorrect! Extending classes should probably call this for accuracy.
      */
     @Override
     public void complete() {
-        if (endRotation != null)
-            getObject().getSpatial().setLocalRotation(new Quaternion().fromAngles(endRotation.x,endRotation.y,endRotation.z));
+        if (endRotation != null) {
+            getObject().getSpatial().setLocalRotation(new Quaternion().fromAngles(endRotation.x, endRotation.y, endRotation.z));
+        }
     }
 
     /**
