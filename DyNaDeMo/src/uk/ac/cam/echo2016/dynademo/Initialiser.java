@@ -188,7 +188,7 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"MeetingRoom"}
+            {"MeetingRoom", "PillBottle"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
