@@ -75,7 +75,8 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     @Override
     public void onStartScreen() {
         app.getFlyByCamera().setEnabled(false);
-
+        app.pauseDemo();
+        
         ArrayList<Route> currentRoutes = narrativeInstance.getPlayableRoutes();
 
         // Get the bottom panel so we can insert character buttons
@@ -133,6 +134,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     @Override
     public void onEndScreen() {
         app.chooseLocation(app.getGameScreen().getLocation());
+        app.unPauseDemo();
     }
 
     // AbstractAppState methods //

@@ -509,59 +509,6 @@ public class Initialiser {
         }
     }
 
-    private abstract static class PressurePlateEvent extends ProximityEvent {
-
-        public final static int DELAY = 1;
-
-        public PressurePlateEvent(String id, BoundingBox bound, DemoObject object) {
-            super(id, bound, object);
-        }
-
-        public abstract void onPressed();
-
-        public abstract void onRelease();
-
-        @Override
-        public void onDemoEvent(MainApplication app) {
-            DemoRoute route = app.routes.get("PuzzleRoute");
-            if (!(route.properties.containsKey(object.getObjId()))) {
-                throw new RuntimeException("Error: Property not found.");
-            }
-            Boolean plateDown = route.properties.getBoolean(object.getObjId());
-            // TODO again hacky like leverRod mesh
-            KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
-            if (!plateDown) {
-                object.getSpatial().move(0, -0.75f, 0);
-                route.properties.putBoolean(object.getObjId(), true);
-
-                kinematicObj.queueDelay(app, DELAY);
-                kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
-                kinematicObj.queueProperty(app, 0.0f, route.properties, object.getObjId(), false);
-                onPressed();
-                app.addTask(new DemoTask(object.getObjId(), 0f) {
-                    @Override
-                    public void complete() {
-                        onRelease();
-                    }
-                });
-            }
-            if (kinematicObj.getTasks().isEmpty()) {
-                throw new RuntimeException("Error: Illegal pressure plate state for: " + object.getObjId());
-            } else {
-                DemoTask currentTask = kinematicObj.getTasks().getFirst();
-                if (currentTask instanceof KinematicTask) {
-                    currentTask.resetTime();
-                } else if (currentTask instanceof TranslationTask) {
-                    kinematicObj.getTasks().remove(currentTask);
-                    float x = (-0.75f * currentTask.getRemainingTime() / currentTask.getCompletionTime());
-                    object.getSpatial().move(0, x, 0);
-                } else if (currentTask instanceof AddPropertyTask) {
-                    kinematicObj.getTasks().remove(currentTask);
-                }
-            }
-        }
-    };
-
     /**
      * As in this game, all choicepoints are immediatlely followed by a SyncPoint from a game-play perspective, this
      * represents a combination of both.

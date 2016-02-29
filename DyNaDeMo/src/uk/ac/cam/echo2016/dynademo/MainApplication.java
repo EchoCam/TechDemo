@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bushe.swing.event.EventBusAction;
 import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
@@ -316,6 +317,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //         System.out.println();
 //         }
 //        System.out.println(playerControl.getPhysicsLocation());
+//        System.out.println(taskEventBus.get(""));
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
@@ -453,9 +455,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void pauseDemo() {
+        if (!isPaused) {
         this.isPaused = true;
         bulletAppState.setEnabled(false);
-        flyCam.setEnabled(false);
+        flyCam.setEnabled(false);}
     }
 
     public void unPauseDemo() {

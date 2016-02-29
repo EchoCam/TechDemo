@@ -52,7 +52,9 @@ public abstract class PressurePlateObject extends KinematicDemoObject {
                 currentTask.resetTime();
             } else if (currentTask instanceof TranslationTask) {
                 getTasks().remove(currentTask);
-                float x = (-0.75f * currentTask.getRemainingTime() / currentTask.getCompletionTime());
+                float current = currentTask.getCompletionTime() - currentTask.getRemainingTime();
+                
+                float x = (-0.75f * current / currentTask.getCompletionTime());
                 getSpatial().move(0, x, 0);
             } else if (currentTask instanceof AddPropertyTask) {
                 getTasks().remove(currentTask);
