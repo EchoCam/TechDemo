@@ -15,11 +15,11 @@ import com.jme3.scene.Spatial;
 public class ButtonObject extends KinematicDemoObject implements InteractableObject {
 
     public final static int DELAY = 1;
-    private ChoiceThenSyncPointEvent cpe;
+    private SyncAfterChoiceEvent cpe;
     public Vector3f displacement = new Vector3f(0f, 1f, 1f).normalize().mult(0.2f / (float) Math.sqrt(2f));
     private boolean activated = false;
 
-    public ButtonObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, ChoiceThenSyncPointEvent cpe) {
+    public ButtonObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, SyncAfterChoiceEvent cpe) {
         super(objId, spatial, mass, isMainParent, bound);
         this.cpe = cpe;
     }
@@ -36,7 +36,7 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
     @Override
     public void interact(MainApplication app) {
         
-        DemoRoute route = app.routes.get("ButtonRoute");
+        DemoScene route = app.routes.get("ButtonRoute");
 
         // TODO different property/affect?
         route.properties.putBoolean(getObjId(), true);
