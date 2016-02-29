@@ -369,7 +369,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
-
+        
         Spatial leverRoot = app.getAssetManager().loadModel("Models/Lever.j3o");
         leverRoot.setLocalTranslation(0f, 5f, 0f);
         leverRoot.setLocalRotation(new Quaternion().fromAngles(0, 0f, FastMath.PI / 2));
@@ -427,7 +427,11 @@ public class Initialiser {
         };
 
         addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
-
+        
+        // OBJECTS
+        Spatial door = extractDoor(app, 1);
+        
+        
         // EVENTS
         eLoc = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
         tRoute.locEvents.add(eLoc);
