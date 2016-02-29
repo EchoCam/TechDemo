@@ -379,17 +379,6 @@ public class Initialiser {
 
         addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
-        // STATIC ADDITIONS
-//        Spatial monitor1 = app.getAssetManager().loadModel("Models/Monitors.j3o");
-//        StaticDemoObject monitorObj1 = new StaticDemoObject("monitor1", monitor1, true);
-//        monitorObj1.getLights().add(lightMap.get("RoomLight"));
-//        tRoute.objects.add(monitorObj1);
-//        Spatial monitor2 = app.getAssetManager().loadModel("Models/Monitors.j3o");
-//        StaticDemoObject monitorObj2 = new StaticDemoObject("monitor2", monitor2, true);
-//        monitorObj2.getLights().add(lightMap.get("RoomLight"));
-//        tRoute.objects.add(monitorObj2);
-
-        
         // EVENTS
         eLoc = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
         tRoute.locEvents.add(eLoc);
