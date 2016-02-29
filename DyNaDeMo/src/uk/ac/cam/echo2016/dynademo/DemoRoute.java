@@ -16,8 +16,8 @@ public class DemoRoute {
 
     private final String id;
     private final String sceneFile;
-    private Vector3f startLoc;
-    private Vector3f startDir;
+    private ArrayList<Vector3f> startLocs = new ArrayList<Vector3f>();
+    private ArrayList<Vector3f> startDirs = new ArrayList<Vector3f>();
     public BaseBundle properties = new BaseBundle();
     public ArrayList<LocationEvent> locEvents = new ArrayList<>();
     public ArrayList<DemoLight> lights = new ArrayList<>();
@@ -30,11 +30,17 @@ public class DemoRoute {
     public HashMap<Spatial, InteractionEvent> interactions = new HashMap<>();
     public String[] startupTextSequence = new String[0];
 
-    public DemoRoute(String id, String sceneFile, Vector3f startLoc, Vector3f startDir) {
+    public DemoRoute(String id, String sceneFile, ArrayList<Vector3f> startLocs, ArrayList<Vector3f> startDirs) {
         this.id = id;
         this.sceneFile = sceneFile;
-        this.startLoc = startLoc;
-        this.startDir = startDir;
+        if (startLocs != null && startDirs != null ) {
+            for (Vector3f v : startLocs) {
+                this.startLocs.add(v);
+            }
+            for (Vector3f v : startDirs) {
+                this.startDirs.add(v);
+            }
+        }
     }
 
     public String getId() {
@@ -45,12 +51,12 @@ public class DemoRoute {
         return sceneFile;
     }
 
-    public Vector3f getStartLoc() {
-        return startLoc;
+    public ArrayList<Vector3f> getStartLocs() {
+        return startLocs;
     }
 
-    public Vector3f getStartDir() {
-        return startDir;
+    public ArrayList<Vector3f> getStartDirs() {
+        return startDirs;
     }
 
     /**
