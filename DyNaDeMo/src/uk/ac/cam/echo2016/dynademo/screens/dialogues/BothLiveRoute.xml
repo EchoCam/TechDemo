@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <protagonist name="None">
-    <dialogue speaker="You" id="You1">
-        <text nextID="END">Both live</text>
+    <dialogue speaker="Head" id="You1">
+        <text nextID="You2">You both live. CONGRATURATION!!!</text>
     </dialogue>
-    
+    <dialogue speaker="Head" id="You2">
+        <text nextID="You3">THIS STORY IS HAPPY END. THANK YOU.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You3">
+        <text nextID="You4">BEING THE WISE AND COURAGEOUR KNIGHT THAT YOU ARE YOU FEEL STRONGTH WELLING IN YOUR BODY.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You4">
+        <text nextID="END">RETURN TO STARTING POINT. CHALLENGE AGAIN!</text>
+    </dialogue>  
     <dialogue id="END"></dialogue>
 </protagonist>
