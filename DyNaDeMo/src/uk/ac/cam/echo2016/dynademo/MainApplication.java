@@ -55,17 +55,18 @@ import de.lessvoid.nifty.Nifty;
 
 /**
  * The God class of the game.
- * 
- * Although ideally this class wouldn't implement as much as it does, because our focus
- * for this game is to create a rough and ready tech-demo, it will suffice.
- * 
- * This class can essentially "see" and "control" everything, although a lot of functionality
- * has been delegated to other classes where possible.
- * 
+ *
+ * Although ideally this class wouldn't implement as much as it does, because our focus for this game is to create a
+ * rough and ready tech-demo, it will suffice.
+ *
+ * This class can essentially "see" and "control" everything, although a lot of functionality has been delegated to
+ * other classes where possible.
+ *
  * @author tr393
  */
 @SuppressWarnings("deprecation")
 public class MainApplication extends SimpleApplication implements ActionListener {
+
     public final static boolean DEBUG = false;
     public final static float HALFCHARHEIGHT = 3;
     public HashMap<String, DemoRoute> routes = new HashMap<>();
@@ -102,10 +103,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     /**
      * The main entry point for the code of the game.
-     * 
+     *
      * Mainly initialises an instant of the game where the framerate is set to 60FPS.
-     * 
-     * @param args 
+     *
+     * @param args
      */
     public static void main(String[] args) {
         MainApplication app = new MainApplication();
@@ -115,13 +116,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
         app.start();
     }
 
-    
     /**
      * Called when an instant of the game (this) is created.
-     * 
-     * Loads in our DyNaMo .dnm file which contains the structure of our narrative,
-     * entirely using our tools.
-     * 
+     *
+     * Loads in our DyNaMo .dnm file which contains the structure of our narrative, entirely using our tools.
+     *
      */
     public MainApplication() {
         super();
@@ -138,11 +137,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     /**
      * A getter to get access to the narrativeInstance.
-     * 
-     * Mainly used by the character select screen, so it can determine which characters to
-     * show based on the available routes.
-     * 
-     * @return 
+     *
+     * Mainly used by the character select screen, so it can determine which characters to show based on the available
+     * routes.
+     *
+     * @return
      */
     public NarrativeInstance getNarrativeInstance() {
         return narrativeInstance;
@@ -150,7 +149,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     /**
      * A method called when this.start() is.
-     * 
+     *
      * Where most of the member variables are initialised. See comments in method for more.
      */
     @Override
@@ -172,7 +171,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         getNifty().addXml("Interface/Nifty/game.xml");
         getNifty().addXml("Interface/Nifty/dialogue.xml");
 
-        
+
         // make the screens accesible from within the application
         mainMenuScreen = (MainMenuScreen) getNifty().getScreen("mainMenu").getScreenController();
         characterSelectScreen = (CharacterSelectScreen) getNifty().getScreen("characterSelect").getScreenController();
@@ -241,7 +240,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         // Debug Options//
         if (DEBUG) {
-            bulletAppState.setDebugEnabled(true);   
+            bulletAppState.setDebugEnabled(true);
             Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.getAdditionalRenderState().setWireframe(true);
@@ -272,7 +271,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         for (PhysicsRigidBody r : bulletAppState.getPhysicsSpace().getRigidBodyList()) {
             bulletAppState.getPhysicsSpace().remove(r);
         }
-        
+
         for (DemoLight l : currentRoute.lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
@@ -308,7 +307,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 object.getSpatial().addLight(dLight.light);
             }
         }
-        
+
         // Load dragged object
         if (draggedObject != null) {
 //            playerNode.attachChild(draggedSpatial.getSpatial());
@@ -319,7 +318,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             }
             if (draggedObject instanceof DynamicDemoObject) {
                 rbc.setFriction(1.5f);
-                
+
             }
 //            bulletAppState.getPhysicsSpace().add(rbc);
 //            this.currentRoute.objects.add(draggedObject);
@@ -331,22 +330,22 @@ public class MainApplication extends SimpleApplication implements ActionListener
         }
         // TODO this the proper way
         if (currentRoute.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
-            for(DemoObject object: currentRoute.objects) {
+            for (DemoObject object : currentRoute.objects) {
                 if (object.getObjId().equals("crate2")) {
                     RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
                     bulletAppState.getPhysicsSpace().remove(rbc);
                     object.getSpatial().removeControl(rbc);
-                    
+
                     rootNode.detachChild(object.getSpatial());
-                    
+
                     for (DemoLight dLight : object.getLights()) {
                         object.getSpatial().removeLight(dLight.light);
                     }
                 }
             }
         }
-            
-        
+
+
         for (DemoLight l : route.lights) {
             for (String roomName : l.affectedRooms) {
                 // TODO hacky
@@ -379,7 +378,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     /**
      * Set up all the key mapping that we intend to use.
-     * 
+     *
      */
     private void setupKeys() {
         inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
@@ -408,9 +407,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     /**
      * The main update loop.
-     * 
+     *
      * This function is called once every frame of the game. :)
-     * @param tpf 
+     *
+     * @param tpf
      */
     @Override
     public void simpleUpdate(float tpf) {
@@ -449,7 +449,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             // Move camera to correspond to player
             cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT * 3 / 4, 0));
 
-            
+
             // Position carried items appropriately
             if (draggedObject != null) {
                 float distance = draggedObject.getSpatial().getLocalTranslation().length();
@@ -527,23 +527,22 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     Ray ray = new Ray(cam.getLocation(), cam.getDirection());
                     CollisionResults results = new CollisionResults();
                     rootNode.collideWith(ray, results);
-                    
+
                     Boolean isCentreInside = true;
                     float distance = spatial.getWorldTranslation().add(new Vector3f(0, 1.5f, 0)).subtract(cam.getLocation()).length();
                     if (spatial instanceof Geometry) {
-                        for (CollisionResult collision: results) {
-                            if (collision.getDistance() < distance && collision.getGeometry().equals((Geometry)spatial)) 
+                        for (CollisionResult collision : results) {
+                            if (collision.getDistance() < distance && collision.getGeometry().equals((Geometry) spatial))
                                 isCentreInside = false;
                         }
                     } else { // Currently only nodes are dragged
                         for (CollisionResult collision: results) {
                             if (collision.getDistance() < distance && !(collision.getGeometry().hasAncestor((Node) spatial))) {
-                                System.out.println(collision.getDistance() + " " + distance);
                                 isCentreInside = false;
                             }
                         }
                     }
-                    
+
                     if (isCentreInside) {
                         // Drop current Object held
                         Vector3f location = spatial.getWorldTranslation();
@@ -561,12 +560,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     CollisionResults results = new CollisionResults();
                     rootNode.collideWith(ray, results);
                     CollisionResult closest = results.getClosestCollision();
-                    
+
                     // Gets the closest geometry (if it exists) and attempts to interact with it
                     if (closest != null && closest.getDistance() < 12f) {
-                        if (DEBUG) System.out.println(closest.getGeometry().getName() + " found!");
+                        if (DEBUG)
+                            System.out.println(closest.getGeometry().getName() + " found!");
                         if (!currentRoute.interactWith(this, closest.getGeometry())) {
-                            if (DEBUG) System.out.println(closest.getGeometry().getName() + " is not responding...");
+                            if (DEBUG)
+                                System.out.println(closest.getGeometry().getName() + " is not responding...");
                         }
                     }
                 }
@@ -586,15 +587,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             break;
-        default:;
+        default:
+            ;
         }
     }
 
     public void pauseDemo() {
         if (!isPaused) {
-        this.isPaused = true;
-        bulletAppState.setEnabled(false);
-        flyCam.setEnabled(false);}
+            this.isPaused = true;
+            bulletAppState.setEnabled(false);
+            flyCam.setEnabled(false);
+        }
     }
 
     public void unPauseDemo() {
@@ -604,7 +607,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void drag(Spatial spatial) {
-        for(DemoObject object : currentRoute.objects) {
+        for (DemoObject object : currentRoute.objects) {
             if (object.getSpatial() == spatial)
                 draggedObject = object;
         }

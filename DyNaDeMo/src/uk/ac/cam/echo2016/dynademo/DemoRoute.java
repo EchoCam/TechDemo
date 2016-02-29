@@ -33,7 +33,7 @@ public class DemoRoute {
     public DemoRoute(String id, String sceneFile, ArrayList<Vector3f> startLocs, ArrayList<Vector3f> startDirs) {
         this.id = id;
         this.sceneFile = sceneFile;
-        if (startLocs != null && startDirs != null ) {
+        if (startLocs != null && startDirs != null) {
             for (Vector3f v : startLocs) {
                 this.startLocs.add(v);
             }

@@ -15,7 +15,6 @@ import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
-import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 
 /**
@@ -136,9 +135,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     /**
      * This method is run every time this screen is selected.
      *
-     * At the moment, it simply locks the mouse to the screen and tells the player to enjoy DyNaDeMo. It also calls the
-     * startRoute method on narrativeInstance and giving it the canonical name of the route that the player selected
-     * from the character select screen.
+     * At the moment, it simply locks the mouse to the screen.
      */
     @Override
     public void onStartScreen() {

@@ -52,6 +52,7 @@ public class Initialiser {
         addLeverRoute(app, routes);
         addObservationRoute(app, routes);
         addPuzzleRoute(app, routes);
+        addEndingRoute(app, routes);
         return routes;
     }
 
@@ -78,7 +79,7 @@ public class Initialiser {
 
         tLightAffected = new String[][]{
             {"Room1"}, {"Room2"}, {"Room3"}, {"Room4"},
-            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor"},{"MeetingRoom"}};
+            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor", "MeetingRoom"},{"MeetingRoom","Corridor"}};
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
@@ -172,6 +173,7 @@ public class Initialiser {
 
     private static void addChar1DeathRoute( final MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
+        InteractionEvent eInter;
         
         locList.clear();
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 5));
@@ -188,14 +190,22 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"MeetingRoom", "PillBottle"}
+            {"MeetingRoom"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
-
+        
         // EVENTS
-        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0,1,-5),5,14,5));
-        tRoute.locEvents.add(spe);
+        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(40,1,40),0,14,0));
+        
+        Spatial pills = app.getAssetManager().loadModel("Models/Pills.j3o");
+        PillsObject pillsObj = new PillsObject("head", pills, true, spe);
+        pillsObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        eInter = new InteractionEvent("pillsInteraction", pillsObj);
+        tRoute.setInteractable(pills, eInter);
+
+        tRoute.objects.add(pillsObj);        
+        
         
         tRoute.startupTextSequence = new String[]{
             "This room.",
@@ -208,6 +218,7 @@ public class Initialiser {
     
     private static void addChar2DeathRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
+        InteractionEvent eInter;
         
         locList.clear();
         locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
@@ -229,8 +240,18 @@ public class Initialiser {
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        Spatial head = app.getAssetManager().loadModel("Models/Head.j3o");
+        HeadObject headObj = new HeadObject("head", head, true);
+        headObj.getLights().add(lightMap.get("RoomLight"));
+       
+        
         // EVENTS
-        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(5,1,0), 5,14,5));
+        eInter = new InteractionEvent("headInteraction", headObj);
+        tRoute.setInteractable(head, eInter);
+
+        tRoute.objects.add(headObj);
+        
+        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(10,1,0), 5,14,5));
         tRoute.locEvents.add(spe);
         
         routes.put(tRoute.getId(), tRoute);
@@ -431,9 +452,11 @@ public class Initialiser {
         ConditionalSyncPointEvent cspe1;
         ConditionalSyncPointEvent cspe2;
         ConditionalSyncPointEvent cspe3;
+        ChoiceThenSyncPointEvent ctspe;
+        
         BoundingBox bound;
         locList.clear();
-        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45));
+        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, -55));
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 45));
         dirList.clear();
         dirList.add(new Vector3f(0, 0, 1));
@@ -446,7 +469,7 @@ public class Initialiser {
         };
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8f, 0), new Vector3f(0, 6, -35), new Vector3f(0, 6, 35),
+            new Vector3f(0, 8f, 0), new Vector3f(0, 6, -45), new Vector3f(0, 6, 35),
             new Vector3f(20, 10, 5), new Vector3f(40, 10, 5)
         };
 
@@ -497,10 +520,10 @@ public class Initialiser {
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f);
 
-        pressPlate1.setLocalTranslation(-5f, 0, -5f);
+        pressPlate1.setLocalTranslation(-5f, 0, -15f);
         pressPlate2.setLocalTranslation(-5f, 0, 5f);
 
-        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(-5f, 0, -5f), new Vector3f(-5f, -0.8f, -5f)) {
+        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(-5f, 0, -15f), new Vector3f(-5f, -0.8f, -15f)) {
             @Override
             public void onPressed() {
                 doorObj1.open(app);
@@ -533,7 +556,7 @@ public class Initialiser {
         tRoute.properties.putBoolean(plateObj1.getObjId(), false);
         tRoute.properties.putBoolean(plateObj2.getObjId(), false);
 
-        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
+        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -15f), 1.3f, 0.4f, 1.3f);
         
         tLocEvent = new ProximityEvent("pressurePlate1", bound, plateObj1) {
             @Override
@@ -563,13 +586,16 @@ public class Initialiser {
         };
 
         // EVENTS
-        spe = new SyncPointEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5));
+        ctspe = new ChoiceThenSyncPointEvent("FateDecider", new BoundingBox(new Vector3f(100,100,100),0,0,0), "Puzzle solved", "Puzzle not solved");
+        
+        spe = new PossibleConditionalSyncPointEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5), "Puzzle again", ctspe, true);
         cspe1 =
                 new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5), "See puzzle first time");
         cspe2 =
-                new ConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again");
+                new PossibleConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again", ctspe, false);
         cspe3 =
                 new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
+        
         tRoute.locEvents.add(spe);
         tRoute.locEvents.add(cspe1);
         tRoute.locEvents.add(cspe2);
@@ -578,6 +604,18 @@ public class Initialiser {
         routes.put(tRoute.getId(), tRoute);
     }
 
+    private static void addEndingRoute (final MainApplication app, final HashMap<String, DemoRoute> routes) {
+        locList.clear();
+        locList.add(new Vector3f(0,HALFCHARHEIGHT + 1.0f ,0));
+        dirList.clear();
+        dirList.add(new Vector3f(1,0,0));
+        
+        tRoute = new DemoRoute("Ending", "Scenes/Ending.j3o", locList, dirList);
+        
+        routes.put(tRoute.getId(), tRoute);
+        
+    }
+    
     private static DemoLight addLight(final MainApplication app, DemoRoute route, Vector3f loc, String[] spatialNames) {
         PointLight l = new PointLight();
         l.setColor(ColorRGBA.Gray);
@@ -625,103 +663,6 @@ public class Initialiser {
             return ((Node) doors).descendantMatches("BlankDoor").get(0);
         default:
             throw new RuntimeException("Too many door handles");
-        }
-    }
-
-    /**
-     * As in this game, all choicepoints are immediatlely followed by a SyncPoint from a game-play perspective, this
-     * represents a combination of both.
-     * 
-     * 
-     */
-    public static class ChoiceThenSyncPointEvent extends LocationEvent {
-
-        private boolean actionTaken = false;
-        private String routeIfTrue;
-        private String routeIfFalse;
-
-        public ChoiceThenSyncPointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
-            super(id, bound);
-            routeIfTrue = RouteIfActionTaken;
-            routeIfFalse = RouteOtherwise;
-        }
-
-        public boolean getActionTaken() {
-            return actionTaken;
-        }
-
-        public void setActionTaken(boolean isAction) {
-            actionTaken = isAction;
-            System.out.println("actionTaken is now: " + actionTaken);
-        }
-
-        @Override
-        public void onDemoEvent(MainApplication app) {
-            try {
-                app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
-                GameChoice gameChoice = app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
-                
-                List<Route> options = gameChoice.getOptions();
-                boolean routeIfTrueFromOptions = false;
-                boolean routeIfFalseFromOptions = false;
-                
-                //Iterate through all the options and see if they match up with the routes we think they should be
-                for(Route option: options) {
-                    if(option.getId().equals(routeIfTrue)) {
-                        routeIfTrueFromOptions = true;
-                    } else if(option.getId().equals(routeIfFalse)) {
-                        routeIfFalseFromOptions = true;
-                    }
-                }
-                if(!routeIfTrueFromOptions || !routeIfFalseFromOptions)
-                    System.out.println("The choices available don't match the routes that we think are avaialble.");
-                if (actionTaken) {
-                    app.getNarrativeInstance().startRoute(routeIfTrue);
-                    app.getNarrativeInstance().endRoute(routeIfTrue);
-                } else {
-                    app.getNarrativeInstance().startRoute(routeIfFalse);
-                    app.getNarrativeInstance().endRoute(routeIfFalse);
-                }
-            } catch (GraphElementNotFoundException ex) {
-                Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            app.getNifty().gotoScreen("characterSelect");
-        }
-    }
-
-    private static class SyncPointEvent extends LocationEvent {
-
-        public SyncPointEvent(String id, BoundingBox bound) {
-            super(id, bound);
-        }
-
-        @Override
-        public void onDemoEvent(MainApplication app) {
-            try {
-                //Ending the route that was started to show the correct character select screen to the player
-                app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
-                app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
-            } catch (GraphElementNotFoundException ex) {
-                Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            app.getNifty().gotoScreen("characterSelect");
-        }
-    }
-
-    private static class ConditionalSyncPointEvent extends SyncPointEvent {
-
-        private String correctRoute;
-
-        public ConditionalSyncPointEvent(String id, BoundingBox bound, String theCorrectRoute) {
-            super(id, bound);
-            correctRoute = theCorrectRoute;
-        }
-
-        @Override
-        public void onDemoEvent(MainApplication app) {
-            if (app.getGameScreen().getRoute().equals(correctRoute)) {
-                super.onDemoEvent(app);
-            }
         }
     }
 }

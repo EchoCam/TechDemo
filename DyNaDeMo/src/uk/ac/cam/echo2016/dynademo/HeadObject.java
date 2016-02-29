@@ -2,14 +2,17 @@ package uk.ac.cam.echo2016.dynademo;
 
 import uk.ac.cam.echo2016.dynademo.screens.DialogueScreen;
 
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.scene.Spatial;
 
 /**
  *
  * @author tr393
  */
-public class HeadObject implements InteractableObject {
+public class HeadObject extends StaticDemoObject implements InteractableObject {
+    
+    public HeadObject(String objId, Spatial spatial, boolean isMainParent) {
+        super(objId, spatial, isMainParent);
+    }
 
     @Override
     public void interact(MainApplication app) {
