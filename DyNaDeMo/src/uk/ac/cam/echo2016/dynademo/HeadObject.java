@@ -17,6 +17,6 @@ public class HeadObject implements InteractableObject {
         //TODO: get dialogue screen, load Char2 Dies.xml and use "You1" as entry point
         dialoguescreen.setDialogue("Char2 Dies");
         dialoguescreen.jumpToDialogue("You1");
-        app.nifty.gotoScreen("dialogue");
+        app.getNifty().gotoScreen("dialogue");
     }
 }
