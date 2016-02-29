@@ -221,21 +221,21 @@ public class Initialiser {
         InteractionEvent eInter;
         
         locList.clear();
-        locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(-15, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
         dirList.add(new Vector3f(1, 0, 0));
         
         tRoute = new DemoRoute("Char2DeathRoute", "Scenes/Char2DeathRoute.j3o", locList, dirList);
 
         // LIGHTS
-        tLightNames = new String[]{"RoomLight", "CorridorLight"};
+        tLightNames = new String[]{"RoomLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0), new Vector3f(-25, 8, 0)
+            new Vector3f(0, 8, 0)
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor"}
+            {"Room", "BlankDoor1", "BlankDoor2", "Monitor1", "Screen1", "Monitor2", "Screen2"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
@@ -251,7 +251,7 @@ public class Initialiser {
 
         tRoute.objects.add(headObj);
         
-        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(10,1,0), 5,14,5));
+        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(15,1,15), 5,14,5));
         tRoute.locEvents.add(spe);
         
         routes.put(tRoute.getId(), tRoute);

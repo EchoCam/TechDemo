@@ -191,9 +191,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
         getNifty().gotoScreen("mainMenu");
 
         // Set up the audio system //
-        AudioNode music = new AudioNode(assetManager, "Sound/eery.ogg", true);
+        /*AudioNode music = new AudioNode(assetManager, "Sound/eery.ogg", true);
         music.setPositional(false);
-        music.play();
+        music.play();*/
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
