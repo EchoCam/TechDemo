@@ -18,32 +18,52 @@
 			</panel>
 			<panel backgroundColor="#0045" id="dialogue-container" height="20%"
 				width="75%" align="center" childLayout="vertical">
-				<panel id="diag-top" height="20%" width="100%" align="center"
+				<panel id="diag-top" height="15%" width="100%" align="center"
 					valign="center" childLayout="horizontal">
 					<text id="character-name-panel" text=""
 						font="Interface/Fonts/Default.fnt" width="100%" height="100%"
-						textHAlign="center" align="center" valign="center" wrap="true" />
-					<interact onClick="advanceText()" />
+						textHAlign="center" align="center" valign="center" wrap="true" color="#4FDF"/>
 				</panel>
-				<panel id="diag-bottom" height="*" width="100%" align="center"
+				<interact onClick="advanceText()" />
+				<panel id="diag-bottom" height="30%" width="100%" align="center"
 					valign="center" childLayout="horizontal">
 					<text id="dialogue-panel" text="" font="Interface/Fonts/Default.fnt"
 						width="100%" height="100%" align="center" valign="center" wrap="true" />
-					<interact onClick="advanceText()" />
 				</panel>
-				<panel id="diag-options" height="*" width="100%" align="center"
-					valign="center" childLayout="horizontal">
-					<!-- <control id="listBoxStatic" name="listBox" horizontal="false"
-						width="*" height="100%" childLayout="vertical" visibleToMouse="true">
+				<interact onClick="advanceText()" />
+				<panel id="diag-options" height="55%" width="100%" align="center"
+					valign="center" childLayout="vertical">
+					<!-- <control id="listBoxStatic" name="listBox" horizontal="false" width="*" 
+						height="100%" childLayout="vertical" visibleToMouse="true"> </control> -->
+					<panel id="option0panel" width="100%" height="33%" align="center"
+						childLayout="vertical">
+						<text id="option0" width="100%" height="100%" text=""
+							font="Interface/Fonts/Default.fnt" align="center" wrap="true"
+							color="#076f" />
+						<interact onClick="chooseOption(0)" />
+					</panel>
+					<panel id="option1panel" width="100%" height="33%" align="center"
+						childLayout="vertical">
+						<text id="option1" width="100%" height="100%" text=""
+							font="Interface/Fonts/Default.fnt" align="center" wrap="true"
+							color="#076f" />
+						<interact onClick="chooseOption(1)" />
+					</panel>
 
-					</control> -->
+					<panel id="option2panel" width="100%" height="33%" align="center"
+						childLayout="vertical">
+						<text id="option2" width="100%" height="100%" text=""
+							font="Interface/Fonts/Default.fnt" align="center" wrap="true"
+							color="#076f" />
+						<interact onClick="chooseOption(2)" />
+					</panel>
+
 				</panel>
-
 			</panel>
+			<interact onClick="advanceText()" />
 			<panel id="panel_bottom_padding" height="5%" width="75%" align="center"
 				valign="bottom" childLayout="horizontal" backgroundColor="#0000">
 			</panel>
-			<!-- </layer> -->
 		</layer>
 	</screen>
 </nifty>

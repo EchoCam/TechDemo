@@ -106,6 +106,12 @@ public class DemoDialogue {
         }
         return output;
     }
+    
+    public String getID() {
+        Element elem = (Element) currentnode;
+        String s = elem.getAttribute("id");
+        return s;
+    }
 
     public void selectOption(Node option) {
         Element elem = (Element) option;
@@ -155,7 +161,7 @@ public class DemoDialogue {
 
     public void moveToNextDialogue(String nextID) {
         try {
-            if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
+            if (currentnode.getNodeType() == Node.ELEMENT_NODE) {
                 XPathFactory charxPathfactory = XPathFactory.newInstance();
                 XPath charxpath = charxPathfactory.newXPath();
                 XPathExpression charexpr;
@@ -164,6 +170,7 @@ public class DemoDialogue {
                 XPathFactory nextxPathfactory = XPathFactory.newInstance();
                 XPath nextxpath = nextxPathfactory.newXPath();
                 XPathExpression nextexpr;
+                System.out.println("going to: " + nextID);
                 nextexpr = nextxpath.compile("//dialogue[@id=\"" + nextID + "\"]");
                 NodeList nextnodes = (NodeList) nextexpr.evaluate(charnodes.item(0), XPathConstants.NODESET);
                 currentnode = nextnodes.item(0);

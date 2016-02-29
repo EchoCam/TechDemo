@@ -31,11 +31,19 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
         dialogue = new DemoDialogue(filepath);
     }
 
-    public void chooseOption(int i) {
-        NodeList options = dialogue.getDialogueOptionsNodes();
-        org.w3c.dom.Element elem = (org.w3c.dom.Element) options.item(i);
-        String id = elem.getAttribute("nextID");
-        dialogue.moveToNextDialogue(id);
+    public void chooseOption(String index) {
+        int i = Integer.parseInt(index);
+        System.out.println("Choose option: " + i);
+        if (dialogue.hasOptions()) {
+            NodeList options = dialogue.getDialogueOptionsNodes();
+            if (i + 1 < options.getLength()) {
+                org.w3c.dom.Element elem = (org.w3c.dom.Element) options.item(i);
+                String id = elem.getAttribute("nextID");
+                System.out.println(id);
+                dialogue.moveToNextDialogue(id);
+                advanceText();
+            }
+        }
     }
 
     public void advanceText() {
@@ -47,20 +55,32 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
             System.out.println(options.getLength());
             Element optionz = nifty.getScreen("dialogue").findElementByName("diag-options");
             for (int i = 0; i < options.getLength(); i++) {
-                int index = i;
-                TextBuilder textbuild = new TextBuilder(Integer.toString(index)) {{
-                    text(options.item(index).getTextContent());
-                    width("100%");
-                    font("Interface/Fonts/Default.fnt");
-                    visibleToMouse(true);
-                    interactOnClick("chooseOption("+index+")");
-                }};
-                optionz.add(textbuild.build(nifty, screen, optionz));
+                Element opt = nifty.getScreen("dialogue").findElementByName("option" + i);
+                opt.getRenderer(TextRenderer.class).setText(options.item(i).getTextContent());
+//                int index = i;
+//                TextBuilder textbuild = new TextBuilder(Integer.toString(index)) {{
+//                    text(options.item(index).getTextContent());
+//                    System.out.println(options.item(index).getTextContent());
+//                    id(dialogue.getID() + "-" + index);
+//                    color("#076f");
+//                    width("100%");
+//                    height("20%");
+//                    font("Interface/Fonts/Default.fnt");
+//                    //visibleToMouse(true);
+//                    interactOnClick("chooseOption("+index+")");
+//                }};
+//                optionz.add(textbuild.build(nifty, screen, optionz));
             }   
+            //nifty.update();
+        } else {
+            for (int i = 0; i < 3; i++) {
+                Element opt = nifty.getScreen("dialogue").findElementByName("option" + i);
+                opt.getRenderer(TextRenderer.class).setText("");
+            }
         }
-
-        Element container = nifty.getScreen("dialogue").findElementByName("foreground")
-                .findElementByName("dialogue-container");
+        
+        Element optionz = nifty.getScreen("dialogue").findElementByName("diag-options");
+        Element container = nifty.getScreen("dialogue").findElementByName("dialogue-container");
         Element textpanel = container.findElementByName("diag-bottom")
                 .findElementByName("dialogue-panel");
         textpanel.getRenderer(TextRenderer.class).setText(text);
@@ -76,6 +96,7 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     
     public void setCharacter(String name) {
         dialogue.setCharacter(name);
+        //advanceText();
     }
     
  // ScreenController methods //
