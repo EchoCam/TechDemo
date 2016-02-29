@@ -665,5 +665,4 @@ public class Initialiser {
             throw new RuntimeException("Too many door handles");
         }
     }
-
-   }
+}

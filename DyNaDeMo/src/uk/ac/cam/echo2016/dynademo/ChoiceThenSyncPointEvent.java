@@ -69,7 +69,7 @@ public class ChoiceThenSyncPointEvent extends LocationEvent {
             } catch (GraphElementNotFoundException ex) {
                 Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
             }
-            app.nifty.gotoScreen("characterSelect");
+            app.getNifty().gotoScreen("characterSelect");
         }
     }
 

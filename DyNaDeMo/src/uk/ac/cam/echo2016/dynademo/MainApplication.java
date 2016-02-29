@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +38,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -68,6 +70,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public final static boolean DEBUG = false;
     public final static float HALFCHARHEIGHT = 3;
     public HashMap<String, DemoRoute> routes = new HashMap<>();
+    
+    private Random random = new Random();
+    private float timeCounter = 0;
+    private boolean lightsOn;
     private Node playerNode;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
@@ -85,7 +91,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private Spatial currentWorld;
     private DemoRoute currentRoute;
     // private currentRoute/Character
-    public Nifty nifty;
+    private Nifty nifty;
     // Screens
     private MainMenuScreen mainMenuScreen;
     private CharacterSelectScreen characterSelectScreen;
@@ -159,19 +165,19 @@ public class MainApplication extends SimpleApplication implements ActionListener
         guiViewPort.addProcessor(niftyDisplay);
 
         // load in screens as defined in our XML files
-        nifty.fromXml("Interface/Nifty/mainMenu.xml", "mainMenu", new MainMenuScreen().init(stateManager, this));
-        nifty.addXml("Interface/Nifty/characterSelect.xml");
-        nifty.addXml("Interface/Nifty/pauseMenu.xml");
-        nifty.addXml("Interface/Nifty/game.xml");
-        nifty.addXml("Interface/Nifty/dialogue.xml");
+        getNifty().fromXml("Interface/Nifty/mainMenu.xml", "mainMenu", new MainMenuScreen().init(stateManager, this));
+        getNifty().addXml("Interface/Nifty/characterSelect.xml");
+        getNifty().addXml("Interface/Nifty/pauseMenu.xml");
+        getNifty().addXml("Interface/Nifty/game.xml");
+        getNifty().addXml("Interface/Nifty/dialogue.xml");
 
 
         // make the screens accesible from within the application
-        mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
-        characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
-        pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
-        gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
-        dialogueScreen = (DialogueScreen) nifty.getScreen("dialogue").getScreenController();
+        mainMenuScreen = (MainMenuScreen) getNifty().getScreen("mainMenu").getScreenController();
+        characterSelectScreen = (CharacterSelectScreen) getNifty().getScreen("characterSelect").getScreenController();
+        pauseMenuScreen = (PauseMenuScreen) getNifty().getScreen("pauseMenu").getScreenController();
+        gameScreen = (GameScreen) getNifty().getScreen("game").getScreenController();
+        dialogueScreen = (DialogueScreen) getNifty().getScreen("dialogue").getScreenController();
 
         // initialise the screens as states as well (mainly to give acces to this class instance within them)
         stateManager.attach(mainMenuScreen);
@@ -182,7 +188,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
 
         // start the game at the main menu!
-        nifty.gotoScreen("mainMenu");
+        getNifty().gotoScreen("mainMenu");
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -387,7 +393,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Interact", new KeyTrigger(KeyInput.KEY_E));
-        inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
+        inputManager.deleteMapping(INPUT_MAPPING_EXIT);
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_ESCAPE));
 
         inputManager.addListener(this, "Left");
@@ -408,6 +414,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
      */
     @Override
     public void simpleUpdate(float tpf) {
+        timeCounter += tpf;
+//        if (FastMath.floor(timeCounter*10) % 10 == 0) flickerLights();
+            
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
 //         System.out.println(spat.getName());
@@ -471,7 +480,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 task.onTimeStep(tpf);
                 if (task.isFinished()) {
 //                    System.out.println("TaskType: " + task.getClass() + " from queue: " + task.getTaskQueueId() + " completed");
-                    task.complete();
+                    task.onComplete();
                     queue.pop();
                     if (queue.isEmpty()) {
                         taskEventBus.remove(task.getTaskQueueId());
@@ -498,7 +507,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         case "Left":
             keyLeft = isPressed;
             break;
-        case "Right":
+        case "Right":        Random random = new Random();
+
             keyRight = isPressed;
             break;
         case "Up":
@@ -509,7 +519,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             break;
         case "Interact":
             if (isPressed) {
-                if (gameScreen.isTextShowing() && gameScreen == nifty.getCurrentScreen().getScreenController()) {
+                if (gameScreen.isTextShowing() && gameScreen == getNifty().getCurrentScreen().getScreenController()) {
                     gameScreen.progressThroughText();
                 } else if (draggedObject != null) {
                     Spatial spatial = draggedObject.getSpatial();
@@ -519,16 +529,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     rootNode.collideWith(ray, results);
 
                     Boolean isCentreInside = true;
-                    float distance = spatial.getLocalTranslation().subtract(cam.getLocation()).length();
+                    float distance = spatial.getWorldTranslation().add(new Vector3f(0, 1.5f, 0)).subtract(cam.getLocation()).length();
                     if (spatial instanceof Geometry) {
                         for (CollisionResult collision : results) {
                             if (collision.getDistance() < distance && collision.getGeometry().equals((Geometry) spatial))
                                 isCentreInside = false;
                         }
                     } else { // Currently only nodes are dragged
-                        for (CollisionResult collision : results) {
-                            if (collision.getDistance() < distance && !(collision.getGeometry().hasAncestor((Node) spatial)))
+                        for (CollisionResult collision: results) {
+                            if (collision.getDistance() < distance && !(collision.getGeometry().hasAncestor((Node) spatial))) {
                                 isCentreInside = false;
+                            }
                         }
                     }
 
@@ -570,9 +581,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
         case "Pause":
             if (isPressed) {
                 if (!isPaused) {
-                    nifty.gotoScreen("pauseMenu");
+                    getNifty().gotoScreen("pauseMenu");
                 } else {
-                    nifty.gotoScreen("game");
+                    getNifty().gotoScreen("game");
                 }
             }
             break;
@@ -604,6 +615,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().remove(spatial.getControl(RigidBodyControl.class));
         // Attach it to the player
         playerNode.attachChild(spatial);
+    }
+
+    public Nifty getNifty() {
+        return nifty;
     }
 
     public CharacterControl getPlayerControl() {
@@ -645,9 +660,24 @@ public class MainApplication extends SimpleApplication implements ActionListener
         gameScreen.flushDialogueTextSequence();
         gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
-//    public void flickerLights() {
-//        for (DemoLight : currentRoute.lights) {
-//            
-//        }
-//    }
+    
+    public void flickerLights() {
+        if (lightsOn) {
+            if (random.nextInt(4) == 0) {
+                setLight(false);
+            }
+        } else {
+            if (random.nextInt(4) == 0) {
+                setLight(true);
+            }
+        }
+    }
+    private void setLight(boolean on) {
+        System.out.println(on);
+        ColorRGBA col = on ? ColorRGBA.White : ColorRGBA.Black;
+        for (DemoLight dLight : currentRoute.lights) {
+            dLight.light.setColor(col);
+        }
+        lightsOn = on;
+    }
 }
