@@ -23,12 +23,11 @@ public class DemoDialogue {
     private String currentCharacter;
     private Document doc;
 
-    public DemoDialogue(String xmlfilepath) {
+    public DemoDialogue(InputStream inputStream) {
         try {
-            File inputFile = new File(xmlfilepath);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            doc = builder.parse(inputFile);
+            doc = builder.parse(inputStream);
             doc.getDocumentElement().normalize();
             NodeList protaglist = doc.getElementsByTagName("protagonist");
             HashMap<String, Node> tracker = new HashMap<String, Node>();

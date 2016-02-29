@@ -1,4 +1,3 @@
-
 package uk.ac.cam.echo2016.dynademo.screens;
 
 import org.w3c.dom.NodeList;
@@ -23,13 +22,13 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     private Screen screen;
     private MainApplication app;
     private DemoDialogue dialogue;
-    /*
+
     public DialogueScreen() {
         super();
     }
 
-    public void setDialogue(String filepath) {
-        dialogue = new DemoDialogue(filepath);
+    public void setDialogue(String dialogue_location) {
+        this.dialogue = new DemoDialogue(this.getClass().getResourceAsStream("dialogues/" + dialogue_location + ".xml"));
     }
 
     public void chooseOption(int i) {
@@ -44,11 +43,11 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
         String chara = dialogue.getSpeakingCharacter();
 
         if (dialogue.hasOptions()) {
-            NodeList options = dialogue.getDialogueOptionsNodes();
+            final NodeList options = dialogue.getDialogueOptionsNodes();
             System.out.println(options.getLength());
             Element optionz = nifty.getScreen("dialogue").findElementByName("diag-options");
             for (int i = 0; i < options.getLength(); i++) {
-                int index = i;
+                final int index = i;
                 TextBuilder textbuild = new TextBuilder(Integer.toString(index)) {
                     {
                         text(options.item(index).getTextContent());
@@ -62,13 +61,11 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
             }
         }
 
-        Element container = nifty.getScreen("dialogue").findElementByName("foreground")
-                .findElementByName("dialogue-container");
-        Element textpanel = container.findElementByName("diag-bottom")
-                .findElementByName("dialogue-panel");
+        Element container = 
+                nifty.getScreen("dialogue").findElementByName("foreground").findElementByName("dialogue-container");
+        Element textpanel = container.findElementByName("diag-bottom").findElementByName("dialogue-panel");
         textpanel.getRenderer(TextRenderer.class).setText(text);
-        Element charnamepanel = container.findElementByName("diag-top")
-                .findElementByName("character-name-panel");
+        Element charnamepanel = container.findElementByName("diag-top").findElementByName("character-name-panel");
         charnamepanel.getRenderer(TextRenderer.class).setText(chara);
         if (!dialogue.hasOptions()) {
             dialogue.moveToNextDialogue();
@@ -79,7 +76,7 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     public void setCharacter(String name) {
         dialogue.setCharacter(name);
     }
-    */
+
     // ScreenController methods //
     @Override
     public void bind(Nifty nifty, Screen screen) {
