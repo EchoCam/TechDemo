@@ -30,6 +30,10 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     public void setDialogue(String dialogue_location) {
         this.dialogue = new DemoDialogue(this.getClass().getResourceAsStream("dialogues/" + dialogue_location + ".xml"));
     }
+    
+    public void jumpToDialogue(String dialogueId) {
+        dialogue.jumpToDialogue(dialogueId);
+    }
 
     public void chooseOption(String index) {
         int i = Integer.parseInt(index);
@@ -41,6 +45,9 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
                 String id = elem.getAttribute("nextID");
                 System.out.println(id);
                 dialogue.moveToNextDialogue(id);
+                if (this.isEnd()) {
+                    nifty.gotoScreen("game");
+                }
                 advanceText();
             }
         }
@@ -48,6 +55,7 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     
     public boolean isEnd() {
         return dialogue.isEnd();
+        
     }
 
     public void advanceText() {
@@ -92,7 +100,11 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
         charnamepanel.getRenderer(TextRenderer.class).setText(chara);
         if (!dialogue.hasOptions()) {
             dialogue.moveToNextDialogue();
+            if (this.isEnd()) {
+                nifty.gotoScreen("game");
+            }
         }
+        
 
     }
 
