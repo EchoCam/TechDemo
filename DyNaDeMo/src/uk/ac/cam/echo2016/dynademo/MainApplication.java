@@ -10,6 +10,7 @@ import uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -187,7 +188,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         loadRoute(routes.get("BedroomRoute"), 0);
 
         // Debug Options//
-//        bulletAppState.setDebugEnabled(true);
+        bulletAppState.setDebugEnabled(true);
 //
 //        Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
 //        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -250,6 +251,24 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 object.getSpatial().addLight(dLight.light);
             }
         }
+        // TODO this the proper way
+        if (currentRoute.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
+            for(DemoObject object: currentRoute.objects) {
+                if (object.getObjId().equals("crate2")) {
+                    RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
+                    bulletAppState.getPhysicsSpace().remove(rbc);
+                    object.getSpatial().removeControl(rbc);
+                    
+                    rootNode.detachChild(object.getSpatial());
+                    
+                    for (DemoLight dLight : object.getLights()) {
+                        object.getSpatial().removeLight(dLight.light);
+                    }
+                }
+            }
+        }
+            
+        
         for (DemoLight l : route.lights) {
             for (String roomName : l.affectedRooms) {
                 // TODO hacky
