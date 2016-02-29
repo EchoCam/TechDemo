@@ -66,7 +66,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
-    private DemoObject draggedSpatial;
+    private DemoObject draggedObject;
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
@@ -257,20 +257,24 @@ public class MainApplication extends SimpleApplication implements ActionListener
         }
         
         // Load dragged object
-        if (draggedSpatial != null) {
-            rootNode.attachChild(draggedSpatial.getSpatial());
-            RigidBodyControl rbc = new RigidBodyControl(draggedSpatial.getMass());
-            draggedSpatial.getSpatial().addControl(rbc);
-            if (draggedSpatial instanceof KinematicDemoObject) {
+        if (draggedObject != null) {
+//            playerNode.attachChild(draggedSpatial.getSpatial());
+            RigidBodyControl rbc = new RigidBodyControl(draggedObject.getMass());
+            draggedObject.getSpatial().addControl(rbc);
+            if (draggedObject instanceof KinematicDemoObject) {
                 rbc.setKinematic(true);
             }
-            if (draggedSpatial instanceof DynamicDemoObject) {
+            if (draggedObject instanceof DynamicDemoObject) {
                 rbc.setFriction(1.5f);
+                
             }
-            bulletAppState.getPhysicsSpace().add(rbc);
+//            bulletAppState.getPhysicsSpace().add(rbc);
+//            this.currentRoute.objects.add(draggedObject);
+//            this.currentRoute.interactions.put(spatial, previousRoute.interactions.get(draggedObject))
             for (DemoLight dLight : currentRoute.lights) {
-                draggedSpatial.getSpatial().addLight(dLight.light);
+                draggedObject.getSpatial().addLight(dLight.light);
             }
+            playerNode.attachChild(draggedObject.getSpatial());
         }
         // TODO this the proper way
         if (currentRoute.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
@@ -381,11 +385,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
             
             // Position carried items appropriately
-            if (draggedSpatial != null) {
-                float distance = draggedSpatial.getSpatial().getLocalTranslation().length();
+            if (draggedObject != null) {
+                float distance = draggedObject.getSpatial().getLocalTranslation().length();
                 Vector3f newLoc = camDir.mult(distance);
-                draggedSpatial.getSpatial().setLocalTranslation(newLoc);
-                draggedSpatial.getSpatial().setLocalRotation(cam.getRotation());
+                draggedObject.getSpatial().setLocalTranslation(newLoc);
+                draggedObject.getSpatial().setLocalRotation(cam.getRotation());
             }
 
             // Check character for collisions
@@ -450,8 +454,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
             if (isPressed) {
                 if (gameScreen.isTextShowing() && gameScreen == nifty.getCurrentScreen().getScreenController()) {
                     gameScreen.progressThroughText();
-                } else if (draggedSpatial != null) {
-                    Spatial spatial = draggedSpatial.getSpatial();
+                } else if (draggedObject != null) {
+                    Spatial spatial = draggedObject.getSpatial();
                     // check object is not behind wall/floor
                     Ray ray = new Ray(cam.getLocation(), cam.getDirection());
                     CollisionResults results = new CollisionResults();
@@ -480,7 +484,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                         spatial.setLocalTranslation(location);
                         spatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
                         spatial.getControl(RigidBodyControl.class).activate();
-                        draggedSpatial = null;
+                        draggedObject = null;
                     }
                 } else {
                     // Ray Casting (checking for first interactable object)
@@ -532,7 +536,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public void drag(Spatial spatial) {
         for(DemoObject object : currentRoute.objects) {
             if (object.getSpatial() == spatial)
-                draggedSpatial = object;
+                draggedObject = object;
         }
         // Remove it from the physics space
         bulletAppState.getPhysicsSpace().remove(spatial.getControl(RigidBodyControl.class));
