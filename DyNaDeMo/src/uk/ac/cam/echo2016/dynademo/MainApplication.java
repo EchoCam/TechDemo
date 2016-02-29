@@ -1,16 +1,28 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen;
+import uk.ac.cam.echo2016.dynademo.screens.DialogueScreen;
 import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
-import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
 import uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen;
+import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
+import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
+import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
+import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
+import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -26,6 +38,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
@@ -34,21 +47,12 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.shape.Box;
 import com.jme3.shadow.AbstractShadowRenderer;
 import com.jme3.system.AppSettings;
-import de.lessvoid.nifty.Nifty;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import uk.ac.cam.echo2016.dynademo.screens.DialogueScreen;
-import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
-import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
-import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
-import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
+import de.lessvoid.nifty.Nifty;
 
 /**
  * The God class of the game.
@@ -63,7 +67,7 @@ import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
  */
 @SuppressWarnings("deprecation")
 public class MainApplication extends SimpleApplication implements ActionListener {
-
+    public final static boolean DEBUG = false;
     public final static float HALFCHARHEIGHT = 3;
     public HashMap<String, DemoRoute> routes = new HashMap<>();
     private Node playerNode;
@@ -148,6 +152,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
      */
     @Override
     public void simpleInitApp() {
+        if (!DEBUG) {
+            setDisplayFps(false);
+            setDisplayStatView(false);
+        }
         // Set-Up for all the screens //
         // initialise nifty gui, the tools we are using for gui elements
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
@@ -229,14 +237,15 @@ public class MainApplication extends SimpleApplication implements ActionListener
         loadRoute(routes.get("BedroomRoute"), 0);
 
         // Debug Options//
-//        bulletAppState.setDebugEnabled(true);
-//
-//        Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
-//        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-//        mat.getAdditionalRenderState().setWireframe(true);
-//        mat.setColor("Color", ColorRGBA.Green);
-//        g.setMaterial(mat);
-//        playerNode.attachChild(g);
+        if (DEBUG) {
+            bulletAppState.setDebugEnabled(true);   
+            Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
+            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.getAdditionalRenderState().setWireframe(true);
+            mat.setColor("Color", ColorRGBA.Green);
+            g.setMaterial(mat);
+            playerNode.attachChild(g);
+        }
     }
 
     public void loadRoute(DemoRoute route, int entIndex) {
@@ -546,9 +555,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     
                     // Gets the closest geometry (if it exists) and attempts to interact with it
                     if (closest != null && closest.getDistance() < 12f) {
-                        System.out.println(closest.getGeometry().getName() + " found!");
+                        if (DEBUG) System.out.println(closest.getGeometry().getName() + " found!");
                         if (!currentRoute.interactWith(this, closest.getGeometry())) {
-                            System.out.println(closest.getGeometry().getName() + " is not responding...");
+                            if (DEBUG) System.out.println(closest.getGeometry().getName() + " is not responding...");
                         }
                     }
                 }
@@ -568,6 +577,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             break;
+        default:;
         }
     }
 
@@ -634,7 +644,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
         gameScreen.flushDialogueTextSequence();
         gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
-    
 //    public void flickerLights() {
 //        for (DemoLight : currentRoute.lights) {
 //            
