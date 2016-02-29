@@ -11,13 +11,14 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
-import com.oracle.xmlns.internal.webservices.jaxws_databinding.ExistingAnnotationsType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
+import uk.ac.cam.echo2016.multinarrative.GameChoice;
 import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
+import uk.ac.cam.echo2016.multinarrative.Route;
 
 /**
  * @author tr393
@@ -57,21 +58,22 @@ public class Initialiser {
         // LIGHTS
         tLightNames = new String[]{
             "RoomLight1", "RoomLight2", "RoomLight3", "RoomLight4",
-            "RoomLight5", "RoomLight6", "CorridorLight1", "CorridorLight2"};
+            "RoomLight5", "RoomLight6", "CorridorLight1", "CorridorLight2",
+            "MeetingRoomLight"};
 
         tLightCoords = new Vector3f[]{
             new Vector3f(0f, 6f, 0f), new Vector3f(25f, 6f, 0f), new Vector3f(25f, 6f, -30f),
             new Vector3f(0f, 6f, -30f), new Vector3f(-25f, 6f, -30f), new Vector3f(-25f, 6f, 0f),
-            new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f)};
+            new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f), new Vector3f(-70,8,-15)};
 
         tLightAffected = new String[][]{
             {"Room1"}, {"Room2"}, {"Room3"}, {"Room4"},
-            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor"},};
+            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor"},{"MeetingRoom"}};
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-80, 1, -40), 40, 14, 50));
+        tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5));
         tRoute.locEvents.add(tLocEvent);
 
         tRoute.startupTextSequence = new String[]{
@@ -84,9 +86,9 @@ public class Initialiser {
 
     private static void addButtonRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
         InteractionEvent eInter;
-        final ChoicePointEvent cpe;
+        final ChoiceThenSyncPointEvent cpe;
 
-        tRoute = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0),
+        tRoute = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
 
         // LIGHTS
@@ -138,7 +140,7 @@ public class Initialiser {
 
         // EVENTS
         cpe =
-                new ChoicePointEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
+                new ChoiceThenSyncPointEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
         tRoute.locEvents.add(cpe);
 
         eInter = new InteractionEvent("buttonInteraction", buttonObj);
@@ -248,7 +250,7 @@ public class Initialiser {
 
     private static void addLeverRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
         InteractionEvent eInter;
-        final ChoicePointEvent cpe;
+        final ChoiceThenSyncPointEvent cpe;
 
         tRoute = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-35, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
@@ -281,7 +283,7 @@ public class Initialiser {
         tRoute.objects.add(leverBaseObj);
 
         cpe =
-                new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose left", "Choose right");
+                new ChoiceThenSyncPointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose right", "Choose left");
 
         // TODO bounding box actually required? see button
         LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, cpe);
@@ -560,13 +562,19 @@ public class Initialiser {
         }
     };
 
-    public static class ChoicePointEvent extends LocationEvent {
+    /**
+     * As in this game, all choicepoints are immediatlely followed by a SyncPoint from a game-play perspective, this
+     * represents a combination of both.
+     * 
+     * 
+     */
+    public static class ChoiceThenSyncPointEvent extends LocationEvent {
 
         private boolean actionTaken = false;
         private String routeIfTrue;
         private String routeIfFalse;
 
-        public ChoicePointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
+        public ChoiceThenSyncPointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
             super(id, bound);
             routeIfTrue = RouteIfActionTaken;
             routeIfFalse = RouteOtherwise;
@@ -584,7 +592,22 @@ public class Initialiser {
         public void onDemoEvent(MainApplication app) {
             try {
                 app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
-                app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                GameChoice gameChoice = app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                
+                List<Route> options = gameChoice.getOptions();
+                boolean routeIfTrueFromOptions = false;
+                boolean routeIfFalseFromOptions = false;
+                
+                //Iterate through all the options and see if they match up with the routes we think they should be
+                for(Route option: options) {
+                    if(option.getId() == routeIfTrue) {
+                        routeIfTrueFromOptions = true;
+                    } else if(option.getId() == routeIfFalse) {
+                        routeIfFalseFromOptions = true;
+                    }
+                }
+                if(!routeIfTrueFromOptions || !routeIfFalseFromOptions)
+                    System.out.println("The choices available don't match the routes that we think are avaialble.");
                 if (actionTaken) {
                     app.getNarrativeInstance().startRoute(routeIfTrue);
                     app.getNarrativeInstance().endRoute(routeIfTrue);

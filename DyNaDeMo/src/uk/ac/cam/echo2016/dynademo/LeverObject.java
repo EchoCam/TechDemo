@@ -12,9 +12,9 @@ import com.jme3.scene.Spatial;
 public class LeverObject extends KinematicDemoObject implements InteractableObject {
 
     private int leverCount = 0;
-    private Initialiser.ChoicePointEvent cpe;
+    private Initialiser.ChoiceThenSyncPointEvent cpe;
 
-    public LeverObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, Initialiser.ChoicePointEvent cpe) {
+    public LeverObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, Initialiser.ChoiceThenSyncPointEvent cpe) {
         super(objId, spatial, mass, isMainParent, bound);
         this.cpe = cpe;
     }
