@@ -556,6 +556,12 @@ public class Initialiser {
         }
     };
 
+    /**
+     * As in this game, all choicepoints are immediatlely followed by a SyncPoint from a game-play perspective, this
+     * represents a combination of both.
+     * 
+     * 
+     */
     public static class ChoiceThenSyncPointEvent extends LocationEvent {
 
         private boolean actionTaken = false;
@@ -583,16 +589,18 @@ public class Initialiser {
                 GameChoice gameChoice = app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
                 
                 List<Route> options = gameChoice.getOptions();
-                boolean happyDays1 = false;
-                boolean happyDays2 = false;
+                boolean routeIfTrueFromOptions = false;
+                boolean routeIfFalseFromOptions = false;
+                
+                //Iterate through all the options and see if they match up with the routes we think they should be
                 for(Route option: options) {
                     if(option.getId() == routeIfTrue) {
-                        happyDays1 = true;
+                        routeIfTrueFromOptions = true;
                     } else if(option.getId() == routeIfFalse) {
-                        happyDays2 = true;
+                        routeIfFalseFromOptions = true;
                     }
                 }
-                if(!happyDays1 || !happyDays2)
+                if(!routeIfTrueFromOptions || !routeIfFalseFromOptions)
                     System.out.println("The choices available don't match the routes that we think are avaialble.");
                 if (actionTaken) {
                     app.getNarrativeInstance().startRoute(routeIfTrue);
