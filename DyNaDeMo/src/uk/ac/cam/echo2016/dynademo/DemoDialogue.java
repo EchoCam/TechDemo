@@ -131,6 +131,29 @@ public class DemoDialogue {
         return currentCharacter;
     }
 
+    public void jumpToDialogue(String dialogueId) {
+        try {
+            if (currentnode.getNodeType() == Node.ELEMENT_NODE) {
+                XPathFactory charxPathfactory = XPathFactory.newInstance();
+                XPath charxpath = charxPathfactory.newXPath();
+                XPathExpression charexpr;
+
+                charexpr = charxpath.compile("//protagonist[@name=\"" + currentCharacter + "\"]");
+
+                NodeList charnodes = (NodeList) charexpr.evaluate(doc, XPathConstants.NODESET);
+                XPathFactory nextxPathfactory = XPathFactory.newInstance();
+                XPath nextxpath = nextxPathfactory.newXPath();
+                XPathExpression nextexpr;
+                nextexpr = nextxpath.compile("//dialogue[@id=\"" + dialogueId + "\"]");
+                NodeList nextnodes = (NodeList) nextexpr.evaluate(charnodes.item(0), XPathConstants.NODESET);
+                currentnode = nextnodes.item(0);
+            }
+        } catch (XPathExpressionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public void moveToNextDialogue() {
         try {
             if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
