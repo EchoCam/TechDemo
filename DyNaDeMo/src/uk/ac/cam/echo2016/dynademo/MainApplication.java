@@ -51,6 +51,14 @@ import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
 import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
 
 /**
+ * The God class of the game.
+ * 
+ * Although ideally this class wouldn't implement as much as it does, because our focus
+ * for this game is to create a rough and ready tech-demo, it will suffice.
+ * 
+ * This class can essentially "see" and "control" everything, although a lot of functionality
+ * has been delegated to other classes where possible.
+ * 
  * @author tr393
  */
 @SuppressWarnings("deprecation")
@@ -66,7 +74,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
-    private DemoObject draggedSpatial;
+    private DemoObject draggedObject;
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
@@ -85,6 +93,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private NarrativeInstance narrativeInstance;
     private DemoDialogue dialogue;
 
+    /**
+     * The main entry point for the code of the game.
+     * 
+     * Mainly initialises an instant of the game where the framerate is set to 60FPS.
+     * 
+     * @param args 
+     */
     public static void main(String[] args) {
         MainApplication app = new MainApplication();
         AppSettings settings = new AppSettings(true);
@@ -93,6 +108,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
         app.start();
     }
 
+    
+    /**
+     * Called when an instant of the game (this) is created.
+     * 
+     * Loads in our DyNaMo .dnm file which contains the structure of our narrative,
+     * entirely using our tools.
+     * 
+     */
     public MainApplication() {
         super();
         try {
@@ -106,37 +129,55 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     }
 
+    /**
+     * A getter to get access to the narrativeInstance.
+     * 
+     * Mainly used by the character select screen, so it can determine which characters to
+     * show based on the available routes.
+     * 
+     * @return 
+     */
     public NarrativeInstance getNarrativeInstance() {
         return narrativeInstance;
     }
 
+    /**
+     * A method called when this.start() is.
+     * 
+     * Where most of the member variables are initialised. See comments in method for more.
+     */
     @Override
     public void simpleInitApp() {
-        // Set-Up for the main menu //
+        // Set-Up for all the screens //
+        // initialise nifty gui, the tools we are using for gui elements
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
 
+        // load in screens as defined in our XML files
         nifty.fromXml("Interface/Nifty/mainMenu.xml", "mainMenu", new MainMenuScreen().init(stateManager, this));
         nifty.addXml("Interface/Nifty/characterSelect.xml");
         nifty.addXml("Interface/Nifty/pauseMenu.xml");
         nifty.addXml("Interface/Nifty/game.xml");
         nifty.addXml("Interface/Nifty/dialogue.xml");
 
-
+        
+        // make the screens accesible from within the application
         mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
         characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
         pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
         gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
         dialogueScreen = (DialogueScreen) nifty.getScreen("dialogue").getScreenController();
 
+        // initialise the screens as states as well (mainly to give acces to this class instance within them)
         stateManager.attach(mainMenuScreen);
         stateManager.attach(characterSelectScreen);
         stateManager.attach(pauseMenuScreen);
         stateManager.attach(gameScreen);
         stateManager.attach(dialogueScreen);
 
-        // TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
+
+        // start the game at the main menu!
         nifty.gotoScreen("mainMenu");
 
         // Application related setup //
@@ -257,20 +298,24 @@ public class MainApplication extends SimpleApplication implements ActionListener
         }
         
         // Load dragged object
-        if (draggedSpatial != null) {
-            rootNode.attachChild(draggedSpatial.getSpatial());
-            RigidBodyControl rbc = new RigidBodyControl(draggedSpatial.getMass());
-            draggedSpatial.getSpatial().addControl(rbc);
-            if (draggedSpatial instanceof KinematicDemoObject) {
+        if (draggedObject != null) {
+//            playerNode.attachChild(draggedSpatial.getSpatial());
+            RigidBodyControl rbc = new RigidBodyControl(draggedObject.getMass());
+            draggedObject.getSpatial().addControl(rbc);
+            if (draggedObject instanceof KinematicDemoObject) {
                 rbc.setKinematic(true);
             }
-            if (draggedSpatial instanceof DynamicDemoObject) {
+            if (draggedObject instanceof DynamicDemoObject) {
                 rbc.setFriction(1.5f);
+                
             }
-            bulletAppState.getPhysicsSpace().add(rbc);
+//            bulletAppState.getPhysicsSpace().add(rbc);
+//            this.currentRoute.objects.add(draggedObject);
+//            this.currentRoute.interactions.put(spatial, previousRoute.interactions.get(draggedObject))
             for (DemoLight dLight : currentRoute.lights) {
-                draggedSpatial.getSpatial().addLight(dLight.light);
+                draggedObject.getSpatial().addLight(dLight.light);
             }
+            playerNode.attachChild(draggedObject.getSpatial());
         }
         // TODO this the proper way
         if (currentRoute.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
@@ -320,6 +365,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     }
 
+    /**
+     * Set up all the key mapping that we intend to use.
+     * 
+     */
     private void setupKeys() {
         inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
@@ -345,6 +394,12 @@ public class MainApplication extends SimpleApplication implements ActionListener
         inputManager.addListener(this, "Pause");
     }
 
+    /**
+     * The main update loop.
+     * 
+     * This function is called once every frame of the game. :)
+     * @param tpf 
+     */
     @Override
     public void simpleUpdate(float tpf) {
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
@@ -381,11 +436,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
             
             // Position carried items appropriately
-            if (draggedSpatial != null) {
-                float distance = draggedSpatial.getSpatial().getLocalTranslation().length();
+            if (draggedObject != null) {
+                float distance = draggedObject.getSpatial().getLocalTranslation().length();
                 Vector3f newLoc = camDir.mult(distance);
-                draggedSpatial.getSpatial().setLocalTranslation(newLoc);
-                draggedSpatial.getSpatial().setLocalRotation(cam.getRotation());
+                draggedObject.getSpatial().setLocalTranslation(newLoc);
+                draggedObject.getSpatial().setLocalRotation(cam.getRotation());
             }
 
             // Check character for collisions
@@ -450,8 +505,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
             if (isPressed) {
                 if (gameScreen.isTextShowing() && gameScreen == nifty.getCurrentScreen().getScreenController()) {
                     gameScreen.progressThroughText();
-                } else if (draggedSpatial != null) {
-                    Spatial spatial = draggedSpatial.getSpatial();
+                } else if (draggedObject != null) {
+                    Spatial spatial = draggedObject.getSpatial();
                     // check object is not behind wall/floor
                     Ray ray = new Ray(cam.getLocation(), cam.getDirection());
                     CollisionResults results = new CollisionResults();
@@ -480,7 +535,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                         spatial.setLocalTranslation(location);
                         spatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
                         spatial.getControl(RigidBodyControl.class).activate();
-                        draggedSpatial = null;
+                        draggedObject = null;
                     }
                 } else {
                     // Ray Casting (checking for first interactable object)
@@ -532,7 +587,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public void drag(Spatial spatial) {
         for(DemoObject object : currentRoute.objects) {
             if (object.getSpatial() == spatial)
-                draggedSpatial = object;
+                draggedObject = object;
         }
         // Remove it from the physics space
         bulletAppState.getPhysicsSpace().remove(spatial.getControl(RigidBodyControl.class));

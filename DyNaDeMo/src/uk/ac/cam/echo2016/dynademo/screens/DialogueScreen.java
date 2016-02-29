@@ -45,6 +45,10 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
             }
         }
     }
+    
+    public boolean isEnd() {
+        return dialogue.isEnd();
+    }
 
     public void advanceText() {
         String text = dialogue.getDialogueText();
@@ -106,11 +110,15 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
 
     @Override
     public void onEndScreen() {
+        app.chooseLocation(app.getGameScreen().getLocation());
+        app.unPauseDemo();
     }
 
     @Override
     public void onStartScreen() {
+        app.getFlyByCamera().setEnabled(false);
         app.getFlyByCamera().setDragToRotate(true);
+        app.pauseDemo();
 
     }
 

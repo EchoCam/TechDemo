@@ -41,5 +41,7 @@
     <dialogue speaker="Head" id="Head4">
         <text nextID="END">Feel the taste of my wrath.... :) </text>
     </dialogue>
+    
+    <dialogue id="END"></dialogue>
 
 </protagonist>
