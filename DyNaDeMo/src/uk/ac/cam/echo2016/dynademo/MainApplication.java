@@ -90,8 +90,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private ArrayDeque<LocationEvent> locEventBus = new ArrayDeque<>();
     private HashMap<String, ArrayDeque<DemoTask>> taskEventBus = new HashMap<>();
     private Spatial currentWorld;
-    private DemoScene currentRoute;
-    // private currentRoute/Character
+    private DemoScene currentScene;
     private Nifty nifty;
     // Screens
     private MainMenuScreen mainMenuScreen;
@@ -191,10 +190,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
         getNifty().gotoScreen("mainMenu");
 
         // Set up the audio system //
-        AudioNode music = new AudioNode(assetManager, "Sound/eery.wav", false);
-        music.setLooping(true);
-        music.setPositional(false);        
-        audioRenderer.playSource(music);
+        AudioNode music = new AudioNode(assetManager, "Sound/eery.wav", true);
+        music.setPositional(false);
+        music.play();
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -220,7 +218,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         landscape = new RigidBodyControl();//sceneShape, 0f);
         currentWorld.addControl(landscape);
         bulletAppState.getPhysicsSpace().add(landscape);
-        currentRoute = new DemoScene("", "", null, null);
+        currentScene = new DemoScene("", "", null, null);
 
         // Load character //
         playerNode = new Node("playerNode");
@@ -256,12 +254,12 @@ public class MainApplication extends SimpleApplication implements ActionListener
         }
     }
 
-    public void loadRoute(DemoScene route, int start) {
+    public void loadRoute(DemoScene route, int entIndex) {
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
-        for (DemoObject object : currentRoute.objects) {
+        for (DemoObject object : currentScene.objects) {
             // TODO clean up lights not being removed from rooms?
             Spatial spatial = object.getSpatial();
             if (object.isIsMainParent()) {
@@ -278,18 +276,18 @@ public class MainApplication extends SimpleApplication implements ActionListener
             bulletAppState.getPhysicsSpace().remove(r);
         }
 
-        for (DemoLight l : currentRoute.lights) { // FIXME should do a search
+        for (DemoLight l : currentScene.lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
-        for (AbstractShadowRenderer plsr : currentRoute.shadowRenderers) {
+        for (AbstractShadowRenderer plsr : currentScene.shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-        for (LocationEvent oldEvent : currentRoute.locEvents) {
+        for (LocationEvent oldEvent : currentScene.locEvents) {
             locEventBus.remove(oldEvent);
         }
 
         // Load new route (route)
-        currentRoute = route;
+        currentScene = route;
         currentWorld = assetManager.loadModel(route.getSceneFile());
         currentWorld.scale(10f);
         rootNode.attachChild(currentWorld);
@@ -329,14 +327,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //            bulletAppState.getPhysicsSpace().add(rbc);
 //            this.currentRoute.objects.add(draggedObject);
 //            this.currentRoute.interactions.put(spatial, previousRoute.interactions.get(draggedObject))
-            for (DemoLight dLight : currentRoute.lights) {
+            for (DemoLight dLight : currentScene.lights) {
                 draggedObject.getSpatial().addLight(dLight.light);
             }
             playerNode.attachChild(draggedObject.getSpatial());
         }
         // TODO this the proper way
-        if (currentRoute.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
-            for (DemoObject object : currentRoute.objects) {
+        if (currentScene.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
+            for (DemoObject object : currentScene.objects) {
                 if (object.getObjId().equals("crate2")) {
                     RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
                     bulletAppState.getPhysicsSpace().remove(rbc);
@@ -376,8 +374,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(landscape);
 
         // TODO freeze for a second
-        playerControl.setPhysicsLocation(route.getStartLocs().get(start));
-        cam.lookAtDirection(route.getStartDirs().get(start), Vector3f.UNIT_Y);
+        playerControl.setPhysicsLocation(route.getStartLocs().get(entIndex));
+        cam.lookAtDirection(route.getStartDirs().get(entIndex), Vector3f.UNIT_Y);
         // TODO other initializations
 
     }
@@ -572,7 +570,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     if (closest != null && closest.getDistance() < 12f) {
                         if (DEBUG)
                             System.out.println(closest.getGeometry().getName() + " found!");
-                        if (!currentRoute.interactWith(this, closest.getGeometry())) {
+                        if (!currentScene.interactWith(this, closest.getGeometry())) {
                             if (DEBUG)
                                 System.out.println(closest.getGeometry().getName() + " is not responding...");
                         }
@@ -614,7 +612,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void drag(Spatial spatial) {
-        for (DemoObject object : currentRoute.objects) {
+        for (DemoObject object : currentScene.objects) {
             if (object.getSpatial() == spatial)
                 draggedObject = object;
         }
@@ -682,7 +680,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private void setLight(boolean on) {
         System.out.println(on);
         ColorRGBA col = on ? ColorRGBA.White : ColorRGBA.Black;
-        for (DemoLight dLight : currentRoute.lights) {
+        for (DemoLight dLight : currentScene.lights) {
             dLight.light.setColor(col);
         }
         lightsOn = on;
