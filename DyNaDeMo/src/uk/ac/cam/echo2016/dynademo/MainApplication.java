@@ -67,7 +67,7 @@ import de.lessvoid.nifty.Nifty;
  */
 @SuppressWarnings("deprecation")
 public class MainApplication extends SimpleApplication implements ActionListener {
-    public final static boolean DEBUG = false;
+    public final static boolean DEBUG = true;
     public final static float HALFCHARHEIGHT = 3;
     public HashMap<String, DemoRoute> routes = new HashMap<>();
     private Node playerNode;
@@ -391,7 +391,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Interact", new KeyTrigger(KeyInput.KEY_E));
-        inputManager.deleteMapping(INPUT_MAPPING_EXIT); //TODO replace with pause
+        inputManager.deleteMapping(INPUT_MAPPING_EXIT);
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_ESCAPE));
 
         inputManager.addListener(this, "Left");
@@ -522,16 +522,18 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     rootNode.collideWith(ray, results);
                     
                     Boolean isCentreInside = true;
-                    float distance = spatial.getLocalTranslation().subtract(cam.getLocation()).length();
+                    float distance = spatial.getWorldTranslation().add(new Vector3f(0, 1.5f, 0)).subtract(cam.getLocation()).length();
                     if (spatial instanceof Geometry) {
                         for (CollisionResult collision: results) {
-                            if (collision.getDistance() < distance && collision.getGeometry().equals((Geometry)spatial)) 
+                            if (collision.getDistance() < distance+3f && collision.getGeometry().equals((Geometry)spatial)) 
                                 isCentreInside = false;
                         }
                     } else { // Currently only nodes are dragged
                         for (CollisionResult collision: results) {
-                            if (collision.getDistance() < distance && !(collision.getGeometry().hasAncestor((Node) spatial))) 
+                            if (collision.getDistance() < distance+3f && !(collision.getGeometry().hasAncestor((Node) spatial))) {
+                                System.out.println(collision.getDistance() + " " + distance);
                                 isCentreInside = false;
+                            }
                         }
                     }
                     
@@ -624,7 +626,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public GameScreen getGameScreen() {
         return gameScreen;
     }
-    
+
     public DialogueScreen getDialogueScreen() {
         return dialogueScreen;
     }
