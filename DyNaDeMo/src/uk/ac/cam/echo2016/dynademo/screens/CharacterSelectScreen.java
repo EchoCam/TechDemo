@@ -91,7 +91,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         for (final Route route : currentRoutes) {
             final String routeName = route.toString();
 
-            //TODO: null check, and get character name from properties
+            // null check, and get character name from properties
             BaseBundle b = route.getProperties();
             if (b == null) {
                 throw new RuntimeException("Error: The route: " + routeName + " doesn't have any properties.");
