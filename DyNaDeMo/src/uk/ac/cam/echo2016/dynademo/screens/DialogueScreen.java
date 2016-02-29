@@ -25,6 +25,7 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
 
     public DialogueScreen() {
         super();
+        
     }
 
     public void setDialogue(String dialogue_location) {
@@ -40,14 +41,11 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
         System.out.println("Choose option: " + i);
         if (dialogue.hasOptions()) {
             NodeList options = dialogue.getDialogueOptionsNodes();
-            if (i + 1 < options.getLength()) {
+            if (i < options.getLength()) {
                 org.w3c.dom.Element elem = (org.w3c.dom.Element) options.item(i);
                 String id = elem.getAttribute("nextID");
                 System.out.println(id);
-                dialogue.moveToNextDialogue(id);
-                if (this.isEnd()) {
-                    nifty.gotoScreen("game");
-                }
+                dialogue.moveToNextDialogue(id);        
                 advanceText();
             }
         }
@@ -59,39 +57,25 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     }
 
     public void advanceText() {
+        if (this.isEnd()) {
+            nifty.gotoScreen("game");
+        }
         String text = dialogue.getDialogueText();
         String chara = dialogue.getSpeakingCharacter();
 
         if (dialogue.hasOptions()) {
             final NodeList options = dialogue.getDialogueOptionsNodes();
             System.out.println(options.getLength());
-            Element optionz = nifty.getScreen("dialogue").findElementByName("diag-options");
             for (int i = 0; i < options.getLength(); i++) {
                 Element opt = nifty.getScreen("dialogue").findElementByName("option" + i);
                 opt.getRenderer(TextRenderer.class).setText(options.item(i).getTextContent());
-//                int index = i;
-//                TextBuilder textbuild = new TextBuilder(Integer.toString(index)) {{
-//                    text(options.item(index).getTextContent());
-//                    System.out.println(options.item(index).getTextContent());
-//                    id(dialogue.getID() + "-" + index);
-//                    color("#076f");
-//                    width("100%");
-//                    height("20%");
-//                    font("Interface/Fonts/Default.fnt");
-//                    //visibleToMouse(true);
-//                    interactOnClick("chooseOption("+index+")");
-//                }};
-//                optionz.add(textbuild.build(nifty, screen, optionz));
             }   
-            //nifty.update();
         } else {
             for (int i = 0; i < 3; i++) {
                 Element opt = nifty.getScreen("dialogue").findElementByName("option" + i);
                 opt.getRenderer(TextRenderer.class).setText("");
             }
         }
-        
-        Element optionz = nifty.getScreen("dialogue").findElementByName("diag-options");
         Element container = nifty.getScreen("dialogue").findElementByName("dialogue-container");
         Element textpanel = container.findElementByName("diag-bottom")
                 .findElementByName("dialogue-panel");
@@ -100,9 +84,6 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
         charnamepanel.getRenderer(TextRenderer.class).setText(chara);
         if (!dialogue.hasOptions()) {
             dialogue.moveToNextDialogue();
-            if (this.isEnd()) {
-                nifty.gotoScreen("game");
-            }
         }
         
 
@@ -131,6 +112,7 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
         app.getFlyByCamera().setEnabled(false);
         app.getFlyByCamera().setDragToRotate(true);
         app.pauseDemo();
+        advanceText();
 
     }
 
