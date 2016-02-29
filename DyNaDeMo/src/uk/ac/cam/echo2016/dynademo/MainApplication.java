@@ -467,9 +467,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     CollisionResults results = new CollisionResults();
                     rootNode.collideWith(ray, results);
                     CollisionResult closest = results.getClosestCollision();
-
+                    
                     // Gets the closest geometry (if it exists) and attempts to interact with it
-                    if (closest != null) {
+                    if (closest != null && closest.getDistance() < 12f) {
                         System.out.println(closest.getGeometry().getName() + " found!");
                         if (!currentRoute.interactWith(this, closest.getGeometry())) {
                             System.out.println(closest.getGeometry().getName() + " is not responding...");
