@@ -56,6 +56,12 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     }
 
     // ScreenController methods //
+    /**
+     * This method is called when the controller is bound to a Nifty screen.
+     * 
+     * @param nifty
+     * @param screen 
+     */
     @Override
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
@@ -97,6 +103,11 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             if (b == null) {
                 throw new RuntimeException("Error: The route: " + routeName + " doesn't have any properties.");
             }
+            
+            if (b.getBoolean("Final")) {
+                System.out.println(routeName);
+                app.stop();
+            }
 
             // Get which character is playable on each route and show based on that
             boolean char1 = b.getBoolean("Char1");
@@ -131,6 +142,11 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         }
     }
 
+    /**
+     * Called when this screen is deselected.
+     * 
+     * Simply selets the right location based on the selected route and unpauses the game.
+     */
     @Override
     public void onEndScreen() {
         app.chooseLocation(app.getGameScreen().getLocation());
@@ -138,6 +154,14 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     }
 
     // AbstractAppState methods //
+    /**
+     * Called when this class is initialised as an AppState.
+     * 
+     * Main functionality of this is to give the code access to the running application.
+     * 
+     * @param stateManager
+     * @param app 
+     */
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);

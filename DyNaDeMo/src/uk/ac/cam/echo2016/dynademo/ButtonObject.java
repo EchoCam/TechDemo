@@ -31,6 +31,7 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
 
     @Override
     public void interact(MainApplication app) {
+        
         DemoRoute route = app.routes.get("ButtonRoute");
 
         // TODO different property/affect?
