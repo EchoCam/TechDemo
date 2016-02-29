@@ -450,7 +450,7 @@ public class Initialiser {
         
         BoundingBox bound;
         locList.clear();
-        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, -55));
+        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45));
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 45));
         dirList.clear();
         dirList.add(new Vector3f(0, 0, 1));
@@ -514,10 +514,10 @@ public class Initialiser {
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f);
 
-        pressPlate1.setLocalTranslation(-5f, 0, -15f);
+        pressPlate1.setLocalTranslation(-5f, 0, -5f);
         pressPlate2.setLocalTranslation(-5f, 0, 5f);
 
-        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(-5f, 0, -15f), new Vector3f(-5f, -0.8f, -15f)) {
+        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(-5f, 0, -5f), new Vector3f(-5f, -0.8f, -5f)) {
             @Override
             public void onPressed() {
                 doorObj1.open(app);
@@ -550,7 +550,7 @@ public class Initialiser {
         tRoute.properties.putBoolean(plateObj1.getObjId(), false);
         tRoute.properties.putBoolean(plateObj2.getObjId(), false);
 
-        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -15f), 1.3f, 0.4f, 1.3f);
+        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
         
         tLocEvent = new ProximityEvent("pressurePlate1", bound, plateObj1) {
             @Override
