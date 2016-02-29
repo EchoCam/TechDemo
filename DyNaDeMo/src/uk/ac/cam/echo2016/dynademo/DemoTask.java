@@ -31,7 +31,7 @@ public class DemoTask {
     /**
      * Extend this to specify what should happen at the end of the time period.
      */
-    public void complete() {
+    public void onComplete() {
     }
 
     public boolean isFinished() {

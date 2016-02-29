@@ -40,7 +40,7 @@ public class TranslationTask extends KinematicTask {
      * Extending classes should probably call this for accuracy.
      */
     @Override
-    public void complete() {
+    public void onComplete() {
         if (endLocation != null) {
             getObject().getSpatial().setLocalTranslation(endLocation);
         }

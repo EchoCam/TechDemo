@@ -471,7 +471,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 task.onTimeStep(tpf);
                 if (task.isFinished()) {
 //                    System.out.println("TaskType: " + task.getClass() + " from queue: " + task.getTaskQueueId() + " completed");
-                    task.complete();
+                    task.onComplete();
                     queue.pop();
                     if (queue.isEmpty()) {
                         taskEventBus.remove(task.getTaskQueueId());
