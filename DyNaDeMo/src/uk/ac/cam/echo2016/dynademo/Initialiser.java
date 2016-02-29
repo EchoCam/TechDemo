@@ -547,9 +547,9 @@ public class Initialiser {
                 
                 //Iterate through all the options and see if they match up with the routes we think they should be
                 for(Route option: options) {
-                    if(option.getId() == routeIfTrue) {
+                    if(option.getId().equals(routeIfTrue)) {
                         routeIfTrueFromOptions = true;
-                    } else if(option.getId() == routeIfFalse) {
+                    } else if(option.getId().equals(routeIfFalse)) {
                         routeIfFalseFromOptions = true;
                     }
                 }
