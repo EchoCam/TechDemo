@@ -34,3 +34,10 @@ Exporting mesh data:
 
 To export the data, select all objects you wish to export then go to file->Export->Ogre3d. Navigate to the DyNaDeMo/assets/Textures folder and export the various files.
 Move the .scene file to the DyNaDeMo/assets/Scenes folder and make sure that the file is loaded correctly by the asset manager.
+
+Special Thanks
+==============
+
+ - To the [Pyland project](https://github.com/pyland/pyland)  and
+   [Alex Day](https://github.com/alexandaday) for making assume music available
+   under a permissive license!
