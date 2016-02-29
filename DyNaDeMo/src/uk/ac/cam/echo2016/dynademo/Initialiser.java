@@ -15,10 +15,12 @@ import com.oracle.xmlns.internal.webservices.jaxws_databinding.ExistingAnnotatio
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
+import uk.ac.cam.echo2016.multinarrative.GameChoice;
 import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
+import uk.ac.cam.echo2016.multinarrative.Route;
 
 /**
  * @author tr393
@@ -95,7 +97,7 @@ public class Initialiser {
 
     private static void addButtonRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
         InteractionEvent eInter;
-        final ChoicePointEvent cpe;
+        final ChoiceThenSyncPointEvent cpe;
         locList.clear();
         locList.add(new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
@@ -153,7 +155,7 @@ public class Initialiser {
 
         // EVENTS
         cpe =
-                new ChoicePointEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
+                new ChoiceThenSyncPointEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
         tRoute.locEvents.add(cpe);
 
         eInter = new InteractionEvent("buttonInteraction", buttonObj);
@@ -303,7 +305,7 @@ public class Initialiser {
 
     private static void addLeverRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
         InteractionEvent eInter;
-        final ChoicePointEvent cpe;
+        final ChoiceThenSyncPointEvent cpe;
         locList.clear();
         locList.add(new Vector3f(-35, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
@@ -339,7 +341,7 @@ public class Initialiser {
         tRoute.objects.add(leverBaseObj);
 
         cpe =
-                new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose right", "Choose left");
+                new ChoiceThenSyncPointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose right", "Choose left");
 
         // TODO bounding box actually required? see button
         LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, cpe);
@@ -446,9 +448,31 @@ public class Initialiser {
         pressPlate1.setLocalTranslation(-5f, 0, -5f);
         pressPlate2.setLocalTranslation(-5f, 0, 5f);
 
-        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound);
-        bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f);
-        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound);
+        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound) {
+            @Override
+            public void onPressed() {
+                doorObj1.open(app);
+            }
+            @Override
+            public void onRelease() {
+                doorObj1.close(app);
+            }
+        };
+        bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f) {
+            
+        };
+        final PressurePlateObject plateObj2 = new PressurePlateObject("pressurePlate2", pressPlate2, 1f, true, bound) {
+
+            @Override
+            public void onPressed() {
+                System.out.println("Hi");
+            }
+
+            @Override
+            public void onRelease() {
+                System.out.println("Bye");
+            }
+        };
         plateObj1.getLights().add(lightMap.get("RoomLight"));
         plateObj2.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(plateObj1);
@@ -458,42 +482,26 @@ public class Initialiser {
         tRoute.properties.putBoolean(plateObj2.getObjId(), false);
 
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
-//        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f),  3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
-        tLocEvent = new PressurePlateEvent("pressurePlate1", bound, plateObj1) {
+        
+        tLocEvent = new ProximityEvent("pressurePlate1", bound, plateObj1) {
             @Override
-            public void onPressed() {
-                doorObj1.open(app);
-            }
-
-            @Override
-            public void onRelease() {
-                doorObj1.close(app);
+            public void onDemoEvent(MainApplication app) {
+                plateObj1.activate(app);
             }
         };
-        // TODO bad code
-        ((PressurePlateEvent) tLocEvent).activators.add(crateObj);
+
+        ((ProximityEvent) tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
-//        tLocEvent = new ProximityEvent("pressurePlate2", plateObj2) {
-//            @Override
-//            public void onDemoEvent(MainApplication app) {
-////                ((PressurePlateObject) plateObj2).activate(app);
-//            }
-//        };
-        tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2) {
+        
+        tLocEvent = new ProximityEvent("pressurePlate2", bound, plateObj2) {
             @Override
-            public void onPressed() {
-                System.out.println("Hi");
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void onRelease() {
-                System.out.println("Bye");
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            public void onDemoEvent(MainApplication app) {
+                plateObj2.activate(app);
             }
         };
-        ((PressurePlateEvent) tLocEvent).activators.add(crateObj);
+
+        ((ProximityEvent) tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
 
         tRoute.startupTextSequence = new String[]{
@@ -566,66 +574,19 @@ public class Initialiser {
         }
     }
 
-    private abstract static class PressurePlateEvent extends ProximityEvent {
-
-        public final static int DELAY = 1;
-
-        public PressurePlateEvent(String id, BoundingBox bound, DemoObject object) {
-            super(id, bound, object);
-        }
-
-        public abstract void onPressed();
-
-        public abstract void onRelease();
-
-        @Override
-        public void onDemoEvent(MainApplication app) {
-            DemoRoute route = app.routes.get("PuzzleRoute");
-            if (!(route.properties.containsKey(object.getObjId()))) {
-                throw new RuntimeException("Error: Property not found.");
-            }
-            Boolean plateDown = route.properties.getBoolean(object.getObjId());
-            // TODO again hacky like leverRod mesh
-            KinematicDemoObject kinematicObj = (KinematicDemoObject) object;
-            if (!plateDown) {
-                object.getSpatial().move(0, -0.75f, 0);
-                route.properties.putBoolean(object.getObjId(), true);
-
-                kinematicObj.queueDelay(app, DELAY);
-                kinematicObj.queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
-                kinematicObj.queueProperty(app, 0.0f, route.properties, object.getObjId(), false);
-                onPressed();
-                app.addTask(new DemoTask(object.getObjId(), 0f) {
-                    @Override
-                    public void complete() {
-                        onRelease();
-                    }
-                });
-            }
-            if (kinematicObj.getTasks().isEmpty()) {
-                throw new RuntimeException("Error: Illegal pressure plate state for: " + object.getObjId());
-            } else {
-                DemoTask currentTask = kinematicObj.getTasks().getFirst();
-                if (currentTask instanceof KinematicTask) {
-                    currentTask.resetTime();
-                } else if (currentTask instanceof TranslationTask) {
-                    kinematicObj.getTasks().remove(currentTask);
-                    float x = (-0.75f * currentTask.getRemainingTime() / currentTask.getCompletionTime());
-                    object.getSpatial().move(0, x, 0);
-                } else if (currentTask instanceof AddPropertyTask) {
-                    kinematicObj.getTasks().remove(currentTask);
-                }
-            }
-        }
-    };
-
-    public static class ChoicePointEvent extends LocationEvent {
+    /**
+     * As in this game, all choicepoints are immediatlely followed by a SyncPoint from a game-play perspective, this
+     * represents a combination of both.
+     * 
+     * 
+     */
+    public static class ChoiceThenSyncPointEvent extends LocationEvent {
 
         private boolean actionTaken = false;
         private String routeIfTrue;
         private String routeIfFalse;
 
-        public ChoicePointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
+        public ChoiceThenSyncPointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
             super(id, bound);
             routeIfTrue = RouteIfActionTaken;
             routeIfFalse = RouteOtherwise;
@@ -643,7 +604,22 @@ public class Initialiser {
         public void onDemoEvent(MainApplication app) {
             try {
                 app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
-                app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                GameChoice gameChoice = app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                
+                List<Route> options = gameChoice.getOptions();
+                boolean routeIfTrueFromOptions = false;
+                boolean routeIfFalseFromOptions = false;
+                
+                //Iterate through all the options and see if they match up with the routes we think they should be
+                for(Route option: options) {
+                    if(option.getId().equals(routeIfTrue)) {
+                        routeIfTrueFromOptions = true;
+                    } else if(option.getId().equals(routeIfFalse)) {
+                        routeIfFalseFromOptions = true;
+                    }
+                }
+                if(!routeIfTrueFromOptions || !routeIfFalseFromOptions)
+                    System.out.println("The choices available don't match the routes that we think are avaialble.");
                 if (actionTaken) {
                     app.getNarrativeInstance().startRoute(routeIfTrue);
                     app.getNarrativeInstance().endRoute(routeIfTrue);

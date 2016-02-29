@@ -17,6 +17,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -42,6 +43,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bushe.swing.event.EventBusAction;
 import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
@@ -186,7 +188,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         loadRoute(routes.get("BedroomRoute"), 0);
 
         // Debug Options//
-//        bulletAppState.setDebugEnabled(true);
+        bulletAppState.setDebugEnabled(true);
 //
 //        Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
 //        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -202,17 +204,18 @@ public class MainApplication extends SimpleApplication implements ActionListener
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
         for (DemoObject object : currentRoute.objects) {
-            // TODO clean up physicsSpace (save info?)
+            // TODO clean up lights not being removed from rooms?
             if (object.isIsMainParent()) {
                 rootNode.detachChild(object.getSpatial());
             }
-
-            bulletAppState.getPhysicsSpace().remove(object.getSpatial());
-
             for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().removeLight(dLight.light);
             }
         }
+        for (PhysicsRigidBody r : bulletAppState.getPhysicsSpace().getRigidBodyList()) {
+            bulletAppState.getPhysicsSpace().remove(r);
+        }
+        
         for (DemoLight l : currentRoute.lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
@@ -314,6 +317,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //         System.out.println();
 //         }
 //        System.out.println(playerControl.getPhysicsLocation());
+//        System.out.println(taskEventBus.get(""));
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
@@ -451,9 +455,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void pauseDemo() {
+        if (!isPaused) {
         this.isPaused = true;
         bulletAppState.setEnabled(false);
-        flyCam.setEnabled(false);
+        flyCam.setEnabled(false);}
     }
 
     public void unPauseDemo() {
