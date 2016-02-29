@@ -29,6 +29,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     private Screen screen;
     private MainApplication app;
     private NarrativeInstance narrativeInstance;
+    private boolean ending = false;
 
     public CharacterSelectScreen() {
         super();
@@ -87,7 +88,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             e.markForRemoval();
         }
         bottomPanel.layoutElements();
-
+        
         // Add new routes to show
         for (final Route route : currentRoutes) {
             final String routeName = route.toString();
@@ -96,6 +97,12 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             BaseBundle b = route.getProperties();
             if (b == null) {
                 throw new RuntimeException("Error: The route: " + routeName + " doesn't have any properties.");
+            }
+            
+            if (b.getBoolean("Final")) {
+                ending = true;
+                selectRoute(routeName,null,null);
+                return;                
             }
 
             // Get which character is playable on each route and show based on that
@@ -133,7 +140,8 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
 
     @Override
     public void onEndScreen() {
-        app.chooseLocation(app.getGameScreen().getLocation());
+        if (!ending)
+            app.chooseLocation(app.getGameScreen().getLocation());
         app.unPauseDemo();
     }
 

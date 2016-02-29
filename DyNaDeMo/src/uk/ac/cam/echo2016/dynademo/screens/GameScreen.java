@@ -136,9 +136,7 @@ public class GameScreen extends AbstractAppState implements ScreenController {
     /**
      * This method is run every time this screen is selected.
      *
-     * At the moment, it simply locks the mouse to the screen and tells the player to enjoy DyNaDeMo. It also calls the
-     * startRoute method on narrativeInstance and giving it the canonical name of the route that the player selected
-     * from the character select screen.
+     * At the moment, it simply locks the mouse to the screen.
      */
     @Override
     public void onStartScreen() {

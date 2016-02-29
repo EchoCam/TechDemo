@@ -78,7 +78,7 @@ public class Initialiser {
 
         tLightAffected = new String[][]{
             {"Room1"}, {"Room2"}, {"Room3"}, {"Room4"},
-            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor"},{"MeetingRoom"}};
+            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor", "MeetingRoom"},{"MeetingRoom","Corridor"}};
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
