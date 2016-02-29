@@ -66,7 +66,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
-    private Spatial draggedSpatial;
+    private DemoObject draggedSpatial;
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
@@ -205,13 +205,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().remove(landscape);
         for (DemoObject object : currentRoute.objects) {
             // TODO clean up lights not being removed from rooms?
+            Spatial spatial = object.getSpatial();
             if (object.isIsMainParent()) {
-                rootNode.detachChild(object.getSpatial());
+                rootNode.detachChild(spatial);
             }
+            RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
+            spatial.removeControl(rbc);
             for (DemoLight dLight : object.getLights()) {
-                object.getSpatial().removeLight(dLight.light);
+                spatial.removeLight(dLight.light);
             }
         }
+        // TODO replace with neater method?
         for (PhysicsRigidBody r : bulletAppState.getPhysicsSpace().getRigidBodyList()) {
             bulletAppState.getPhysicsSpace().remove(r);
         }
@@ -249,6 +253,23 @@ public class MainApplication extends SimpleApplication implements ActionListener
             bulletAppState.getPhysicsSpace().add(rbc);
             for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().addLight(dLight.light);
+            }
+        }
+        
+        // Load dragged object
+        if (draggedSpatial != null) {
+            rootNode.attachChild(draggedSpatial.getSpatial());
+            RigidBodyControl rbc = new RigidBodyControl(draggedSpatial.getMass());
+            draggedSpatial.getSpatial().addControl(rbc);
+            if (draggedSpatial instanceof KinematicDemoObject) {
+                rbc.setKinematic(true);
+            }
+            if (draggedSpatial instanceof DynamicDemoObject) {
+                rbc.setFriction(1.5f);
+            }
+            bulletAppState.getPhysicsSpace().add(rbc);
+            for (DemoLight dLight : currentRoute.lights) {
+                draggedSpatial.getSpatial().addLight(dLight.light);
             }
         }
         // TODO this the proper way
@@ -358,12 +379,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
             // Move camera to correspond to player
             cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT * 3 / 4, 0));
 
+            
             // Position carried items appropriately
             if (draggedSpatial != null) {
-                float distance = draggedSpatial.getLocalTranslation().length();
+                float distance = draggedSpatial.getSpatial().getLocalTranslation().length();
                 Vector3f newLoc = camDir.mult(distance);
-                draggedSpatial.setLocalTranslation(newLoc);
-                draggedSpatial.setLocalRotation(cam.getRotation());
+                draggedSpatial.getSpatial().setLocalTranslation(newLoc);
+                draggedSpatial.getSpatial().setLocalRotation(cam.getRotation());
             }
 
             // Check character for collisions
@@ -429,14 +451,15 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 if (gameScreen.isTextShowing() && gameScreen == nifty.getCurrentScreen().getScreenController()) {
                     gameScreen.progressThroughText();
                 } else if (draggedSpatial != null) {
+                    Spatial spatial = draggedSpatial.getSpatial();
                     // Drop current Object held
-                    Vector3f location = draggedSpatial.getWorldTranslation();
-                    bulletAppState.getPhysicsSpace().add(draggedSpatial);
-                    draggedSpatial.removeFromParent();
-                    rootNode.attachChild(draggedSpatial);
-                    draggedSpatial.setLocalTranslation(location);
-                    draggedSpatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
-                    draggedSpatial.getControl(RigidBodyControl.class).activate();
+                    Vector3f location = spatial.getWorldTranslation();
+                    bulletAppState.getPhysicsSpace().add(spatial);
+                    spatial.removeFromParent();
+                    rootNode.attachChild(spatial);
+                    spatial.setLocalTranslation(location);
+                    spatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
+                    spatial.getControl(RigidBodyControl.class).activate();
                     draggedSpatial = null;
                 } else {
                     // Ray Casting (checking for first interactable object)
@@ -486,11 +509,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void drag(Spatial spatial) {
+        for(DemoObject object : currentRoute.objects) {
+            if (object.getSpatial() == spatial)
+                draggedSpatial = object;
+        }
         // Remove it from the physics space
-        bulletAppState.getPhysicsSpace().remove(spatial);
-        // Attatch it to the player
+        bulletAppState.getPhysicsSpace().remove(spatial.getControl(RigidBodyControl.class));
+        // Attach it to the player
         playerNode.attachChild(spatial);
-        draggedSpatial = spatial;
     }
 
     public CharacterControl getPlayerControl() {
