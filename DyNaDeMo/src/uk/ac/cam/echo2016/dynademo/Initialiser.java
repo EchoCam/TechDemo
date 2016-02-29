@@ -173,6 +173,7 @@ public class Initialiser {
 
     private static void addChar1DeathRoute( final MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
+        InteractionEvent eInter;
         
         locList.clear();
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 5));
@@ -189,14 +190,22 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"MeetingRoom", "PillBottle"}
+            {"MeetingRoom"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
-
+        
         // EVENTS
-        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0,1,-5),5,14,5));
-        tRoute.locEvents.add(spe);
+        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(40,1,40),0,14,0));
+        
+        Spatial pills = app.getAssetManager().loadModel("Models/Pills.j3o");
+        PillsObject pillsObj = new PillsObject("head", pills, true, spe);
+        pillsObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        eInter = new InteractionEvent("pillsInteraction", pillsObj);
+        tRoute.setInteractable(pills, eInter);
+
+        tRoute.objects.add(pillsObj);        
+        
         
         tRoute.startupTextSequence = new String[]{
             "This room.",
@@ -209,6 +218,7 @@ public class Initialiser {
     
     private static void addChar2DeathRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
         SyncPointEvent spe;
+        InteractionEvent eInter;
         
         locList.clear();
         locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
@@ -230,8 +240,18 @@ public class Initialiser {
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        Spatial head = app.getAssetManager().loadModel("Models/Head.j3o");
+        HeadObject headObj = new HeadObject("head", head, true);
+        headObj.getLights().add(lightMap.get("RoomLight"));
+       
+        
         // EVENTS
-        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(5,1,0), 5,14,5));
+        eInter = new InteractionEvent("headInteraction", headObj);
+        tRoute.setInteractable(head, eInter);
+
+        tRoute.objects.add(headObj);
+        
+        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(10,1,0), 5,14,5));
         tRoute.locEvents.add(spe);
         
         routes.put(tRoute.getId(), tRoute);
@@ -434,7 +454,7 @@ public class Initialiser {
         ConditionalSyncPointEvent cspe3;
         BoundingBox bound;
         locList.clear();
-        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45));
+        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, -55));
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 45));
         dirList.clear();
         dirList.add(new Vector3f(0, 0, 1));
@@ -447,7 +467,7 @@ public class Initialiser {
         };
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8f, 0), new Vector3f(0, 6, -35), new Vector3f(0, 6, 35),
+            new Vector3f(0, 8f, 0), new Vector3f(0, 6, -45), new Vector3f(0, 6, 35),
             new Vector3f(20, 10, 5), new Vector3f(40, 10, 5)
         };
 
@@ -498,10 +518,10 @@ public class Initialiser {
         Spatial pressPlate2 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
         bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f);
 
-        pressPlate1.setLocalTranslation(-5f, 0, -5f);
+        pressPlate1.setLocalTranslation(-5f, 0, -15f);
         pressPlate2.setLocalTranslation(-5f, 0, 5f);
 
-        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(-5f, 0, -5f), new Vector3f(-5f, -0.8f, -5f)) {
+        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(-5f, 0, -15f), new Vector3f(-5f, -0.8f, -15f)) {
             @Override
             public void onPressed() {
                 doorObj1.open(app);
@@ -534,7 +554,7 @@ public class Initialiser {
         tRoute.properties.putBoolean(plateObj1.getObjId(), false);
         tRoute.properties.putBoolean(plateObj2.getObjId(), false);
 
-        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
+        bound = new BoundingBox(new Vector3f(-5f, 0.4f, -15f), 1.3f, 0.4f, 1.3f);
         
         tLocEvent = new ProximityEvent("pressurePlate1", bound, plateObj1) {
             @Override
@@ -638,86 +658,6 @@ public class Initialiser {
             return ((Node) doors).descendantMatches("BlankDoor").get(0);
         default:
             throw new RuntimeException("Too many door handles");
-        }
-    }
-
-    /**
-     * As in this game, all choicepoints are immediatlely followed by a SyncPoint from a game-play perspective, this
-     * represents a combination of both.
-     * 
-     * 
-     */
-    public static class ChoiceThenSyncPointEvent extends LocationEvent {
-
-        private boolean actionTaken = false;
-        private String routeIfTrue;
-        private String routeIfFalse;
-
-        public ChoiceThenSyncPointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
-            super(id, bound);
-            routeIfTrue = RouteIfActionTaken;
-            routeIfFalse = RouteOtherwise;
-        }
-
-        public boolean getActionTaken() {
-            return actionTaken;
-        }
-
-        public void setActionTaken(boolean isAction) {
-            actionTaken = isAction;
-            System.out.println("actionTaken is now: " + actionTaken);
-        }
-
-        @Override
-        public void onDemoEvent(MainApplication app) {
-            try {
-                app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
-                GameChoice gameChoice = app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
-                
-                List<Route> options = gameChoice.getOptions();
-                boolean routeIfTrueFromOptions = false;
-                boolean routeIfFalseFromOptions = false;
-                
-                //Iterate through all the options and see if they match up with the routes we think they should be
-                for(Route option: options) {
-                    if(option.getId().equals(routeIfTrue)) {
-                        routeIfTrueFromOptions = true;
-                    } else if(option.getId().equals(routeIfFalse)) {
-                        routeIfFalseFromOptions = true;
-                    }
-                }
-                if(!routeIfTrueFromOptions || !routeIfFalseFromOptions)
-                    System.out.println("The choices available don't match the routes that we think are avaialble.");
-                if (actionTaken) {
-                    app.getNarrativeInstance().startRoute(routeIfTrue);
-                    app.getNarrativeInstance().endRoute(routeIfTrue);
-                } else {
-                    app.getNarrativeInstance().startRoute(routeIfFalse);
-                    app.getNarrativeInstance().endRoute(routeIfFalse);
-                }
-            } catch (GraphElementNotFoundException ex) {
-                Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            app.nifty.gotoScreen("characterSelect");
-        }
-    }
-
-    private static class SyncPointEvent extends LocationEvent {
-
-        public SyncPointEvent(String id, BoundingBox bound) {
-            super(id, bound);
-        }
-
-        @Override
-        public void onDemoEvent(MainApplication app) {
-            try {
-                //Ending the route that was started to show the correct character select screen to the player
-                app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
-                app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
-            } catch (GraphElementNotFoundException ex) {
-                Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            app.nifty.gotoScreen("characterSelect");
         }
     }
 

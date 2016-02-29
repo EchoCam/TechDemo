@@ -145,11 +145,11 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         
         if(jumpToRoute) {
             selectRoute(route.getId(), character, location);
-            nifty.gotoScreen("dialogue");
             DialogueScreen theDialogue = app.getDialogueScreen();
             theDialogue.setDialogue(route.getId());
             theDialogue.setCharacter("None");
             theDialogue.jumpToDialogue("You1");
+            nifty.gotoScreen("dialogue");
         }
     }
 
