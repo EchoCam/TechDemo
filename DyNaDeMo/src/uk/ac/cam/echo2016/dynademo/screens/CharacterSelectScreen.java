@@ -53,6 +53,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         gameScreen.setCharacter(character);
         gameScreen.setRoute(routeName);
         gameScreen.setLocation(location);
+        
         nifty.gotoScreen("game");
     }
 
