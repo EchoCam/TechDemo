@@ -43,7 +43,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bushe.swing.event.EventBusAction;
+import uk.ac.cam.echo2016.dynademo.screens.DialogueScreen;
 import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
@@ -80,6 +80,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private CharacterSelectScreen characterSelectScreen;
     private PauseMenuScreen pauseMenuScreen;
     private GameScreen gameScreen;
+    private DialogueScreen dialogueScreen;
     private NarrativeInstance narrativeInstance;
     private DemoDialogue dialogue;
 
@@ -119,22 +120,20 @@ public class MainApplication extends SimpleApplication implements ActionListener
         nifty.addXml("Interface/Nifty/characterSelect.xml");
         nifty.addXml("Interface/Nifty/pauseMenu.xml");
         nifty.addXml("Interface/Nifty/game.xml");
-        // nifty.addXml("Interface/Nifty/dialogue.xml");
+        nifty.addXml("Interface/Nifty/dialogue.xml");
 
 
         mainMenuScreen = (MainMenuScreen) nifty.getScreen("mainMenu").getScreenController();
         characterSelectScreen = (CharacterSelectScreen) nifty.getScreen("characterSelect").getScreenController();
         pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
         gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
-//      DialogueScreen dialogueScreen = (DialogueScreen) nifty.getScreen("dialogue").getScreenController();
-//      dialogueScreen.setDialogue("Dialogues/Convo1Dialogue.xml");
-//      dialogueScreen.setCharacter("Harry");
+        dialogueScreen = (DialogueScreen) nifty.getScreen("dialogue").getScreenController();
 
         stateManager.attach(mainMenuScreen);
         stateManager.attach(characterSelectScreen);
         stateManager.attach(pauseMenuScreen);
         stateManager.attach(gameScreen);
-        //stateManager.attach(dialogueScreen);
+        stateManager.attach(dialogueScreen);
 
         // TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
         nifty.gotoScreen("mainMenu");
@@ -493,6 +492,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public GameScreen getGameScreen() {
         return gameScreen;
+    }
+    
+    public DialogueScreen getDialogueScreen() {
+        return dialogueScreen;
     }
 
     @Override
