@@ -456,15 +456,22 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     Ray ray = new Ray(cam.getLocation(), cam.getDirection());
                     CollisionResults results = new CollisionResults();
                     rootNode.collideWith(ray, results);
-                    CollisionResult closest = results.getClosestCollision();
                     
-                    Boolean lineOfSight = false;
+                    Boolean isCentreInside = true;
+                    float distance = spatial.getLocalTranslation().subtract(cam.getLocation()).length();
                     if (spatial instanceof Geometry) {
-                        lineOfSight = (closest != null && closest.getGeometry().equals(spatial));
+                        for (CollisionResult collision: results) {
+                            if (collision.getDistance() < distance && collision.getGeometry().equals((Geometry)spatial)) 
+                                isCentreInside = false;
+                        }
                     } else { // Currently only nodes are dragged
-                        lineOfSight = (closest != null && closest.getGeometry().hasAncestor((Node) spatial));
+                        for (CollisionResult collision: results) {
+                            if (collision.getDistance() < distance && !(collision.getGeometry().hasAncestor((Node) spatial))) 
+                                isCentreInside = false;
+                        }
                     }
-                    if (lineOfSight) {
+                    
+                    if (isCentreInside) {
                         // Drop current Object held
                         Vector3f location = spatial.getWorldTranslation();
                         bulletAppState.getPhysicsSpace().add(spatial);
