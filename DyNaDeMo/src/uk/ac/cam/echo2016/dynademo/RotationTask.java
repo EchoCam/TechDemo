@@ -39,7 +39,7 @@ public class RotationTask extends KinematicTask {
      * WARNING: Probably incorrect! Extending classes should probably call this for accuracy.
      */
     @Override
-    public void complete() {
+    public void onComplete() {
         if (endRotation != null) {
             getObject().getSpatial().setLocalRotation(new Quaternion().fromAngles(endRotation.x, endRotation.y, endRotation.z));
         }

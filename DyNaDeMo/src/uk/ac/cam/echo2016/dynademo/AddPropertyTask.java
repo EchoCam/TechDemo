@@ -17,7 +17,7 @@ public class AddPropertyTask extends DemoTask {
     }
 
     @Override
-    public void complete() {
+    public void onComplete() {
         HashMap map = new HashMap<>();
         map.put(key, property);
         properties.putAll(map);

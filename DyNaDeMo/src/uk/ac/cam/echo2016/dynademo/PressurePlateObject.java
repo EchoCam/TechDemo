@@ -43,7 +43,7 @@ public abstract class PressurePlateObject extends KinematicDemoObject {
             onPressed();
             app.addTask(new DemoTask(getObjId(), 0f) {
                 @Override
-                public void complete() {
+                public void onComplete() {
                     onRelease();
                 }
             });
@@ -75,7 +75,7 @@ public abstract class PressurePlateObject extends KinematicDemoObject {
             onPressed();
             app.addTask(new DemoTask(getObjId(), 0f) {
                 @Override
-                public void complete() {
+                public void onComplete() {
                     onRelease();
                 }
             });

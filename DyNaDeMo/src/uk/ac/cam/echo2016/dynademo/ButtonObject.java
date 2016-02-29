@@ -17,6 +17,7 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
     public final static int DELAY = 1;
     private ChoiceThenSyncPointEvent cpe;
     public Vector3f displacement = new Vector3f(0f, 1f, 1f).normalize().mult(0.2f / (float) Math.sqrt(2f));
+    private boolean activated = false;
 
     public ButtonObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, ChoiceThenSyncPointEvent cpe) {
         super(objId, spatial, mass, isMainParent, bound);
@@ -25,6 +26,9 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
 
     public void onPress() {
         cpe.setActionTaken(true);
+        if(!activated) {
+            activated = true;
+        }
         //FIXME
 //        route.properties.putBoolean(getObjId(), true);
     }
