@@ -317,7 +317,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //         System.out.println();
 //         }
 //        System.out.println(playerControl.getPhysicsLocation());
-//        System.out.println(taskEventBus.get(""));
+//        System.out.println(taskEventBus.get("door1"));
         if (!isPaused) {
             // Find direction of camera (and rotation)
             camDir.set(cam.getDirection().normalize());
