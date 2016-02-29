@@ -11,7 +11,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
-import com.oracle.xmlns.internal.webservices.jaxws_databinding.ExistingAnnotationsType;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -167,9 +166,9 @@ public class Initialiser {
 
     private static void addChar1DeathRoute( final MainApplication app, final HashMap<String, DemoRoute> routes) {
         locList.clear();
-        locList.add(new Vector3f(-5, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 5));
         dirList.clear();
-        dirList.add(new Vector3f(1, 0, 0));
+        dirList.add(new Vector3f(0, 0, -1));
         
         tRoute = new DemoRoute("Char1DeathRoute", "Scenes/Char1DeathRoute.j3o", locList, dirList);
 
@@ -598,6 +597,7 @@ public class Initialiser {
 
         public void setActionTaken(boolean isAction) {
             actionTaken = isAction;
+            System.out.println("actionTaken is now: " + actionTaken);
         }
 
         @Override
