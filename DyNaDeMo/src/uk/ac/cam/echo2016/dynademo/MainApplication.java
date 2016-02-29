@@ -21,6 +21,7 @@ import uk.ac.cam.echo2016.multinarrative.io.SaveReader;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -70,7 +71,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public final static boolean DEBUG = false;
     public final static float HALFCHARHEIGHT = 3;
     public HashMap<String, DemoRoute> routes = new HashMap<>();
-    
+
     private Random random = new Random();
     private float timeCounter = 0;
     private boolean lightsOn;
@@ -189,6 +190,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         // start the game at the main menu!
         getNifty().gotoScreen("mainMenu");
+
+        // Set up the audio system //
+        AudioNode music = new AudioNode(assetManager, "Sound/eery.ogg", true);
+        music.setPositional(false);
+        music.play();
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -416,7 +422,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public void simpleUpdate(float tpf) {
         timeCounter += tpf;
 //        if (FastMath.floor(timeCounter*10) % 10 == 0) flickerLights();
-            
+
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
 //         System.out.println(spat.getName());
@@ -448,6 +454,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             playerControl.setWalkDirection(walkDirection.normalize().mult(25f * tpf));
             // Move camera to correspond to player
             cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT * 3 / 4, 0));
+            listener.setLocation(cam.getLocation());
 
 
             // Position carried items appropriately
@@ -660,7 +667,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         gameScreen.flushDialogueTextSequence();
         gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
-    
+
     public void flickerLights() {
         if (lightsOn) {
             if (random.nextInt(4) == 0) {
