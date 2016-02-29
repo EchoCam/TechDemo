@@ -11,7 +11,7 @@ import com.jme3.scene.Spatial;
  */
 public abstract class PressurePlateObject extends KinematicDemoObject {
 
-    public final static int DELAY = 1;
+    public final static float DELAY = 0.5f;
 
     public PressurePlateObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound) {
         super(objId, spatial, mass, isMainParent, bound);

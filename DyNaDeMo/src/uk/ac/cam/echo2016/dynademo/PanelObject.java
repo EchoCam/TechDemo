@@ -8,7 +8,6 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public class PanelObject extends KinematicDemoObject {
-
     private boolean opening = false;
     private Vector3f openPos;
     private Vector3f closePos;

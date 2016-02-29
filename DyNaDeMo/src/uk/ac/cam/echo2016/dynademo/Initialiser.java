@@ -356,7 +356,7 @@ public class Initialiser {
 
         routes.put(tRoute.getId(), tRoute);
     }
-
+    
     private static void addObservationRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
         LocationEvent eLoc;
         locList.clear();
@@ -434,10 +434,16 @@ public class Initialiser {
         // Door
         Spatial door1 = extractDoor(app, 0);
 
-        door1.setLocalTranslation(10f, 0f, 2.5f);
+        door1.setLocalTranslation(9.99f, 0f, 2.5f);
         final PanelObject doorObj1 = new PanelObject("door1", door1, 1f, true, null, new Vector3f(10f, 9f, 2.5f), new Vector3f(10f, 0f, 2.5f));
         doorObj1.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(doorObj1);
+        
+        Spatial door2 = extractDoor(app, 0);
+        door2.setLocalTranslation(29.9f, 0f, 2.5f);
+        final PanelObject doorObj2 = new PanelObject("door2", door2, 1f, true, null, new Vector3f(30f, 9f, 2.5f), new Vector3f(30f, 0f, 2.5f));
+        doorObj2.getLights().add(lightMap.get("TallCorridorLight1"));
+        tRoute.objects.add(doorObj2);
 
         // PressurePlate
         Spatial pressPlate1 = app.getAssetManager().loadModel("Models/PressurePlate.j3o");
@@ -464,12 +470,12 @@ public class Initialiser {
 
             @Override
             public void onPressed() {
-                System.out.println("Hi");
+                doorObj2.open(app);
             }
 
             @Override
             public void onRelease() {
-                System.out.println("Bye");
+                doorObj2.close(app);
             }
         };
         plateObj1.getLights().add(lightMap.get("RoomLight"));
