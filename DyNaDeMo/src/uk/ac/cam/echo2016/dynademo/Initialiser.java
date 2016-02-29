@@ -161,10 +161,18 @@ public class Initialiser {
         tRoute.setInteractable(button, eInter);
 
         tRoute.objects.add(buttonObj);
+        
+        tRoute.startupTextSequence = new String[]{
+            "It's so tempting when it's right there...",
+            "But who knows if you should press it?"
+        };
+        
         routes.put(tRoute.getId(), tRoute);
     }
 
     private static void addChar1DeathRoute( final MainApplication app, final HashMap<String, DemoRoute> routes) {
+        SyncPointEvent spe;
+        
         locList.clear();
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 5));
         dirList.clear();
@@ -185,10 +193,22 @@ public class Initialiser {
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // EVENTS
+        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0,1,-5),5,14,5));
+        tRoute.locEvents.add(spe);
+        
+        tRoute.startupTextSequence = new String[]{
+            "This room.",
+            "Where you had your first 'chat'...",
+            "Will be the last you see."
+        };
+        
         routes.put(tRoute.getId(), tRoute);
     }
     
     private static void addChar2DeathRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
+        SyncPointEvent spe;
+        
         locList.clear();
         locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
@@ -209,6 +229,10 @@ public class Initialiser {
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // EVENTS
+        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(5,1,0), 5,14,5));
+        tRoute.locEvents.add(spe);
+        
         routes.put(tRoute.getId(), tRoute);
     }
 
@@ -229,7 +253,7 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor"}, {"CorridorLeft"}
+            {"Room", "BlankDoorLeft", "BlankDoorRight"}, {"Corridor"}, {"CorridorLeft"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
@@ -237,6 +261,11 @@ public class Initialiser {
         // EVENTS
         spe = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5));
         tRoute.locEvents.add(spe);
+        
+        tRoute.startupTextSequence = new String[]{
+            "You have found me.",
+            "But I found you long ago..."
+        };
 
         routes.put(tRoute.getId(), tRoute);
     }
@@ -258,7 +287,7 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor"}, {"CorridorRight"}
+            {"Room", "BlankDoorLeft", "BlankDoorRight"}, {"Corridor"}, {"CorridorRight"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
@@ -353,6 +382,11 @@ public class Initialiser {
         tRoute.properties.putInt(leverObj.getObjId(), 0);
         eInter = new InteractionEvent("leverInteraction", leverObj);
         tRoute.setInteractable(leverRoot, eInter);
+        
+        tRoute.startupTextSequence = new String[]{
+            "Left or Right?",
+            "Let's hope you make the RIGHT choice..."
+        };
 
         routes.put(tRoute.getId(), tRoute);
     }
@@ -382,6 +416,12 @@ public class Initialiser {
         // EVENTS
         eLoc = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
         tRoute.locEvents.add(eLoc);
+        
+        tRoute.startupTextSequence = new String[]{
+            "Seem familiar?",
+            "Perhaps not to you, Tojamobin...",
+            "But to YOU."
+        };
 
         routes.put(tRoute.getId(), tRoute);
     }
