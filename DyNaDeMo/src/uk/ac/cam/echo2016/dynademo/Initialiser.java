@@ -11,13 +11,14 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
-import com.oracle.xmlns.internal.webservices.jaxws_databinding.ExistingAnnotationsType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
+import uk.ac.cam.echo2016.multinarrative.GameChoice;
 import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
+import uk.ac.cam.echo2016.multinarrative.Route;
 
 /**
  * @author tr393
@@ -579,7 +580,20 @@ public class Initialiser {
         public void onDemoEvent(MainApplication app) {
             try {
                 app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
-                app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                GameChoice gameChoice = app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                
+                List<Route> options = gameChoice.getOptions();
+                boolean happyDays1 = false;
+                boolean happyDays2 = false;
+                for(Route option: options) {
+                    if(option.getId() == routeIfTrue) {
+                        happyDays1 = true;
+                    } else if(option.getId() == routeIfFalse) {
+                        happyDays2 = true;
+                    }
+                }
+                if(!happyDays1 || !happyDays2)
+                    System.out.println("The choices available don't match the routes that we think are avaialble.");
                 if (actionTaken) {
                     app.getNarrativeInstance().startRoute(routeIfTrue);
                     app.getNarrativeInstance().endRoute(routeIfTrue);
