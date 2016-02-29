@@ -86,7 +86,7 @@ public class Initialiser {
 
     private static void addButtonRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
         InteractionEvent eInter;
-        final ChoicePointEvent cpe;
+        final ChoiceThenSyncPointEvent cpe;
 
         tRoute = new DemoRoute("ButtonRoute", "Scenes/ButtonRoute.j3o", new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
@@ -140,7 +140,7 @@ public class Initialiser {
 
         // EVENTS
         cpe =
-                new ChoicePointEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
+                new ChoiceThenSyncPointEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
         tRoute.locEvents.add(cpe);
 
         eInter = new InteractionEvent("buttonInteraction", buttonObj);
@@ -250,7 +250,7 @@ public class Initialiser {
 
     private static void addLeverRoute(final MainApplication app, final HashMap<String, DemoRoute> routes) {
         InteractionEvent eInter;
-        final ChoicePointEvent cpe;
+        final ChoiceThenSyncPointEvent cpe;
 
         tRoute = new DemoRoute("LeverRoute", "Scenes/LeverRoute.j3o", new Vector3f(-35, HALFCHARHEIGHT + 1.0f, 0),
                 new Vector3f(1, 0, 0));
@@ -283,7 +283,7 @@ public class Initialiser {
         tRoute.objects.add(leverBaseObj);
 
         cpe =
-                new ChoicePointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose right", "Choose left");
+                new ChoiceThenSyncPointEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose right", "Choose left");
 
         // TODO bounding box actually required? see button
         LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, cpe);
@@ -556,13 +556,13 @@ public class Initialiser {
         }
     };
 
-    public static class ChoicePointEvent extends LocationEvent {
+    public static class ChoiceThenSyncPointEvent extends LocationEvent {
 
         private boolean actionTaken = false;
         private String routeIfTrue;
         private String routeIfFalse;
 
-        public ChoicePointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
+        public ChoiceThenSyncPointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
             super(id, bound);
             routeIfTrue = RouteIfActionTaken;
             routeIfFalse = RouteOtherwise;
