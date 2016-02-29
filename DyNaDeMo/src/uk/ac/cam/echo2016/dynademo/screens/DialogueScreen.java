@@ -28,7 +28,11 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     }
 
     public void setDialogue(String dialogue_location) {
-        this.dialogue = new DemoDialogue(this.getClass().getResourceAsStream("dialogues/" + dialogue_location + ".xml"));
+        dialogue = new DemoDialogue(this.getClass().getResourceAsStream("dialogues/" + dialogue_location + ".xml"));
+    }
+    
+    public void jumpToDialogue(String dialogId) {
+        dialogue.jumpToDialogue(dialogId);
     }
 
     public void chooseOption(String index) {
