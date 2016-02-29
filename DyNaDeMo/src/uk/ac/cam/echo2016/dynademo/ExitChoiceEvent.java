@@ -10,11 +10,11 @@ import com.jme3.bounding.BoundingBox;
  *
  * @author Rjmcf
  */
-public class PossibleConditionalSyncPointEvent extends ConditionalSyncPointEvent {
-    private ChoiceThenSyncPointEvent ctspe;
+public class ExitChoiceEvent extends ConditionalSyncPointEvent {
+    private SyncAfterChoiceEvent ctspe;
     private boolean trueIfTaken;
     
-    public PossibleConditionalSyncPointEvent(String id, BoundingBox bound, String correctRoute, ChoiceThenSyncPointEvent ctspe, boolean trueIfTaken) {
+    public ExitChoiceEvent(String id, BoundingBox bound, String correctRoute, SyncAfterChoiceEvent ctspe, boolean trueIfTaken) {
         super(id, bound, correctRoute);
         this.ctspe = ctspe;
         this.trueIfTaken = trueIfTaken;

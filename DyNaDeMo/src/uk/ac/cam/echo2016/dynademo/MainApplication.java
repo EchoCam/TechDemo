@@ -70,7 +70,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public final static boolean DEBUG = false;
     public final static float HALFCHARHEIGHT = 3;
-    public HashMap<String, DemoRoute> routes = new HashMap<>();
+    public HashMap<String, DemoScene> routes = new HashMap<>();
 
     private Random random = new Random();
     private float timeCounter = 0;
@@ -90,7 +90,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private ArrayDeque<LocationEvent> locEventBus = new ArrayDeque<>();
     private HashMap<String, ArrayDeque<DemoTask>> taskEventBus = new HashMap<>();
     private Spatial currentWorld;
-    private DemoRoute currentRoute;
+    private DemoScene currentRoute;
     // private currentRoute/Character
     private Nifty nifty;
     // Screens
@@ -219,7 +219,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         landscape = new RigidBodyControl();//sceneShape, 0f);
         currentWorld.addControl(landscape);
         bulletAppState.getPhysicsSpace().add(landscape);
-        currentRoute = new DemoRoute("", "", null, null);
+        currentRoute = new DemoScene("", "", null, null);
 
         // Load character //
         playerNode = new Node("playerNode");
@@ -255,7 +255,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         }
     }
 
-    public void loadRoute(DemoRoute route, int entIndex) {
+    public void loadRoute(DemoScene route, int start) {
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
@@ -375,8 +375,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(landscape);
 
         // TODO freeze for a second
-        playerControl.setPhysicsLocation(route.getStartLocs().get(entIndex));
-        cam.lookAtDirection(route.getStartDirs().get(entIndex), Vector3f.UNIT_Y);
+        playerControl.setPhysicsLocation(route.getStartLocs().get(start));
+        cam.lookAtDirection(route.getStartDirs().get(start), Vector3f.UNIT_Y);
         // TODO other initializations
 
     }
@@ -657,7 +657,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void chooseLocation(String routeName) {
-        DemoRoute route = routes.get(routeName);
+        DemoScene route = routes.get(routeName);
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }

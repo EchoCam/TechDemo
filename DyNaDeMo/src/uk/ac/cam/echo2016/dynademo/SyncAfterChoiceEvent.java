@@ -18,13 +18,13 @@ import uk.ac.cam.echo2016.multinarrative.Route;
      * 
      * 
      */
-public class ChoiceThenSyncPointEvent extends LocationEvent {
+public class SyncAfterChoiceEvent extends ExitEvent {
 
         private boolean actionTaken = false;
         private String routeIfTrue;
         private String routeIfFalse;
 
-        public ChoiceThenSyncPointEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
+        public SyncAfterChoiceEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
             super(id, bound);
             routeIfTrue = RouteIfActionTaken;
             routeIfFalse = RouteOtherwise;

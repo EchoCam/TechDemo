@@ -12,7 +12,7 @@ import java.util.HashMap;
 /**
  * @author tr393
  */
-public class DemoRoute {
+public class DemoScene {
 
     private final String id;
     private final String sceneFile;
@@ -30,7 +30,7 @@ public class DemoRoute {
     public HashMap<Spatial, InteractionEvent> interactions = new HashMap<>();
     public String[] startupTextSequence = new String[0];
 
-    public DemoRoute(String id, String sceneFile, ArrayList<Vector3f> startLocs, ArrayList<Vector3f> startDirs) {
+    public DemoScene(String id, String sceneFile, ArrayList<Vector3f> startLocs, ArrayList<Vector3f> startDirs) {
         this.id = id;
         this.sceneFile = sceneFile;
         if (startLocs != null && startDirs != null) {
@@ -89,4 +89,6 @@ public class DemoRoute {
         }
         return false;
     }
+    
+    public void onLoad() {}
 }
