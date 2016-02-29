@@ -104,6 +104,11 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
                 selectRoute(routeName,null,null);
                 return;                
             }
+            
+            if (b.getBoolean("Final")) {
+                System.out.println(routeName);
+                app.stop();
+            }
 
             // Get which character is playable on each route and show based on that
             boolean char1 = b.getBoolean("Char1");
