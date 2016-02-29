@@ -365,7 +365,7 @@ public class Initialiser {
         dirList.add(new Vector3f(0, 0, 1));
 
         tRoute = new DemoRoute("ObservationRoute", "Scenes/ObservationRoute.j3o", locList, dirList);
-
+        
         // LIGHTS
         tLightNames = new String[]{"RoomLight", "CorridorLight1", "CorridorLight2"};
 
@@ -374,11 +374,22 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor1"}, {"Corridor2"}
+            {"Room", "Monitor1", "Screen1", "Monitor2", "Screen2"}, {"Corridor1"}, {"Corridor2"}
         };
 
         addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // STATIC ADDITIONS
+//        Spatial monitor1 = app.getAssetManager().loadModel("Models/Monitors.j3o");
+//        StaticDemoObject monitorObj1 = new StaticDemoObject("monitor1", monitor1, true);
+//        monitorObj1.getLights().add(lightMap.get("RoomLight"));
+//        tRoute.objects.add(monitorObj1);
+//        Spatial monitor2 = app.getAssetManager().loadModel("Models/Monitors.j3o");
+//        StaticDemoObject monitorObj2 = new StaticDemoObject("monitor2", monitor2, true);
+//        monitorObj2.getLights().add(lightMap.get("RoomLight"));
+//        tRoute.objects.add(monitorObj2);
+
+        
         // EVENTS
         eLoc = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
         tRoute.locEvents.add(eLoc);
