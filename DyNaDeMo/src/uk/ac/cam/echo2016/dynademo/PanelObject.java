@@ -19,6 +19,7 @@ public class PanelObject extends KinematicDemoObject {
     }
 
     public void open(MainApplication app) {
+        System.out.println("open");
         if (!opening) {
             Vector3f pos = getSpatial().getWorldTranslation();
             if (getTasks().isEmpty()) {
@@ -28,24 +29,13 @@ public class PanelObject extends KinematicDemoObject {
                 getTasks().clear();
                 Vector3f change = openPos.subtract(pos);
                 queueDisplacement(app, change.length()/10f, change, change.length());
-//                DemoTask currentTask = getTasks().getFirst();
-//                if (currentTask instanceof TranslationTask) {
-//                    getTasks().remove(currentTask);
-//                    float remaining = currentTask.getRemainingTime();
-//                    float completion = currentTask.getCompletionTime();
-//                    float current = completion - remaining;
-//                    float x = (9f * current / completion);
-//                    System.out.println("Travel down by " + x);
-//                    queueDisplacement(app, current, Vector3f.UNIT_Y.negate(), x);
-//                } else if (currentTask instanceof AddPropertyTask) {
-//                    getTasks().remove(currentTask);
-//                }
             }
         }
         opening = true;
     }
 
     public void close(MainApplication app) {
+        System.out.println("close");
         if (opening) {
             Vector3f pos = getSpatial().getWorldTranslation();
             if (getTasks().isEmpty()) {
@@ -55,23 +45,6 @@ public class PanelObject extends KinematicDemoObject {
                 getTasks().clear();
                 Vector3f change = closePos.subtract(pos);
                 queueDisplacement(app, change.length()/10f, change, change.length());
-            
-            
-            /*
-            if (getTasks().isEmpty()) {
-                queueDisplacement(app, 2f, Vector3f.UNIT_Y, 9f);
-            } else {
-                DemoTask currentTask = getTasks().getFirst();
-                if (currentTask instanceof TranslationTask) {
-                    getTasks().remove(currentTask);
-                    float remaining = currentTask.getRemainingTime();
-                    float completion = currentTask.getCompletionTime();
-                    float current = completion - remaining;
-                    float x = (9f * current / completion);
-                    queueDisplacement(app, current, Vector3f.UNIT_Y, x);
-                } else if (currentTask instanceof AddPropertyTask) {
-                    getTasks().remove(currentTask);
-                }*/
             }
         }
         opening = false;

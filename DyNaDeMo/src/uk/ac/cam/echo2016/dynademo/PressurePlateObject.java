@@ -10,11 +10,14 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public abstract class PressurePlateObject extends KinematicDemoObject {
-
     public final static float DELAY = 0.5f;
+    private Vector3f restPos;
+    private Vector3f downPos;
 
-    public PressurePlateObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound) {
+    public PressurePlateObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, Vector3f restPos, Vector3f downPos) {
         super(objId, spatial, mass, isMainParent, bound);
+        this.restPos = restPos;
+        this.downPos = downPos;
     }
 
     public abstract void onPressed();
@@ -29,6 +32,39 @@ public abstract class PressurePlateObject extends KinematicDemoObject {
         }
         Boolean plateDown = route.properties.getBoolean(getObjId());
         // TODO again hacky like leverRod mesh
+        
+        if (!plateDown) {
+            getSpatial().move(0, -0.75f, 0);
+            route.properties.putBoolean(getObjId(), true);
+            getTasks().clear();
+            queueDelay(app, DELAY);
+            queueDisplacement(app, 0.1f, Vector3f.UNIT_Y, 0.75f);
+            queueProperty(app, 0.0f, route.properties, getObjId(), false);
+            onPressed();
+            app.addTask(new DemoTask(getObjId(), 0f) {
+                @Override
+                public void complete() {
+                    onRelease();
+                }
+            });
+        }
+        if (getTasks().isEmpty()) {
+            throw new RuntimeException("Error: Illegal pressure plate state for: " + getObjId());
+        } else {
+            DemoTask currentTask = getTasks().getFirst();
+            if (currentTask instanceof KinematicTask) {
+                currentTask.resetTime();
+            } else if (currentTask instanceof TranslationTask) {
+                getTasks().clear();
+                getSpatial().setLocalTranslation(downPos);
+            } else if (currentTask instanceof AddPropertyTask) {
+                getTasks().remove(currentTask);
+                getTasks().clear();
+                getSpatial().setLocalTranslation(downPos);
+            }
+        }
+        
+        /*
         if (!plateDown) {
             getSpatial().move(0, -0.75f, 0);
             route.properties.putBoolean(getObjId(), true);
@@ -59,6 +95,6 @@ public abstract class PressurePlateObject extends KinematicDemoObject {
             } else if (currentTask instanceof AddPropertyTask) {
                 getTasks().remove(currentTask);
             }
-        }
+        }*/
     }
 }

@@ -493,7 +493,7 @@ public class Initialiser {
         pressPlate1.setLocalTranslation(-5f, 0, -5f);
         pressPlate2.setLocalTranslation(-5f, 0, 5f);
 
-        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound) {
+        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(-5f, 0, -5f), new Vector3f(-5f, -0.8f, -5f)) {
             @Override
             public void onPressed() {
                 doorObj1.open(app);
@@ -506,7 +506,7 @@ public class Initialiser {
         bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f) {
             
         };
-        final PressurePlateObject plateObj2 = new PressurePlateObject("pressurePlate2", pressPlate2, 1f, true, bound) {
+        final PressurePlateObject plateObj2 = new PressurePlateObject("pressurePlate2", pressPlate2, 1f, true, bound, new Vector3f(-5f, 0, 5f), new Vector3f(-5f, -0.8f, 5f)) {
 
             @Override
             public void onPressed() {
