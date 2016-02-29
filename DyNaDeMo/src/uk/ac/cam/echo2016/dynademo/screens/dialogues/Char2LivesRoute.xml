@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter1>
-    <protagonist name="None">
-        <dialogue speaker="You" id="You1">
-            <text nextID="END">Char2 lives</text>
-        </dialogue>
-        <dialogue id="END"></dialogue>
-    </protagonist>
-</chapter1>
+<protagonist name="None">
+    <dialogue speaker="You" id="You1">
+        <text nextID="END">Char2 lives</text>
+    </dialogue>
+    
+    <dialogue id="END"></dialogue>
+</protagonist>

@@ -99,7 +99,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private GameScreen gameScreen;
     private DialogueScreen dialogueScreen;
     private NarrativeInstance narrativeInstance;
-    private DemoDialogue dialogue;
 
     /**
      * The main entry point for the code of the game.
