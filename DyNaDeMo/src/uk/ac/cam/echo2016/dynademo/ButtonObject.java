@@ -17,7 +17,6 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
     public final static int DELAY = 1;
     private Initialiser.ChoiceThenSyncPointEvent cpe;
     public Vector3f displacement = new Vector3f(0f, 1f, 1f).normalize().mult(0.2f / (float) Math.sqrt(2f));
-    private Initialiser.ChoiceThenSyncPointEvent cpe;
 
     public ButtonObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, Initialiser.ChoiceThenSyncPointEvent cpe) {
         super(objId, spatial, mass, isMainParent, bound);
@@ -32,7 +31,6 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
 
     @Override
     public void interact(MainApplication app) {
-        cpe.setActionTaken(true);
         
         DemoRoute route = app.routes.get("ButtonRoute");
 
