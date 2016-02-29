@@ -147,12 +147,9 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         if(jumpToRoute) {
             selectRoute(route.getId(), character, location);
             DialogueScreen theDialogue = app.getDialogueScreen();
+            System.out.println(route.getId());
             theDialogue.setDialogue(route.getId());
-            System.out.println("Setting character to None");
             theDialogue.setCharacter("None");
-            System.out.println("Jumping to dialogue You1");
-            theDialogue.jumpToDialogue("You1");
-            System.out.println("Going to screen dialogue");
             nifty.gotoScreen("dialogue");
         }
     }
