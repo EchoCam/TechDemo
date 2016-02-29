@@ -77,7 +77,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
     public void onStartScreen() {
         app.getFlyByCamera().setEnabled(false);
         app.pauseDemo();
-        
+
         ArrayList<Route> currentRoutes = narrativeInstance.getPlayableRoutes();
 
         // Get the bottom panel so we can insert character buttons
@@ -88,54 +88,57 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             e.markForRemoval();
         }
         bottomPanel.layoutElements();
+
         
-        // Add new routes to show
         for (final Route route : currentRoutes) {
-            final String routeName = route.toString();
+            setUpRoute(route, bottomPanel, false);
+        }
+    }
 
-            // null check, and get character name from properties
-            BaseBundle b = route.getProperties();
-            if (b == null) {
-                throw new RuntimeException("Error: The route: " + routeName + " doesn't have any properties.");
+    public void setUpRoute(final Route route, Element bottomPanel, boolean jumpToRoute) {
+        final String routeName = route.toString();
+
+        // null check, and get character name from properties
+        BaseBundle b = route.getProperties();
+        if (b == null) {
+            throw new RuntimeException("Error: The route: " + routeName + " doesn't have any properties.");
+        }
+        
+        jumpToRoute = b.getBoolean("Final");
+
+        // Get which character is playable on each route and show based on that
+        boolean char1 = b.getBoolean("Char1");
+        boolean char2 = b.getBoolean("Char2");
+        final String character =
+                char1 ? char2 ? "Timangelise and Tojamobin" : "Timangelise" : char2 ? "Tojamobin" : "None";
+
+        final String location = b.getString("Location");
+        // Add character button to the screen
+        PanelBuilder p = new PanelBuilder("route_" + routeName) {
+            {
+                childLayoutCenter();
+                valignCenter();
+                backgroundColor("#0008");
+                height("25%");
+                width("25%");
+
+                control(new ButtonBuilder("button_route_" + routeName, character) {
+                    {
+                        alignCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        visibleToMouse(true);
+
+                        interactOnClick("selectRoute(" + routeName + ", " + character + ", " + location + ")");
+                    }
+                });
             }
-            
-            if (b.getBoolean("Final")) {
-                ending = true;
-                System.out.println(routeName);
-                selectRoute(routeName,"Timangelise and Tojamobin",b.getString("Location"));
-                break;                
-            }
-
-            // Get which character is playable on each route and show based on that
-            boolean char1 = b.getBoolean("Char1");
-            boolean char2 = b.getBoolean("Char2");
-            final String character =
-                    char1 ? char2 ? "Timangelise and Tojamobin" : "Timangelise" : char2 ? "Tojamobin" : "None";
-
-            final String location = b.getString("Location");
-            // Add character button to the screen
-            PanelBuilder p = new PanelBuilder("route_" + routeName) {
-                {
-                    childLayoutCenter();
-                    valignCenter();
-                    backgroundColor("#0008");
-                    height("25%");
-                    width("25%");
-
-                    control(new ButtonBuilder("button_route_" + routeName, character) {
-                        {
-                            alignCenter();
-                            valignCenter();
-                            height("50%");
-                            width("50%");
-                            visibleToMouse(true);
-
-                            interactOnClick("selectRoute(" + routeName + ", " + character + ", " + location + ")");
-                        }
-                    });
-                }
-            };
-            bottomPanel.add(p.build(nifty, screen, bottomPanel));
+        };
+        bottomPanel.add(p.build(nifty, screen, bottomPanel));
+        
+        if(jumpToRoute) {
+            selectRoute(route.getId(), character, location);
         }
     }
 

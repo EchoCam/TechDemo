@@ -452,24 +452,45 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     gameScreen.progressThroughText();
                 } else if (draggedSpatial != null) {
                     Spatial spatial = draggedSpatial.getSpatial();
-                    // Drop current Object held
-                    Vector3f location = spatial.getWorldTranslation();
-                    bulletAppState.getPhysicsSpace().add(spatial);
-                    spatial.removeFromParent();
-                    rootNode.attachChild(spatial);
-                    spatial.setLocalTranslation(location);
-                    spatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
-                    spatial.getControl(RigidBodyControl.class).activate();
-                    draggedSpatial = null;
+                    // check object is not behind wall/floor
+                    Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+                    CollisionResults results = new CollisionResults();
+                    rootNode.collideWith(ray, results);
+                    
+                    Boolean isCentreInside = true;
+                    float distance = spatial.getLocalTranslation().subtract(cam.getLocation()).length();
+                    if (spatial instanceof Geometry) {
+                        for (CollisionResult collision: results) {
+                            if (collision.getDistance() < distance && collision.getGeometry().equals((Geometry)spatial)) 
+                                isCentreInside = false;
+                        }
+                    } else { // Currently only nodes are dragged
+                        for (CollisionResult collision: results) {
+                            if (collision.getDistance() < distance && !(collision.getGeometry().hasAncestor((Node) spatial))) 
+                                isCentreInside = false;
+                        }
+                    }
+                    
+                    if (isCentreInside) {
+                        // Drop current Object held
+                        Vector3f location = spatial.getWorldTranslation();
+                        bulletAppState.getPhysicsSpace().add(spatial);
+                        spatial.removeFromParent();
+                        rootNode.attachChild(spatial);
+                        spatial.setLocalTranslation(location);
+                        spatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
+                        spatial.getControl(RigidBodyControl.class).activate();
+                        draggedSpatial = null;
+                    }
                 } else {
                     // Ray Casting (checking for first interactable object)
                     Ray ray = new Ray(cam.getLocation(), cam.getDirection());
                     CollisionResults results = new CollisionResults();
                     rootNode.collideWith(ray, results);
                     CollisionResult closest = results.getClosestCollision();
-
+                    
                     // Gets the closest geometry (if it exists) and attempts to interact with it
-                    if (closest != null) {
+                    if (closest != null && closest.getDistance() < 12f) {
                         System.out.println(closest.getGeometry().getName() + " found!");
                         if (!currentRoute.interactWith(this, closest.getGeometry())) {
                             System.out.println(closest.getGeometry().getName() + " is not responding...");

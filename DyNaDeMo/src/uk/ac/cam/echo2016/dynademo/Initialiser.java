@@ -52,6 +52,7 @@ public class Initialiser {
         addLeverRoute(app, routes);
         addObservationRoute(app, routes);
         addPuzzleRoute(app, routes);
+        addEndingRoute(app, routes);
         return routes;
     }
 
@@ -578,6 +579,18 @@ public class Initialiser {
         routes.put(tRoute.getId(), tRoute);
     }
 
+    private static void addEndingRoute (final MainApplication app, final HashMap<String, DemoRoute> routes) {
+        locList.clear();
+        locList.add(new Vector3f(0,HALFCHARHEIGHT + 1.0f ,0));
+        dirList.clear();
+        dirList.add(new Vector3f(1,0,0));
+        
+        tRoute = new DemoRoute("Ending", "Scenes/Ending.j3o", locList, dirList);
+        
+        routes.put(tRoute.getId(), tRoute);
+        
+    }
+    
     private static DemoLight addLight(final MainApplication app, DemoRoute route, Vector3f loc, String[] spatialNames) {
         PointLight l = new PointLight();
         l.setColor(ColorRGBA.Gray);
