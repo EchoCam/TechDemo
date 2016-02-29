@@ -371,7 +371,7 @@ public class Initialiser {
         Spatial door1 = extractDoor(app, 0);
 
         door1.setLocalTranslation(10f, 0f, 2.5f);
-        final DoorObject doorObj1 = new DoorObject("door1", door1, 1f, true, null);
+        final PanelObject doorObj1 = new PanelObject("door1", door1, 1f, true, null, new Vector3f(10f, 9f, 2.5f), new Vector3f(10f, 0f, 2.5f));
         doorObj1.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(doorObj1);
 
