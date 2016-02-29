@@ -381,9 +381,31 @@ public class Initialiser {
         pressPlate1.setLocalTranslation(-5f, 0, -5f);
         pressPlate2.setLocalTranslation(-5f, 0, 5f);
 
-        KinematicDemoObject plateObj1 = new KinematicDemoObject("pressurePlate1", pressPlate1, 1f, true, bound);
-        bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f);
-        KinematicDemoObject plateObj2 = new KinematicDemoObject("pressurePlate2", pressPlate2, 1f, true, bound);
+        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound) {
+            @Override
+            public void onPressed() {
+                doorObj1.open(app);
+            }
+            @Override
+            public void onRelease() {
+                doorObj1.close(app);
+            }
+        };
+        bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f) {
+            
+        };
+        final PressurePlateObject plateObj2 = new PressurePlateObject("pressurePlate2", pressPlate2, 1f, true, bound) {
+
+            @Override
+            public void onPressed() {
+                System.out.println("Hi");
+            }
+
+            @Override
+            public void onRelease() {
+                System.out.println("Bye");
+            }
+        };
         plateObj1.getLights().add(lightMap.get("RoomLight"));
         plateObj2.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(plateObj1);
@@ -393,42 +415,26 @@ public class Initialiser {
         tRoute.properties.putBoolean(plateObj2.getObjId(), false);
 
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
-//        eLoc = new PressurePlateEvent("pressurePlate1", new Vector3f(-6.5f, 0f, 3.5f),  3.2f, 0.8f + HALFCHARHEIGHT, 3.2f, plateObj1);
-        tLocEvent = new PressurePlateEvent("pressurePlate1", bound, plateObj1) {
+        
+        tLocEvent = new ProximityEvent("pressurePlate1", bound, plateObj1) {
             @Override
-            public void onPressed() {
-                doorObj1.open(app);
-            }
-
-            @Override
-            public void onRelease() {
-                doorObj1.close(app);
+            public void onDemoEvent(MainApplication app) {
+                plateObj1.activate(app);
             }
         };
-        // TODO bad code
-        ((PressurePlateEvent) tLocEvent).activators.add(crateObj);
+
+        ((ProximityEvent) tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
-//        tLocEvent = new ProximityEvent("pressurePlate2", plateObj2) {
-//            @Override
-//            public void onDemoEvent(MainApplication app) {
-////                ((PressurePlateObject) plateObj2).activate(app);
-//            }
-//        };
-        tLocEvent = new PressurePlateEvent("pressurePlate2", bound, plateObj2) {
+        
+        tLocEvent = new ProximityEvent("pressurePlate2", bound, plateObj2) {
             @Override
-            public void onPressed() {
-                System.out.println("Hi");
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void onRelease() {
-                System.out.println("Bye");
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            public void onDemoEvent(MainApplication app) {
+                plateObj2.activate(app);
             }
         };
-        ((PressurePlateEvent) tLocEvent).activators.add(crateObj);
+
+        ((ProximityEvent) tLocEvent).activators.add(crateObj);
         tRoute.locEvents.add(tLocEvent);
 
         tRoute.startupTextSequence = new String[]{

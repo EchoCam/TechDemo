@@ -17,6 +17,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -186,7 +187,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         loadRoute(routes.get("BedroomRoute"));
 
         // Debug Options//
-//        bulletAppState.setDebugEnabled(true);
+        bulletAppState.setDebugEnabled(true);
 //
 //        Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
 //        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -202,17 +203,18 @@ public class MainApplication extends SimpleApplication implements ActionListener
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
         for (DemoObject object : currentRoute.objects) {
-            // TODO clean up physicsSpace (save info?)
+            // TODO clean up lights not being removed from rooms?
             if (object.isIsMainParent()) {
                 rootNode.detachChild(object.getSpatial());
             }
-
-            bulletAppState.getPhysicsSpace().remove(object.getSpatial());
-
             for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().removeLight(dLight.light);
             }
         }
+        for (PhysicsRigidBody r : bulletAppState.getPhysicsSpace().getRigidBodyList()) {
+            bulletAppState.getPhysicsSpace().remove(r);
+        }
+        
         for (DemoLight l : currentRoute.lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
