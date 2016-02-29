@@ -97,6 +97,11 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
             if (b == null) {
                 throw new RuntimeException("Error: The route: " + routeName + " doesn't have any properties.");
             }
+            
+            if (b.getBoolean("Final")) {
+                System.out.println(routeName);
+                app.stop();
+            }
 
             // Get which character is playable on each route and show based on that
             boolean char1 = b.getBoolean("Char1");
