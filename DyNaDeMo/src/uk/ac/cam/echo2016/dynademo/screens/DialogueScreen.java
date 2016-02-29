@@ -1,4 +1,3 @@
-
 package uk.ac.cam.echo2016.dynademo.screens;
 
 import org.w3c.dom.NodeList;
@@ -23,7 +22,7 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     private Screen screen;
     private MainApplication app;
     private DemoDialogue dialogue;
-    /*
+
     public DialogueScreen() {
         super();
     }
@@ -79,7 +78,7 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
     public void setCharacter(String name) {
         dialogue.setCharacter(name);
     }
-    */
+
     // ScreenController methods //
     @Override
     public void bind(Nifty nifty, Screen screen) {
