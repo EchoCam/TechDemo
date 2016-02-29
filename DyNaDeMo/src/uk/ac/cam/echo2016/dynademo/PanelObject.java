@@ -8,6 +8,7 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public class PanelObject extends KinematicDemoObject {
+    public final static float SPEED = 30f;
     private boolean opening = false;
     private Vector3f openPos;
     private Vector3f closePos;
@@ -19,32 +20,30 @@ public class PanelObject extends KinematicDemoObject {
     }
 
     public void open(MainApplication app) {
-        System.out.println("open");
         if (!opening) {
             Vector3f pos = getSpatial().getWorldTranslation();
             if (getTasks().isEmpty()) {
                 Vector3f change = openPos.subtract(pos);
-                queueDisplacement(app, change.length()/10f, change, change.length());
+                queueDisplacement(app, change.length()/SPEED, change, change.length());
             } else {
                 getTasks().clear();
                 Vector3f change = openPos.subtract(pos);
-                queueDisplacement(app, change.length()/10f, change, change.length());
+                queueDisplacement(app, change.length()/SPEED, change, change.length());
             }
         }
         opening = true;
     }
 
     public void close(MainApplication app) {
-        System.out.println("close");
         if (opening) {
             Vector3f pos = getSpatial().getWorldTranslation();
             if (getTasks().isEmpty()) {
                 Vector3f change = closePos.subtract(pos);
-                queueDisplacement(app, change.length()/10f, change, change.length());
+                queueDisplacement(app, change.length()/SPEED, change, change.length());
             } else {
                 getTasks().clear();
                 Vector3f change = closePos.subtract(pos);
-                queueDisplacement(app, change.length()/10f, change, change.length());
+                queueDisplacement(app, change.length()/SPEED, change, change.length());
             }
         }
         opening = false;

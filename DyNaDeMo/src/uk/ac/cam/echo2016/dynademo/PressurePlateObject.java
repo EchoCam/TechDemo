@@ -10,7 +10,7 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public abstract class PressurePlateObject extends KinematicDemoObject {
-    public final static float DELAY = 0.5f;
+    public final static float DELAY = 0.2f;
     private Vector3f restPos;
     private Vector3f downPos;
 
