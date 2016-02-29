@@ -15,7 +15,6 @@ import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import uk.ac.cam.echo2016.dynademo.MainApplication;
-import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 
 /**
