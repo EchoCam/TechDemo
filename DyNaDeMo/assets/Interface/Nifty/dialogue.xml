@@ -36,14 +36,14 @@
 					<!-- <control id="listBoxStatic" name="listBox" horizontal="false"
 						width="*" height="100%" childLayout="vertical" visibleToMouse="true">
 
-					</control> -->
-				</panel>
+                    </control> -->
+                </panel>
 
-			</panel>
-			<panel id="panel_bottom_padding" height="5%" width="75%" align="center"
-				valign="bottom" childLayout="horizontal" backgroundColor="#0000">
-			</panel>
-			<!-- </layer> -->
-		</layer>
-	</screen>
+            </panel>
+            <panel id="panel_bottom_padding" height="5%" width="75%" align="center"
+                   valign="bottom" childLayout="horizontal" backgroundColor="#0000">
+            </panel>
+            <!-- </layer> -->
+        </layer>
+    </screen>
 </nifty>

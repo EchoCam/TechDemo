@@ -128,17 +128,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
         pauseMenuScreen = (PauseMenuScreen) nifty.getScreen("pauseMenu").getScreenController();
         gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
         dialogueScreen = (DialogueScreen) nifty.getScreen("dialogue").getScreenController();
-//      dialogueScreen.setDialogue("Dialogues/Convo1Dialogue.xml");
+        dialogueScreen.setDialogue("Char2 dies");
 //      dialogueScreen.setCharacter("Harry");
 
         stateManager.attach(mainMenuScreen);
         stateManager.attach(characterSelectScreen);
         stateManager.attach(pauseMenuScreen);
         stateManager.attach(gameScreen);
-        //stateManager.attach(dialogueScreen);
+        stateManager.attach(dialogueScreen);
 
         // TODO(tr395): find way to make it so that onStartScreen() isn't called until this point.
-        nifty.gotoScreen("mainMenu");
+        nifty.gotoScreen("dialogue");
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
