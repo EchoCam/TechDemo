@@ -1,129 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter1>
-	<protagonist name="Character1">
-		<dialogue speaker="Character1" id="Character11">
-			<text nextID="Character21">Who are you?</text>
+	<protagonist name="Timangelise">
+		<dialogue speaker="Timangelise" id="Timangelise1">
+			<text nextID="Tojamobin1">Who are you?</text>
 		</dialogue>
-		<dialogue speaker="Character2" id="Character21">
-			<text nextID="Character31">Who are you?</text>
+		<dialogue speaker="Tojamobin" id="Tojamobin1">
+			<text nextID="Larry Paulson1">Who are you?</text>
 		</dialogue>
-		<dialogue speaker="Character3" id="Character31">
+		<dialogue speaker="Larry Paulson" id="Larry Paulson1">
 			<text>Oh wow! We thought it was just us here. Hi!</text>
 			<options>
-				<option nextID="Character22">You didn’t answer my question.</option>
-				<option nextID="Character32">Where are we?</option>
-				<option nextID="Character32">What are you doing here?</option>
+				<option nextID="Tojamobin2">You didn’t answer my question.</option>
+				<option nextID="Larry Paulson2">Where are we?</option>
+				<option nextID="Larry Paulson2">What are you doing here?</option>
 			</options>
 		</dialogue>
-		<dialogue speaker="Character2" id="Character22">
-			<text nextID="Character33">You didn’t answer mine.</text>
+		<dialogue speaker="Tojamobin" id="Tojamobin2">
+			<text nextID="Larry Paulson3">You didn’t answer mine.</text>
 		</dialogue>
-		<dialogue speaker="Character3" id="Character32">
-			<text nextID="Character23">We don’t know, we just woke up and found our way
+		<dialogue speaker="Larry Paulson" id="Larry Paulson2">
+			<text nextID="Tojamobin3">We don’t know, we just woke up and found our way
 				here.</text>
 		</dialogue>
-		<dialogue speaker="Character2" id="Character23">
-			<text nextID="Character34">Now we’re just waiting for something to happen.
+		<dialogue speaker="Tojamobin" id="Tojamobin3">
+			<text nextID="Larry Paulson4">Now we’re just waiting for something to happen.
 				Nothing else to do.</text>
 		</dialogue>
-		<dialogue speaker="Character3" id="Character33">
+		<dialogue speaker="Larry Paulson" id="Larry Paulson3">
 			<text>All that matters is that we’re together now. Maybe we can find a way out of here!</text>
 			<options>
-				<option nextID="Character35">Maybe.</option>
-				<option nextID="Character24">Got any ideas?</option>
+				<option nextID="Larry Paulson5">Maybe.</option>
+				<option nextID="Tojamobin4">Got any ideas?</option>
 			</options>
 		</dialogue>
-		<dialogue speaker="Character3" id="Character34">
+		<dialogue speaker="Larry Paulson" id="Larry Paulson4">
 			<text nextID="Blackout">We could get to know each other better!</text>
 		</dialogue>
-		<dialogue speaker="Character2" id="Character24">
-			<text nextID="Character35">Nothing.</text>
+		<dialogue speaker="Tojamobin" id="Tojamobin4">
+			<text nextID="Larry Paulson5">Nothing.</text>
 		</dialogue>
-		<dialogue speaker="Character3" id="Character35">
+		<dialogue speaker="Larry Paulson" id="Larry Paulson5">
 			<text nextID="Blackout">I just hope something happens soon; I’m getting
 				bored of waiting.</text>
 		</dialogue>
 		<dialogue speaker="" id="Blackout">
 			<text nextID="END">Blackout. Crashing sounds. Silence.</text>
 		</dialogue>
+		<dialogue id="END"></dialogue>
 	</protagonist>
 
-	<protagonist name="Character2">
-		<dialogue speaker="Character1" id="Character11">
+	<protagonist name="Tojamobin">
+		<dialogue speaker="Timangelise" id="Timangelise1">
 			<text>Who are you?</text>
 			<options>
-				<option nextID="Character12">Who are you?</option>
-				<option nextID="Character31">(Remain silent)</option>
+				<option nextID="Timangelise2">Who are you?</option>
+				<option nextID="Larry Paulson1">(Remain silent)</option>
 			</options>
 		</dialogue>
-		<dialogue speaker="Character1" id="Character12">
-			<text nextID="Character32">I asked first.</text>
+		<dialogue speaker="Timangelise" id="Timangelise2">
+			<text nextID="Larry Paulson2">I asked first.</text>
 		</dialogue>
-		<dialogue speaker="Character3" id="Character31">
-			<text nextID="Character13">Um… we just met up too, we don’t know anymore than
+		<dialogue speaker="Larry Paulson" id="Larry Paulson1">
+			<text nextID="Timangelise3">Um… we just met up too, we don’t know anymore than
 				you about what’s going on.</text>
 		</dialogue>
-		<dialogue speaker="Character3" id="Character32">
+		<dialogue speaker="Larry Paulson" id="Larry Paulson2">
 			<text>All that matters is that we’re together now. Maybe we can find a way out of here!</text>
 			<options>
-				<option nextID="Character14">We need to take stock. Work out why we’re here first.</option>
-				<option nextID="Character15">Let’s try and stick together, we’d do better as a team.</option>
+				<option nextID="Timangelise4">We need to take stock. Work out why we’re here first.</option>
+				<option nextID="Timangelise5">Let’s try and stick together, we’d do better as a team.</option>
 			</options>
 		</dialogue>
-		<dialogue speaker="Character1" id="Character13">
+		<dialogue speaker="Timangelise" id="Timangelise3">
 			<text>Have you tried to get any further?</text>
 			<options>
-				<option nextID="Character14">We need to think this through, not just run in like maniacs.</option>
-				<option nextID="Character33">(Remain silent)</option>
+				<option nextID="Timangelise4">We need to think this through, not just run in like maniacs.</option>
+				<option nextID="Larry Paulson3">(Remain silent)</option>
 			</options>
 		</dialogue>
-		<dialogue speaker="Character1" id="Character14">
+		<dialogue speaker="Timangelise" id="Timangelise4">
 			<text nextID="Blackout">We don’t have time for that. Which way did you come from?</text>
 		</dialogue>
-		<dialogue speaker="Character1" id="Character15">
+		<dialogue speaker="Timangelise" id="Timangelise5">
 			<text nextID="Blackout">Just try not to slow me down.</text>
 		</dialogue>
-		<dialogue speaker="Character3" id="Character33">
-			<text nextID="Character16">Uh… no, we were just trying to work out where to go when you showed up.</text>
+		<dialogue speaker="Larry Paulson" id="Larry Paulson3">
+			<text nextID="Timangelise6">Uh… no, we were just trying to work out where to go when you showed up.</text>
 		</dialogue>
-		<dialogue speaker="Character1" id="Character16">
+		<dialogue speaker="Timangelise" id="Timangelise6">
 			<text nextID="Blackout">Which ways have you tried?</text>
 		</dialogue>
 		<dialogue speaker="" id="Blackout">
 			<text nextID="END">Blackout. Crashing sounds. Silence.</text>
 		</dialogue>
+		<dialogue id="END"></dialogue>
 	</protagonist>
 
-	<protagonist name="Character3">
-		<dialogue speaker="Character1" id="Character11">
+	<protagonist name="Larry Paulson">
+		<dialogue speaker="Timangelise" id="Timangelise1">
 			<text>Who are you?</text>
 			<options>
-				<option nextID="Character12">Oh wow! We thought it was just us here. Hi!
+				<option nextID="Timangelise2">Oh wow! We thought it was just us here. Hi!
 				</option>
-				<option nextID="Character12">Yay, someone else! The more the merrier!
+				<option nextID="Timangelise2">Yay, someone else! The more the merrier!
 				</option>
-				<option nextID="Character12">Are you here to save us?</option>
+				<option nextID="Timangelise2">Are you here to save us?</option>
 			</options>
 		</dialogue>
-		<dialogue speaker="Character1" id="Character12">
-			<text nextID="Character21">Are you always this annoying?</text>
+		<dialogue speaker="Timangelise" id="Timangelise2">
+			<text nextID="Tojamobin1">Are you always this annoying?</text>
 		</dialogue>
-		<dialogue speaker="Character2" id="Character21">
+		<dialogue speaker="Tojamobin" id="Tojamobin1">
 			<text>Be civil. We need to work together.</text>
 			<options>
-				<option nextID="Character13">That sounds like fun! Where should we start?
+				<option nextID="Timangelise3">That sounds like fun! Where should we start?
 				</option>
-				<option nextID="Character13">Do you think we’ll get out alright?</option>
-				<option nextID="Character13">Let’s not split up, I don’t want to be on my
+				<option nextID="Timangelise3">Do you think we’ll get out alright?</option>
+				<option nextID="Timangelise3">Let’s not split up, I don’t want to be on my
 					own!</option>
 			</options>
 		</dialogue>
-		<dialogue speaker="Character1" id="Character13">
+		<dialogue speaker="Timangelise" id="Timangelise3">
 			<text nextID="Blackout">If you want to be near me you’re going to need to
 				shut up.</text>
 		</dialogue>
 		<dialogue speaker="" id="Blackout">
 			<text nextID="END">Blackout. Crashing sounds. Silence.</text>
 		</dialogue>
+		<dialogue id="END"></dialogue>
 	</protagonist>
 </chapter1>

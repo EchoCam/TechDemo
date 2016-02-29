@@ -130,6 +130,12 @@ public class DemoDialogue {
     public String getCurrentCharacter() {
         return currentCharacter;
     }
+    
+    public boolean isEnd() {
+        Element elem = (Element) currentnode;
+        String id = elem.getAttribute("id");
+        return id.equals("END");
+    }
 
     public void jumpToDialogue(String dialogueId) {
         try {
