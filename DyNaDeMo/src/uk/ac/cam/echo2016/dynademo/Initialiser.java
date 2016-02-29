@@ -458,18 +458,25 @@ public class Initialiser {
 
         // OBJECTS
         // Crate
-        Spatial crate = app.getAssetManager().loadModel("Models/Crate.j3o");
+        Spatial crate1 = app.getAssetManager().loadModel("Models/Crate.j3o");
+        Spatial crate2 = app.getAssetManager().loadModel("Models/Crate.j3o");
         bound = new BoundingBox(new Vector3f(0, 0.75f, 0), 1.5f, 1.5f, 1.5f);
-        crate.setLocalTranslation(0, 0, -30);
+        crate1.setLocalTranslation(0, 0, -30);
+        crate2.setLocalTranslation(0, 5f, 0);
 
         // object physics
-        CrateObject crateObj = new CrateObject("crate", crate, 5f, true, bound);
-        crateObj.getLights().add(lightMap.get("RoomLight"));
-        tRoute.objects.add(crateObj);
+        CrateObject crateObj1 = new CrateObject("crate1", crate1, 5f, true, bound);
+        CrateObject crateObj2 = new CrateObject("crate2", crate2, 5f, true, bound);
+        crateObj1.getLights().add(lightMap.get("RoomLight"));
+        crateObj2.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(crateObj1);
+        tRoute.objects.add(crateObj2);
 
         // object events
-        tInterEvent = new InteractionEvent("crateInteraction", crateObj);
-        tRoute.setInteractable(crate, tInterEvent);
+        tInterEvent = new InteractionEvent("crateInteraction1", crateObj1);
+        tRoute.setInteractable(crate1, tInterEvent);
+        tInterEvent = new InteractionEvent("crateInteraction2", crateObj2);
+        tRoute.setInteractable(crate2, tInterEvent);
 
         // Door
         Spatial door1 = extractDoor(app, 0);
@@ -493,7 +500,7 @@ public class Initialiser {
         pressPlate1.setLocalTranslation(-5f, 0, -5f);
         pressPlate2.setLocalTranslation(-5f, 0, 5f);
 
-        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound) {
+        final PressurePlateObject plateObj1 = new PressurePlateObject("pressurePlate1", pressPlate1, 1f, true, bound, new Vector3f(-5f, 0, -5f), new Vector3f(-5f, -0.8f, -5f)) {
             @Override
             public void onPressed() {
                 doorObj1.open(app);
@@ -506,7 +513,7 @@ public class Initialiser {
         bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f) {
             
         };
-        final PressurePlateObject plateObj2 = new PressurePlateObject("pressurePlate2", pressPlate2, 1f, true, bound) {
+        final PressurePlateObject plateObj2 = new PressurePlateObject("pressurePlate2", pressPlate2, 1f, true, bound, new Vector3f(-5f, 0, 5f), new Vector3f(-5f, -0.8f, 5f)) {
 
             @Override
             public void onPressed() {
@@ -535,7 +542,8 @@ public class Initialiser {
             }
         };
 
-        ((ProximityEvent) tLocEvent).activators.add(crateObj);
+        ((ProximityEvent) tLocEvent).activators.add(crateObj1);
+        ((ProximityEvent) tLocEvent).activators.add(crateObj2);
         tRoute.locEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
         
@@ -546,7 +554,8 @@ public class Initialiser {
             }
         };
 
-        ((ProximityEvent) tLocEvent).activators.add(crateObj);
+        ((ProximityEvent) tLocEvent).activators.add(crateObj1);
+        ((ProximityEvent) tLocEvent).activators.add(crateObj2);
         tRoute.locEvents.add(tLocEvent);
 
         tRoute.startupTextSequence = new String[]{

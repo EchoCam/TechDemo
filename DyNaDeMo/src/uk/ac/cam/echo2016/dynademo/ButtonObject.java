@@ -15,6 +15,7 @@ import com.jme3.scene.Spatial;
 public class ButtonObject extends KinematicDemoObject implements InteractableObject {
 
     public final static int DELAY = 1;
+    private Initialiser.ChoiceThenSyncPointEvent cpe;
     public Vector3f displacement = new Vector3f(0f, 1f, 1f).normalize().mult(0.2f / (float) Math.sqrt(2f));
     private Initialiser.ChoiceThenSyncPointEvent cpe;
 
@@ -24,6 +25,7 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
     }
 
     public void onPress() {
+        cpe.setActionTaken(true);
         //FIXME
 //        route.properties.putBoolean(getObjId(), true);
     }
