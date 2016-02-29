@@ -452,6 +452,8 @@ public class Initialiser {
         ConditionalSyncPointEvent cspe1;
         ConditionalSyncPointEvent cspe2;
         ConditionalSyncPointEvent cspe3;
+        ChoiceThenSyncPointEvent ctspe;
+        
         BoundingBox bound;
         locList.clear();
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, -55));
@@ -584,13 +586,16 @@ public class Initialiser {
         };
 
         // EVENTS
-        spe = new SyncPointEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5));
+        ctspe = new ChoiceThenSyncPointEvent("FateDecider", new BoundingBox(new Vector3f(100,100,100),0,0,0), "Puzzle solved", "Puzzle not solved");
+        
+        spe = new PossibleConditionalSyncPointEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5), "Puzzle again", ctspe, true);
         cspe1 =
                 new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5), "See puzzle first time");
         cspe2 =
-                new ConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again");
+                new PossibleConditionalSyncPointEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again", ctspe, false);
         cspe3 =
                 new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
+        
         tRoute.locEvents.add(spe);
         tRoute.locEvents.add(cspe1);
         tRoute.locEvents.add(cspe2);
@@ -661,20 +666,4 @@ public class Initialiser {
         }
     }
 
-    private static class ConditionalSyncPointEvent extends SyncPointEvent {
-
-        private String correctRoute;
-
-        public ConditionalSyncPointEvent(String id, BoundingBox bound, String theCorrectRoute) {
-            super(id, bound);
-            correctRoute = theCorrectRoute;
-        }
-
-        @Override
-        public void onDemoEvent(MainApplication app) {
-            if (app.getGameScreen().getRoute().equals(correctRoute)) {
-                super.onDemoEvent(app);
-            }
-        }
-    }
-}
+   }
