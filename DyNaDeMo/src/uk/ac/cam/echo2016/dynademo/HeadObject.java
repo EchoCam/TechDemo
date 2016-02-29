@@ -19,7 +19,7 @@ public class HeadObject extends StaticDemoObject implements InteractableObject {
         DialogueScreen dialoguescreen = app.getDialogueScreen();
         //TODO: get dialogue screen, load Char2 Dies.xml and use "You1" as entry point
         dialoguescreen.setDialogue("Char2dies");
-        dialoguescreen.setCharacter("Char2");
+        dialoguescreen.setCharacter("You");
         dialoguescreen.jumpToDialogue("Head1");
         app.getNifty().gotoScreen("dialogue");
     }
