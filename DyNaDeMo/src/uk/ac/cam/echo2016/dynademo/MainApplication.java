@@ -67,7 +67,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public final static boolean DEBUG = false;
     public final static float HALFCHARHEIGHT = 3;
-    public HashMap<String, DemoRoute> routes = new HashMap<>();
+    public HashMap<String, DemoRoute> routes = new HashMap<String, DemoRoute>();
     private Node playerNode;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
@@ -93,7 +93,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private GameScreen gameScreen;
     private DialogueScreen dialogueScreen;
     private NarrativeInstance narrativeInstance;
-    private DemoDialogue dialogue;
 
     /**
      * The main entry point for the code of the game.

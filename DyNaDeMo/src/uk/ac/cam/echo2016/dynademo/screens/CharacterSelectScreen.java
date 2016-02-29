@@ -152,7 +152,11 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         bottomPanel.add(p.build(nifty, screen, bottomPanel));
         
         if(jumpToRoute) {
-            selectRoute(route.getId(), character, location);
+            GameScreen gameScreen = (GameScreen) nifty.getScreen("game").getScreenController();
+            gameScreen.setCharacter("None");
+            gameScreen.setRoute(route.getId());
+            gameScreen.setLocation("Ending");
+        
             DialogueScreen theDialogue = app.getDialogueScreen();
             System.out.println(route.getId());
             theDialogue.setDialogue(route.getId());
