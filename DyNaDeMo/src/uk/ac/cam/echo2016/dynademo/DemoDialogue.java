@@ -138,6 +138,7 @@ public class DemoDialogue {
     }
 
     public void jumpToDialogue(String dialogueId) {
+        System.out.println("Jump to dialogue function");
         try {
             if (currentnode.getNodeType() == Node.ELEMENT_NODE) {
                 XPathFactory charxPathfactory = XPathFactory.newInstance();
@@ -153,6 +154,8 @@ public class DemoDialogue {
                 nextexpr = nextxpath.compile("//dialogue[@id=\"" + dialogueId + "\"]");
                 NodeList nextnodes = (NodeList) nextexpr.evaluate(charnodes.item(0), XPathConstants.NODESET);
                 currentnode = nextnodes.item(0);
+            } else {
+                System.out.println("in else clause");
             }
         } catch (XPathExpressionException e) {
             // TODO Auto-generated catch block
