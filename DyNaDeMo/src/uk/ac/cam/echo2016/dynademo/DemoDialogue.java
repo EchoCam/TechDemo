@@ -23,12 +23,11 @@ public class DemoDialogue {
     private String currentCharacter;
     private Document doc;
 
-    public DemoDialogue(String xmlfilepath) {
+    public DemoDialogue(InputStream inputStream) {
         try {
-            File inputFile = new File(xmlfilepath);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            doc = builder.parse(inputFile);
+            doc = builder.parse(inputStream);
             doc.getDocumentElement().normalize();
             NodeList protaglist = doc.getElementsByTagName("protagonist");
             HashMap<String, Node> tracker = new HashMap<String, Node>();
@@ -60,6 +59,7 @@ public class DemoDialogue {
 
     public void setCharacter(String character) {
         currentCharacter = character;
+        System.out.println(dialoguetracker);
         currentnode = dialoguetracker.get(character);
     }
 
@@ -73,6 +73,12 @@ public class DemoDialogue {
             return false;
         }
         return false;
+    }
+
+    public String getSpeakingCharacter() {
+        Element elem = (Element) currentnode;
+        String name = elem.getAttribute("speaker");
+        return name;
     }
 
     public NodeList getDialogueOptionsNodes() {
@@ -97,6 +103,12 @@ public class DemoDialogue {
         }
         return output;
     }
+    
+    public String getID() {
+        Element elem = (Element) currentnode;
+        String s = elem.getAttribute("id");
+        return s;
+    }
 
     public void selectOption(Node option) {
         Element elem = (Element) option;
@@ -108,16 +120,52 @@ public class DemoDialogue {
         Element elem = (Element) currentnode;
         NodeList nlist = elem.getElementsByTagName("text");
         if (nlist.getLength() > 0) {
-            return nlist.item(0).getTextContent();
+            String text = nlist.item(0).getTextContent();
+            System.out.println(text);
+            return text;
         }
         return null;
+    }
+
+    public String getCurrentCharacter() {
+        return currentCharacter;
+    }
+    
+    public boolean isEnd() {
+        Element elem = (Element) currentnode;
+        String id = elem.getAttribute("id");
+        return id.equals("END");
+    }
+
+    public void jumpToDialogue(String dialogueId) {
+        try {
+            if (currentnode.getNodeType() == Node.ELEMENT_NODE) {
+                XPathFactory charxPathfactory = XPathFactory.newInstance();
+                XPath charxpath = charxPathfactory.newXPath();
+                XPathExpression charexpr;
+
+                charexpr = charxpath.compile("//protagonist[@name=\"" + currentCharacter + "\"]");
+
+                NodeList charnodes = (NodeList) charexpr.evaluate(doc, XPathConstants.NODESET);
+                XPathFactory nextxPathfactory = XPathFactory.newInstance();
+                XPath nextxpath = nextxPathfactory.newXPath();
+                XPathExpression nextexpr;
+                nextexpr = nextxpath.compile("//dialogue[@id=\"" + dialogueId + "\"]");
+                NodeList nextnodes = (NodeList) nextexpr.evaluate(charnodes.item(0), XPathConstants.NODESET);
+                currentnode = nextnodes.item(0);
+            }
+        } catch (XPathExpressionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void moveToNextDialogue() {
         try {
             if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
                 Element elem = (Element) currentnode;
-                String nextid = elem.getAttribute("nextID");
+                Element text = (Element) elem.getElementsByTagName("text").item(0);
+                String nextid = text.getAttribute("nextID");
                 XPathFactory charxPathfactory = XPathFactory.newInstance();
                 XPath charxpath = charxPathfactory.newXPath();
                 XPathExpression charexpr;
@@ -139,7 +187,7 @@ public class DemoDialogue {
 
     public void moveToNextDialogue(String nextID) {
         try {
-            if (!this.hasOptions() && currentnode.getNodeType() == Node.ELEMENT_NODE) {
+            if (currentnode.getNodeType() == Node.ELEMENT_NODE) {
                 XPathFactory charxPathfactory = XPathFactory.newInstance();
                 XPath charxpath = charxPathfactory.newXPath();
                 XPathExpression charexpr;
@@ -148,6 +196,7 @@ public class DemoDialogue {
                 XPathFactory nextxPathfactory = XPathFactory.newInstance();
                 XPath nextxpath = nextxPathfactory.newXPath();
                 XPathExpression nextexpr;
+                System.out.println("going to: " + nextID);
                 nextexpr = nextxpath.compile("//dialogue[@id=\"" + nextID + "\"]");
                 NodeList nextnodes = (NodeList) nextexpr.evaluate(charnodes.item(0), XPathConstants.NODESET);
                 currentnode = nextnodes.item(0);
@@ -158,5 +207,4 @@ public class DemoDialogue {
         }
 
     }
-
 }
