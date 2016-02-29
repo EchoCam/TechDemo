@@ -26,7 +26,7 @@ public abstract class PressurePlateObject extends KinematicDemoObject {
 
     public void activate(MainApplication app) {
 
-        DemoRoute route = app.routes.get("PuzzleRoute");
+        DemoScene route = app.routes.get("PuzzleRoute");
         if (!(route.properties.containsKey(getObjId()))) {
             throw new RuntimeException("Error: Property not found.");
         }
