@@ -53,7 +53,15 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         gameScreen.setCharacter(character);
         gameScreen.setRoute(routeName);
         gameScreen.setLocation(location);
-        nifty.gotoScreen("game");
+        //TODO: Uncomment this
+        //nifty.gotoScreen("dialogue");
+        //TODO: Delete this
+        //_________________________________________________
+        DialogueScreen diag = app.getDialogueScreen();
+        diag.setDialogue("Convo1Dialogue");
+        diag.setCharacter("Timangelise");
+        nifty.gotoScreen("dialogue");
+        //_________________________________________________
     }
 
     // ScreenController methods //
