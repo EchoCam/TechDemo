@@ -188,7 +188,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         loadRoute(routes.get("BedroomRoute"));
 
         // Debug Options//
-        bulletAppState.setDebugEnabled(true);
+//        bulletAppState.setDebugEnabled(true);
 //
 //        Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
 //        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
