@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <protagonist name="None">
-    <dialogue speaker="You" id="You1">
-        <text nextID="END">Char2 lives</text>
+    <dialogue speaker="Head" id="You1">
+        <text nextID="You2">Rojatom lives. Conglaturation!!!</text>
     </dialogue>
-    
+    <dialogue speaker="Head" id="You2">
+        <text nextID="You3">But...</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You3">
+        <text nextID="You4">It looks Timangelise hasn't come out.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You4">
+        <text nextID="You5">Suicide pills, you say? How heroic.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You5">
+        <text nextID="You6">Are you sure there was no other route available?</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You6">
+        <text nextID="You7">Here's a hint: Don't go back to where you met Timangelise, there's a puzzle for you to solve.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You7">
+        <text nextID="END">It is possible for both of you to live. Try again?</text>
+    </dialogue>
     <dialogue id="END"></dialogue>
 </protagonist>

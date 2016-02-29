@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<protagonist name="Char2">
-    <dialogue speaker="You" id="You1">
+<protagonist name="You">
+    <dialogue speaker="Rojatom" id="You1">
         <text nextID="END">There is a plaque under the head, read it?</text>
         <options>
             <option nextID="Plaque1">Yes.</option>

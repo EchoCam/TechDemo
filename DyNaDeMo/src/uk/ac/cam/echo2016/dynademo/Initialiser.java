@@ -400,7 +400,7 @@ public class Initialiser {
         
         tRoute.startupTextSequence = new String[]{
             "Left or Right?",
-            "Let's hope you make the RIGHT choice..."
+            "Let's hope you make the right choice..."
         };
 
         routes.put(tRoute.getId(), tRoute);
