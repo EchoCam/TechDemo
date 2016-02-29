@@ -452,15 +452,29 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     gameScreen.progressThroughText();
                 } else if (draggedSpatial != null) {
                     Spatial spatial = draggedSpatial.getSpatial();
-                    // Drop current Object held
-                    Vector3f location = spatial.getWorldTranslation();
-                    bulletAppState.getPhysicsSpace().add(spatial);
-                    spatial.removeFromParent();
-                    rootNode.attachChild(spatial);
-                    spatial.setLocalTranslation(location);
-                    spatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
-                    spatial.getControl(RigidBodyControl.class).activate();
-                    draggedSpatial = null;
+                    // check object is not behind wall/floor
+                    Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+                    CollisionResults results = new CollisionResults();
+                    rootNode.collideWith(ray, results);
+                    CollisionResult closest = results.getClosestCollision();
+                    
+                    Boolean lineOfSight = false;
+                    if (spatial instanceof Geometry) {
+                        lineOfSight = (closest != null && closest.getGeometry().equals(spatial));
+                    } else { // Currently only nodes are dragged
+                        lineOfSight = (closest != null && closest.getGeometry().hasAncestor((Node) spatial));
+                    }
+                    if (lineOfSight) {
+                        // Drop current Object held
+                        Vector3f location = spatial.getWorldTranslation();
+                        bulletAppState.getPhysicsSpace().add(spatial);
+                        spatial.removeFromParent();
+                        rootNode.attachChild(spatial);
+                        spatial.setLocalTranslation(location);
+                        spatial.getControl(RigidBodyControl.class).setPhysicsLocation(location);
+                        spatial.getControl(RigidBodyControl.class).activate();
+                        draggedSpatial = null;
+                    }
                 } else {
                     // Ray Casting (checking for first interactable object)
                     Ray ray = new Ray(cam.getLocation(), cam.getDirection());
