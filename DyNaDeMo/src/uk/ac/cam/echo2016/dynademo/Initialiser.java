@@ -1,6 +1,7 @@
 package uk.ac.cam.echo2016.dynademo;
 
 import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingSphere;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
 import com.jme3.light.PointLight;
@@ -8,6 +9,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
+import com.jme3.renderer.Camera.FrustumIntersect;
+import static com.jme3.renderer.Camera.FrustumIntersect.Inside;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
@@ -421,23 +425,37 @@ public class Initialiser {
             }
         };
         
-        final ConditionEvent lookAway = new OnceConditionEvent("HeadSpawnLookaway") {
-            @Override
-            public boolean checkCondition(MainApplication app) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
+//        final ConditionEvent lookAway = new OnceConditionEvent("HeadSpawnLookaway") {
+//            @Override
+//            public boolean checkCondition(MainApplication app) {
+//                if ()
+//                
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//            
+//            @Override
+//            public void performAction(MainApplication app) {
+//                tRoute.condEvents.add(lookAt);
+//                app.setFlickering(true);
+//            }
+//        };
+        
+        tLocEvent = new LocationEvent(("HeadSpawn"), new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
+            private final Vector3f centre = new Vector3f(-10, 0, -10);
+            private final float radius = 2f;
             
             @Override
-            public void performAction(MainApplication app) {
-                tRoute.condEvents.add(lookAt);
-                app.setFlickering(true);
+            public boolean checkCondition(MainApplication app) {
+                boolean temp = isLookedAt(app, new BoundingSphere(radius, centre));
+                
+                BoundingSphere playerBound =
+                        new BoundingSphere(MainApplication.HALFCHARHEIGHT, app.getPlayerControl().getPhysicsLocation());
+                return (bound.intersects(playerBound) && temp);
             }
-        };
-        
-        tLocEvent = new LocationEvent(("HeadSpawnStart"), new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
+
             @Override
             public void onDemoEvent(MainApplication app) {
-                tRoute.condEvents.add(lookAway);
+                tRoute.condEvents.add(lookAt);
             }
         };
         tRoute.condEvents.add(tLocEvent);
@@ -671,5 +689,19 @@ public class Initialiser {
         default:
             throw new RuntimeException("Too many door handles");
         }
+    }
+    private static boolean isLookedAt(MainApplication app, BoundingSphere bSphere) {
+        boolean result = false;
+        int checkPlane = bSphere.getCheckPlane();
+        bSphere.setCheckPlane(0);
+        switch (app.getCamera().contains(bSphere)) {
+        case Inside:
+            result = true;
+            break;
+        default:
+        }
+        bSphere.setCheckPlane(checkPlane);
+
+        return result;
     }
 }
