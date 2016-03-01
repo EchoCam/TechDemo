@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.PointLight;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -234,7 +235,7 @@ public class Initialiser {
             }
         };
                 
-        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
+        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f,5f,7.5f),15f,5f,15f)) {
             private final Vector3f centre = new Vector3f(-10, 0, -10);
             private final float radius = 2f;
             
@@ -250,7 +251,7 @@ public class Initialiser {
             @Override
             public void performAction(MainApplication app) {
                 Spatial theUnnamed = app.getAssetManager().loadModel("Models/Head.j3o");
-                theUnnamed.setLocalTranslation(-10f, 5f, -10f);
+                theUnnamed.setLocalTranslation(-10f, 7f, -10f);
                 theUnnamed.rotate(-0, FastMath.PI*3/4, -0);
                 HeadObject theUnnamedObj = new HeadObject("ohGreatOne", theUnnamed, true);
                 theUnnamedObj.getLights().add(lightMap.get("RoomLight"));

@@ -690,7 +690,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 switchLights(false);
             }
         } else {
-            if (random.nextInt(4) == 0) {
+            if (random.nextInt(4) == 0 || lightsOffCount > 5) {
                 switchLights(true);
                 lightsOffCount = 0;
             } else {
