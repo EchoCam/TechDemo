@@ -657,7 +657,7 @@ public class Initialiser {
 
     private static void addEndingRoute (final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(0,HALFCHARHEIGHT + 1.0f ,0));
+        locList.add(new Vector3f(0,HALFCHARHEIGHT + 2.0f ,0));
         dirList.clear();
         dirList.add(new Vector3f(1,0,0));
         
