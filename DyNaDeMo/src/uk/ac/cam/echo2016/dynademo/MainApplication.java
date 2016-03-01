@@ -207,7 +207,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         // Initialize physics engine //
         bulletAppState = new BulletAppState();
-        stateManager.attach(bulletAppState);
+        stateManager.attach(getBulletAppState());
 
         // Add global Lights //
 
@@ -221,7 +221,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         rootNode.attachChild(currentWorld);
         landscape = new RigidBodyControl();//sceneShape, 0f);
         currentWorld.addControl(landscape);
-        bulletAppState.getPhysicsSpace().add(landscape);
+        getBulletAppState().getPhysicsSpace().add(landscape);
         currentScene = new DemoScene("", "", null, null);
 
         // Load character //
@@ -236,25 +236,25 @@ public class MainApplication extends SimpleApplication implements ActionListener
         playerControl.setGravity(50);
         playerControl.setPhysicsLocation(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0)); // 1.0f off the ground
         playerNode.addControl(playerControl);
-        bulletAppState.getPhysicsSpace().add(playerControl);
+        getBulletAppState().getPhysicsSpace().add(playerControl);
 
         // Attach ghost control to the character
         billMurray = new GhostControl(capsule);
         playerNode.addControl(billMurray);
-        bulletAppState.getPhysicsSpace().add(billMurray);
+        getBulletAppState().getPhysicsSpace().add(billMurray);
 
         // Start at Area 0 //
         loadRoute(routes.get("BedroomRoute"), 0);
 
         // Debug Options//
         if (DEBUG) {
-            bulletAppState.setDebugEnabled(true);
-            Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
-            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.getAdditionalRenderState().setWireframe(true);
-            mat.setColor("Color", ColorRGBA.Green);
-            g.setMaterial(mat);
-            playerNode.attachChild(g);
+            getBulletAppState().setDebugEnabled(true);
+//            Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
+//            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//            mat.getAdditionalRenderState().setWireframe(true);
+//            mat.setColor("Color", ColorRGBA.Green);
+//            g.setMaterial(mat);
+//            playerNode.attachChild(g);
         }
     }
 
@@ -262,8 +262,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
-        bulletAppState.getPhysicsSpace().remove(landscape);
-        for (DemoObject object : currentScene.objects) {
+        getBulletAppState().getPhysicsSpace().remove(landscape);
+        for (DemoObject object : getCurrentScene().objects) {
             // TODO clean up lights not being removed from rooms?
             Spatial spatial = object.getSpatial();
             if (object.isIsMainParent()) {
@@ -276,17 +276,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
             }
         }
         // TODO replace with neater method?
-        for (PhysicsRigidBody r : bulletAppState.getPhysicsSpace().getRigidBodyList()) {
-            bulletAppState.getPhysicsSpace().remove(r);
+        for (PhysicsRigidBody r : getBulletAppState().getPhysicsSpace().getRigidBodyList()) {
+            getBulletAppState().getPhysicsSpace().remove(r);
         }
 
-        for (DemoLight l : currentScene.lights) { // FIXME should do a search
+        for (DemoLight l : getCurrentScene().lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
-        for (AbstractShadowRenderer plsr : currentScene.shadowRenderers) {
+        for (AbstractShadowRenderer plsr : getCurrentScene().shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-        for (ConditionEvent oldEvent : currentScene.condEvents) {
+        for (ConditionEvent oldEvent : getCurrentScene().condEvents) {
             getPollEventBus().remove(oldEvent);
         }
 
@@ -310,7 +310,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             if (object instanceof DynamicDemoObject) {
                 rbc.setFriction(1.5f);
             }
-            bulletAppState.getPhysicsSpace().add(rbc);
+            getBulletAppState().getPhysicsSpace().add(rbc);
             for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().addLight(dLight.light);
             }
@@ -331,17 +331,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //            bulletAppState.getPhysicsSpace().add(rbc);
 //            this.currentRoute.objects.add(draggedObject);
 //            this.currentRoute.interactions.put(spatial, previousRoute.interactions.get(draggedObject))
-            for (DemoLight dLight : currentScene.lights) {
+            for (DemoLight dLight : getCurrentScene().lights) {
                 draggedObject.getSpatial().addLight(dLight.light);
             }
             playerNode.attachChild(draggedObject.getSpatial());
         }
         // TODO this the proper way
-        if (currentScene.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
-            for (DemoObject object : currentScene.objects) {
+        if (getCurrentScene().getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
+            for (DemoObject object : getCurrentScene().objects) {
                 if (object.getObjId().equals("crate2")) {
                     RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
-                    bulletAppState.getPhysicsSpace().remove(rbc);
+                    getBulletAppState().getPhysicsSpace().remove(rbc);
                     object.getSpatial().removeControl(rbc);
 
                     rootNode.detachChild(object.getSpatial());
@@ -375,7 +375,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
         landscape = new RigidBodyControl(sceneShape, 0f);
         currentWorld.addControl(landscape);
-        bulletAppState.getPhysicsSpace().add(landscape);
+        getBulletAppState().getPhysicsSpace().add(landscape);
 
         // TODO freeze for a second
         playerControl.setPhysicsLocation(route.getStartLocs().get(entIndex));
@@ -557,7 +557,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     if (isCentreInside) {
                         // Drop current Object held
                         Vector3f location = spatial.getWorldTranslation();
-                        bulletAppState.getPhysicsSpace().add(spatial);
+                        getBulletAppState().getPhysicsSpace().add(spatial);
                         spatial.removeFromParent();
                         rootNode.attachChild(spatial);
                         spatial.setLocalTranslation(location);
@@ -606,24 +606,24 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public void pauseDemo() {
         if (!isPaused) {
             this.isPaused = true;
-            bulletAppState.setEnabled(false);
+            getBulletAppState().setEnabled(false);
             flyCam.setEnabled(false);
         }
     }
 
     public void unPauseDemo() {
         this.isPaused = false;
-        bulletAppState.setEnabled(true);
+        getBulletAppState().setEnabled(true);
         flyCam.setEnabled(true);
     }
 
     public void drag(Spatial spatial) {
-        for (DemoObject object : currentScene.objects) {
+        for (DemoObject object : getCurrentScene().objects) {
             if (object.getSpatial() == spatial)
                 draggedObject = object;
         }
         // Remove it from the physics space
-        bulletAppState.getPhysicsSpace().remove(spatial.getControl(RigidBodyControl.class));
+        getBulletAppState().getPhysicsSpace().remove(spatial.getControl(RigidBodyControl.class));
         // Attach it to the player
         playerNode.attachChild(spatial);
     }
@@ -690,7 +690,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private void setLight(boolean on) {
         System.out.println(on);
         ColorRGBA col = on ? LIGHTCOLOUR : ColorRGBA.Black;
-        for (DemoLight dLight : currentScene.lights) {
+        for (DemoLight dLight : getCurrentScene().lights) {
             dLight.light.setColor(col);
         }
         lightsOn = on;
@@ -701,5 +701,19 @@ public class MainApplication extends SimpleApplication implements ActionListener
      */
     public ArrayDeque<ConditionEvent> getPollEventBus() {
         return pollEventBus;
+    }
+
+    /**
+     * @return the currentScene
+     */
+    public DemoScene getCurrentScene() {
+        return currentScene;
+    }
+
+    /**
+     * @return the bulletAppState
+     */
+    public BulletAppState getBulletAppState() {
+        return bulletAppState;
     }
 }

@@ -2,6 +2,7 @@ package uk.ac.cam.echo2016.dynademo;
 
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
+import com.jme3.bullet.control.RigidBodyControl;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
 import com.jme3.light.PointLight;
@@ -209,9 +210,9 @@ public class Initialiser {
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
-        Spatial heWhoMustNotBeNamed = app.getAssetManager().loadModel("Models/Head.j3o");
-        HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
-        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
+//        Spatial heWhoMustNotBeNamed = app.getAssetManager().loadModel("Models/Head.j3o");
+//        final HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
+//        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
         
         final ConditionEvent lookAt = new OnceConditionEvent("HeadSpawnLookAt") {
             private final Vector3f centre = new Vector3f(-10, 0, -10);
@@ -224,6 +225,16 @@ public class Initialiser {
             
             @Override
             public void performAction(MainApplication app) {
+                Spatial theUnnamed = app.getAssetManager().loadModel("Models/Head.j3o");
+                theUnnamed.setLocalTranslation(-10f, 5f, -10f);
+                theUnnamed.rotate(-0, FastMath.PI*3/4, -0);
+                HeadObject theUnnamedObj = new HeadObject("ohGreatOne", theUnnamed, true);
+                theUnnamedObj.getLights().add(lightMap.get("RoomLight"));
+                app.getCurrentScene().objects.add(theUnnamedObj);
+                app.getRootNode().attachChild(theUnnamed);
+//                RigidBodyControl rbc = new RigidBodyControl(0);
+//                app.getBulletAppState().getPhysicsSpace().add(rbc);
+                
                 app.setFlickering(true);
                 // initiate move sequence for head
                 // start event polling for contact
@@ -252,10 +263,10 @@ public class Initialiser {
         tRoute.condEvents.add(tLocEvent);
         
         // EVENTS
-        tInterEvent = new InteractionEvent("headInteraction", ohGreatOne);
-        tRoute.setInteractable(heWhoMustNotBeNamed, tInterEvent);
+//        tInterEvent = new InteractionEvent("headInteraction", ohGreatOne);
+//        tRoute.setInteractable(heWhoMustNotBeNamed, tInterEvent);
 
-        tRoute.objects.add(ohGreatOne);
+//        tRoute.objects.add(ohGreatOne);
         
 //        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(15,1,15), 5,14,5));
 //        tRoute.condEvents.add(tSyncPointEvent);
