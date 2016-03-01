@@ -23,6 +23,7 @@ public class Initialiser {
     private static DemoScene tRoute;
     private static LocationEvent tLocEvent;
     private static InteractionEvent tInterEvent;
+    private static SyncPointEvent tSyncPointEvent;
     private static String[] tLightNames;
     private static Vector3f[] tLightCoords;
     private static String[][] tLightAffected;
@@ -90,8 +91,7 @@ public class Initialiser {
     }
 
     private static void addButtonRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
-        InteractionEvent eInter;
-        final SyncAfterChoiceEvent cpe;
+        final SyncAfterChoiceEvent choiceHandler;
         locList.clear();
         locList.add(new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
@@ -115,45 +115,22 @@ public class Initialiser {
 
         // OBJECTS
 
-//        Spatial lever = app.getAssetManager().loadModel("Models/Lever.j3o");
-//        lever.setLocalTranslation(0f, 5f, 10f);
-//        lever.setLocalRotation(new Quaternion().fromAngles(-FastMath.PI/2, 0f,0f));
-//        // WARNING: Rigid body applied after this transform - axis offset
-//        
-//        // hacky but it works :)
-//        Spatial leverRod = ((Node) lever).descendantMatches("Lever").get(0);
-//        
-//        // object physics
-//        StaticDemoObject leverBaseObj = new StaticDemoObject("LeverBase", lever, true);
-//        leverBaseObj.getLights().add(light);
-//        route.objects.add(leverBaseObj);
-//        
-//        KinematicDemoObject leverObj = new KinematicDemoObject("leverRod", leverRod, 1f, false);
-//        leverObj.getLights().add(light);
-//        route.objects.add(leverObj);
-//        
-//        // object events
-//        route.properties.putInt(leverObj.getObjId(), 0);
-//        eInter = new LeverEvent("lever", leverObj);
-//        route.setInteractable(lever, eInter);
-
-
         Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
         button.setLocalTranslation(0f, 4f, -7f);
         button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI / 4, 0f, 0f));
         button.move(new Vector3f(0f, 1f, 1f).normalize().mult(0.2f / (float) Math.sqrt(2f)));
 
         // EVENTS
-        cpe =
+        choiceHandler =
                 new SyncAfterChoiceEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
-        tRoute.locEvents.add(cpe);
+        tRoute.locEvents.add(choiceHandler);
         
         // object physics
-        ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null, cpe);
+        ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null, choiceHandler);
         buttonObj.getLights().add(lightMap.get("RoomLight"));
 
-        eInter = new InteractionEvent("buttonInteraction", buttonObj);
-        tRoute.setInteractable(button, eInter);
+        tInterEvent = new InteractionEvent("buttonInteraction", buttonObj);
+        tRoute.setInteractable(button, tInterEvent);
 
         tRoute.objects.add(buttonObj);
         
@@ -166,9 +143,6 @@ public class Initialiser {
     }
 
     private static void addChar1DeathRoute( final MainApplication app, final HashMap<String, DemoScene> routes) {
-        SyncPointEvent spe;
-        InteractionEvent eInter;
-        
         locList.clear();
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 5));
         dirList.clear();
@@ -190,13 +164,13 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // EVENTS
-        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(40,1,40),0,14,0));
+        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(40,1,40),0,14,0));
         
         Spatial pills = app.getAssetManager().loadModel("Models/Pills.j3o");
-        PillsObject pillsObj = new PillsObject("head", pills, true, spe);
+        PillsObject pillsObj = new PillsObject("head", pills, true, tSyncPointEvent);
         pillsObj.getLights().add(lightMap.get("MeetingRoomLight"));
-        eInter = new InteractionEvent("pillsInteraction", pillsObj);
-        tRoute.setInteractable(pills, eInter);
+        tInterEvent = new InteractionEvent("pillsInteraction", pillsObj);
+        tRoute.setInteractable(pills, tInterEvent);
 
         tRoute.objects.add(pillsObj);        
         
@@ -211,48 +185,44 @@ public class Initialiser {
     }
     
     private static void addChar2DeathRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
-        SyncPointEvent spe;
-        InteractionEvent eInter;
-        
         locList.clear();
-        locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(-15, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
         dirList.add(new Vector3f(1, 0, 0));
         
         tRoute = new DemoScene("Char2DeathRoute", "Scenes/Char2DeathRoute.j3o", locList, dirList);
 
         // LIGHTS
-        tLightNames = new String[]{"RoomLight", "CorridorLight"};
+        tLightNames = new String[]{"RoomLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0), new Vector3f(-25, 8, 0)
+            new Vector3f(0, 8, 0)
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor"}
+            {"Room", "BlankDoor1", "BlankDoor2", "Monitor1", "Screen1", "Monitor2", "Screen2"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
-        Spatial head = app.getAssetManager().loadModel("Models/Head.j3o");
-        HeadObject headObj = new HeadObject("head", head, true);
-        headObj.getLights().add(lightMap.get("RoomLight"));
+        Spatial heWhoMustNotBeNamed = app.getAssetManager().loadModel("Models/Head.j3o");
+        HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
+        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
        
         
         // EVENTS
-        eInter = new InteractionEvent("headInteraction", headObj);
-        tRoute.setInteractable(head, eInter);
+        tInterEvent = new InteractionEvent("headInteraction", ohGreatOne);
+        tRoute.setInteractable(heWhoMustNotBeNamed, tInterEvent);
 
-        tRoute.objects.add(headObj);
+        tRoute.objects.add(ohGreatOne);
         
-        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(10,1,0), 5,14,5));
-        tRoute.locEvents.add(spe);
+        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(15,1,15), 5,14,5));
+        tRoute.locEvents.add(tSyncPointEvent);
         
         routes.put(tRoute.getId(), tRoute);
     }
 
     private static void addDoorLeftRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
-        SyncPointEvent spe;
         locList.clear();
         locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
@@ -274,8 +244,8 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        spe = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5));
-        tRoute.locEvents.add(spe);
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5));
+        tRoute.locEvents.add(tSyncPointEvent);
         
         tRoute.startupTextSequence = new String[]{
             "You have found me.",
@@ -286,7 +256,6 @@ public class Initialiser {
     }
 
     private static void addDoorRightRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
-        SyncPointEvent spe;
         locList.clear();
         locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
@@ -308,14 +277,13 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        spe = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5));
-        tRoute.locEvents.add(spe);
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5));
+        tRoute.locEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
     }
 
     private static void addEscapeRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
-        SyncPointEvent spe;
         locList.clear();
         locList.add(new Vector3f(25, HALFCHARHEIGHT + 1.0f, 0));
         locList.add(new Vector3f(-25, HALFCHARHEIGHT + 1.0f, 0));
@@ -340,14 +308,14 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        spe = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0, 1, 15), 5, 14, 5));
-        tRoute.locEvents.add(spe);
+        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0, 1, 15), 5, 14, 5));
+        tRoute.locEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
     }
 
     private static void addLeverRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
-        final SyncAfterChoiceEvent cpe;
+        final SyncAfterChoiceEvent choiceHandler;
         locList.clear();
         locList.add(new Vector3f(-35, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
@@ -382,15 +350,15 @@ public class Initialiser {
         leverBaseObj.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(leverBaseObj);
 
-        cpe =
+        choiceHandler =
                 new SyncAfterChoiceEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose left", "Choose right");
 
         // TODO bounding box actually required? see button
-        LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, cpe);
+        LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, choiceHandler);
         leverObj.getLights().add(lightMap.get("RoomLight"));
 
         // EVENTS
-        tRoute.locEvents.add(cpe);
+        tRoute.locEvents.add(choiceHandler);
 
         // object events
         tRoute.properties.putInt(leverObj.getObjId(), 0);
@@ -437,6 +405,7 @@ public class Initialiser {
         tRoute.setInteractable(door1, tInterEvent);
                 
         // EVENTS
+
         tLocEvent = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
         tRoute.locEvents.add(tLocEvent);
         
@@ -450,7 +419,6 @@ public class Initialiser {
     }
 
     private static void addPuzzleRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
-        SyncPointEvent spe;
         ConditionalSyncPointEvent cspe1;
         ConditionalSyncPointEvent cspe2;
         ConditionalSyncPointEvent cspe3;
@@ -590,7 +558,7 @@ public class Initialiser {
         // EVENTS
         ctspe = new SyncAfterChoiceEvent("FateDecider", new BoundingBox(new Vector3f(100,100,100),0,0,0), "Puzzle solved", "Puzzle not solved");
         
-        spe = new ExitChoiceEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5), "Puzzle again", ctspe, true);
+        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5), "Puzzle again", ctspe, true);
         cspe1 =
                 new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5), "See puzzle first time");
         cspe2 =
@@ -598,7 +566,7 @@ public class Initialiser {
         cspe3 =
                 new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
         
-        tRoute.locEvents.add(spe);
+        tRoute.locEvents.add(tSyncPointEvent);
         tRoute.locEvents.add(cspe1);
         tRoute.locEvents.add(cspe2);
         tRoute.locEvents.add(cspe3);
