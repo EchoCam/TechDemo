@@ -14,6 +14,10 @@ import com.jme3.shadow.PointLightShadowRenderer;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import uk.ac.cam.echo2016.dynademo.screens.DialogueScreen;
+import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 
 /**
  * @author tr393
@@ -54,33 +58,59 @@ public class Initialiser {
     private static void addBedroomRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0));
-        locList.add(new Vector3f(-65, HALFCHARHEIGHT + 1.0f,-15));
         
         dirList.clear();
         dirList.add(new Vector3f(1,0,0));
-        dirList.add(new Vector3f(-1,0,0));
         tRoute = new DemoScene("BedroomRoute", "Scenes/BedroomRoute.j3o", locList, dirList);
 
         // LIGHTS
         tLightNames = new String[]{
             "RoomLight1", "RoomLight2", "RoomLight3", "RoomLight4",
             "RoomLight5", "RoomLight6", "CorridorLight1", "CorridorLight2",
-            "MeetingRoomLight"};
+            "MeetingRoomLight"
+        };
 
         tLightCoords = new Vector3f[]{
             new Vector3f(0f, 6f, 0f), new Vector3f(25f, 6f, 0f), new Vector3f(25f, 6f, -30f),
             new Vector3f(0f, 6f, -30f), new Vector3f(-25f, 6f, -30f), new Vector3f(-25f, 6f, 0f),
-            new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f), new Vector3f(-70,8,-15)};
-
+            new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f), new Vector3f(-70,6,-15)
+        };
+        
         tLightAffected = new String[][]{
-            {"Room1"}, {"Room2"}, {"Room3"}, {"Room4"},
-            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor", "MeetingRoom"},{"MeetingRoom","Corridor"}};
+            {"BedRoom1"}, {"BedRoom2"}, {"BedRoom3"}, {"BedRoom4"},
+            {"BedRoom5"}, {"BedRoom6"}, {"BedRoomMRoomC"}, {"BedRoomMRoomC"}, {"MRoom", "MRoomTable"}
+        };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5));
+        final DialogueEvent showCharacterScreen = new DialogueEvent("ShowFirstChars") {
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                try {
+                    app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
+                    app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                } catch (GraphElementNotFoundException ex) {
+                    Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                app.getNifty().gotoScreen("characterSelect");
+            }
+        };
+        
+        tLocEvent = new LocationEvent("StartConversation", new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5)) {
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                DialogueScreen theDialogue = app.getDialogueScreen();
+                theDialogue.setDialogue("MeetingRoom1");
+                theDialogue.setCharacter("Timangelise");
+                theDialogue.setEventOnClose(showCharacterScreen);
+                app.getNifty().gotoScreen("dialogue");
+            }
+        };
+        
         tRoute.condEvents.add(tLocEvent);
+        /*tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5));
+        tRoute.condEvents.add(tLocEvent);*/
 
         tRoute.startupTextSequence = new String[]{
             "Press 'e' on to scroll through this text...",

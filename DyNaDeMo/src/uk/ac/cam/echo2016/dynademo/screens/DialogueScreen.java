@@ -10,26 +10,32 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.builder.TextBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import uk.ac.cam.echo2016.dynademo.DialogueEvent;
 
 public class DialogueScreen extends AbstractAppState implements ScreenController {
 
     private Nifty nifty;
-    private Screen screen;
     private MainApplication app;
+    private Screen screen;
     private DemoDialogue dialogue;
+    private DialogueEvent eventOnClose;
 
     public DialogueScreen() {
         super();
         
     }
+    
+    public void setEventOnClose(DialogueEvent theEvent) {
+        eventOnClose = theEvent;
+    }
 
     public void setDialogue(String dialogue_location) {
         dialogue = new DemoDialogue(this.getClass().getResourceAsStream("dialogues/" + dialogue_location + ".xml"));
+        eventOnClose = null;
     }
     
     public void jumpToDialogue(String dialogId) {
@@ -58,7 +64,11 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
 
     public void advanceText() {
         if (this.isEnd()) {
-            nifty.gotoScreen("game");
+            if (eventOnClose != null) {
+                eventOnClose.onDemoEvent(app);
+            } else {
+                nifty.gotoScreen("game");
+            }
         }
         String text = dialogue.getDialogueText();
         String chara = dialogue.getSpeakingCharacter();

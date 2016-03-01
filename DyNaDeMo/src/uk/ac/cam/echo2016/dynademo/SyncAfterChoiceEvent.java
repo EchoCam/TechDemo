@@ -18,7 +18,7 @@ import uk.ac.cam.echo2016.multinarrative.Route;
      * 
      * 
      */
-public class SyncAfterChoiceEvent extends ExitEvent {
+public class SyncAfterChoiceEvent extends LocationEvent {
 
         private boolean actionTaken = false;
         private String routeIfTrue;
