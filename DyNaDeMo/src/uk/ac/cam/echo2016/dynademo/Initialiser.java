@@ -1,11 +1,16 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.PointLight;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -243,9 +248,15 @@ public class Initialiser {
 //        final HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
 //        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
         
-        final ConditionEvent lookAt = new ConditionEvent("HeadSpawnLookAt", true) {
+        class HeadLookAtEvent extends ConditionEvent {
             private final Vector3f centre = new Vector3f(-10, 0, -10);
             private final float radius = 2f;
+            private HeadObject head;
+            public HeadLookAtEvent(String id, boolean onceOnly , HeadObject head) {
+                super(id, onceOnly);
+                this.head = head;
+                
+            }
             
             @Override
             public boolean checkCondition(MainApplication app) {
@@ -258,11 +269,11 @@ public class Initialiser {
                 app.setFlickering(true);
                 // initiate move sequence for head
                 // start event polling for contact
-//                app.getPollEventBus().add();
+                app.addTask(new HeadMoveTask(head.getObjId(),100f, head, app));
             }
         };
-        
-        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
+                
+        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f,5f,7.5f),15f,5f,15f)) {
             private final Vector3f centre = new Vector3f(-10, 0, -10);
             private final float radius = 2f;
             
@@ -278,7 +289,7 @@ public class Initialiser {
             @Override
             public void performAction(MainApplication app) {
                 Spatial theUnnamed = app.getAssetManager().loadModel("Models/Head.j3o");
-                theUnnamed.setLocalTranslation(-10f, 5f, -10f);
+                theUnnamed.setLocalTranslation(-10f, 7f, -10f);
                 theUnnamed.rotate(-0, FastMath.PI*3/4, -0);
                 HeadObject theUnnamedObj = new HeadObject("ohGreatOne", theUnnamed, true);
                 theUnnamedObj.getLights().add(lightMap.get("RoomLight"));
@@ -286,8 +297,7 @@ public class Initialiser {
                 app.getRootNode().attachChild(theUnnamed);
 //                RigidBodyControl rbc = new RigidBodyControl(0);
 //                app.getBulletAppState().getPhysicsSpace().add(rbc);
-                
-                app.getPollEventBus().add(lookAt);
+                app.getPollEventBus().add(new HeadLookAtEvent("HeadSpawnLookAt", true, theUnnamedObj));
             }
         };
         tRoute.condEvents.add(tLocEvent);

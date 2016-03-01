@@ -8,10 +8,10 @@ import com.jme3.scene.Spatial;
  *
  * @author tr393
  */
-public class HeadObject extends StaticDemoObject implements InteractableObject {
+public class HeadObject extends KinematicDemoObject implements InteractableObject {
     
     public HeadObject(String objId, Spatial spatial, boolean isMainParent) {
-        super(objId, spatial, isMainParent);
+        super(objId, spatial, 1000f, isMainParent, null);
     }
 
     @Override
