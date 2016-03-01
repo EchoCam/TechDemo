@@ -623,9 +623,9 @@ public class Initialiser {
         // EVENTS
         ctspe = new SyncAfterChoiceEvent("FateDecider", new BoundingBox(new Vector3f(100,100,100),0,0,0), "Puzzle solved", "Puzzle not solved");
         
-        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5), "Puzzle again", ctspe, true);
+        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(80, 1, -47.5f), 5, 14, 5), "Puzzle again", ctspe, true);
         cspe1 =
-                new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5), "See puzzle first time");
+                new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0, 1, 70), 5, 14, 5), "See puzzle first time");
         cspe2 =
                 new ExitChoiceEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again", ctspe, false);
         cspe3 =
