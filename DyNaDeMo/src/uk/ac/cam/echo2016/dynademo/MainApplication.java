@@ -256,6 +256,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void loadRoute(DemoScene route, int entIndex) {
+        currentScene.onUnLoad();
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
@@ -373,7 +374,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
         landscape = new RigidBodyControl(sceneShape, 0f);
         currentWorld.addControl(landscape);
         bulletAppState.getPhysicsSpace().add(landscape);
-
+        
+        currentScene.onLoad();
+        
         // TODO freeze for a second
         playerControl.setPhysicsLocation(route.getStartLocs().get(entIndex));
         cam.lookAtDirection(route.getStartDirs().get(entIndex), Vector3f.UNIT_Y);
