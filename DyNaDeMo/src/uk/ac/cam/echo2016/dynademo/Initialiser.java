@@ -411,7 +411,7 @@ public class Initialiser {
         tLightNames = new String[]{"RoomLight", "CorridorLight1", "CorridorLight2"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0), new Vector3f(40, 8, -5), new Vector3f(5, 8, -35)
+            new Vector3f(0, 8, 0), new Vector3f(40, 8, -5), new Vector3f(5, 8, -35), 
         };
 
         tLightAffected = new String[][]{
