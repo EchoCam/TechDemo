@@ -123,22 +123,25 @@ public class Initialiser {
     private static void addButtonRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         final SyncAfterChoiceEvent choiceHandler;
         locList.clear();
-        locList.add(new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(35, HALFCHARHEIGHT + 1.0f, 35));
         dirList.clear();
-        dirList.add(new Vector3f(1, 0, 0));
+        dirList.add(new Vector3f(0, 0, -1));
                 
 
         tRoute = new DemoScene("ButtonRoute", "Scenes/ButtonRoute.j3o", locList, dirList);
 
         // LIGHTS
-        tLightNames = new String[]{"RoomLight", "CorridorLight1", "CorridorLight2"};
+        tLightNames = new String[]{"ButtonRoomLight", "EntryCorridorLight", "ExitCorridorLight",
+                                    "PuzzleRoomLight"
+        };
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0), new Vector3f(-35, 8, 0), new Vector3f(35, 8, 0)
+            new Vector3f(0, 18, 0), new Vector3f(35, 8, 20), new Vector3f(-50, 8, 0), new Vector3f(0,18,-20)
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor1"}, {"Corridor2"}
+            {"ButtonRoom"}, {"ObserveButtonDoorsC"}, {"ButtonDoorsCorridor"}, 
+            {"PuzzleRoom", "PuzzleLeverC", "MRoomPuzzleRoomC", "PuzzleTallC1"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
@@ -146,18 +149,18 @@ public class Initialiser {
         // OBJECTS
 
         Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
-        button.setLocalTranslation(0f, 4f, -7f);
+        button.setLocalTranslation(0f, 14f, -7f);
         button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI / 4, 0f, 0f));
         button.move(new Vector3f(0f, 1f, 1f).normalize().mult(0.2f / (float) Math.sqrt(2f)));
 
         // EVENTS
         choiceHandler =
-                new SyncAfterChoiceEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
+                new SyncAfterChoiceEvent("Third Select", new BoundingBox(new Vector3f(-50, 1, 0), 5, 14, 5), "Button pressed", "Button not pressed");
         tRoute.condEvents.add(choiceHandler);
         
         // object physics
         ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null, choiceHandler);
-        buttonObj.getLights().add(lightMap.get("RoomLight"));
+        buttonObj.getLights().add(lightMap.get("ButtonRoomLight"));
 
         tInterEvent = new InteractionEvent("buttonInteraction", buttonObj);
         tRoute.setInteractable(button, tInterEvent);
@@ -174,7 +177,7 @@ public class Initialiser {
 
     private static void addChar1DeathRoute( final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 5));
+        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 10));
         dirList.clear();
         dirList.add(new Vector3f(0, 0, -1));
         
@@ -188,16 +191,14 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"MeetingRoom"}
+            {"MRoom"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(40,1,40),0,14,0));
-        
         Spatial pills = app.getAssetManager().loadModel("Models/Pills.j3o");
-        PillsObject pillsObj = new PillsObject("head", pills, true, tSyncPointEvent);
+        PillsObject pillsObj = new PillsObject("head", pills, true);
         pillsObj.getLights().add(lightMap.get("MeetingRoomLight"));
         tInterEvent = new InteractionEvent("pillsInteraction", pillsObj);
         tRoute.setInteractable(pills, tInterEvent);
@@ -216,21 +217,21 @@ public class Initialiser {
     
     private static void addChar2DeathRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(-15, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(5, HALFCHARHEIGHT + 1.0f, -20));
         dirList.clear();
-        dirList.add(new Vector3f(1, 0, 0));
+        dirList.add(new Vector3f(0, 0, 1));
         
         tRoute = new DemoScene("Char2DeathRoute", "Scenes/Char2DeathRoute.j3o", locList, dirList);
 
         // LIGHTS
-        tLightNames = new String[]{"RoomLight"};
+        tLightNames = new String[]{"RoomLight", "CorridorLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0)
+            new Vector3f(0, 8, 0), new Vector3f(5,8,-20)
         };
 
         tLightAffected = new String[][]{
-            {"Room", "BlankDoor1", "BlankDoor2", "Monitor1", "Screen1", "Monitor2", "Screen2"}
+            {"ObserveRoom", "ObserveMonitor1", "ObserveMonitor2"}, {"ObserveButtonDoorsC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);

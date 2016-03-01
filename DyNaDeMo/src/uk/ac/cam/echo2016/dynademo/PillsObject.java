@@ -14,16 +14,13 @@ import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
  * @author Rjmcf
  */
 public class PillsObject extends StaticDemoObject implements InteractableObject {
-    SyncPointEvent spe;
     
-    public PillsObject(String objId, Spatial spatial, boolean isMainParent, SyncPointEvent spe) {
+    public PillsObject(String objId, Spatial spatial, boolean isMainParent) {
         super(objId, spatial, isMainParent);
-        this.spe = spe;
     }
 
     @Override
     public void interact(MainApplication app) {
-        spe.onDemoEvent(app);
+        app.execSyncPoint();
     }
-    
 }

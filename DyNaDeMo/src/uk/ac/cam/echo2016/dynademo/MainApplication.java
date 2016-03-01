@@ -53,6 +53,7 @@ import com.jme3.shadow.AbstractShadowRenderer;
 import com.jme3.system.AppSettings;
 
 import de.lessvoid.nifty.Nifty;
+import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 
 /**
  * The God class of the game.
@@ -195,7 +196,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         AudioNode music = new AudioNode(assetManager, "Sound/eery.wav", false);
         music.setLooping(true);
         music.setPositional(false);        
-        audioRenderer.playSource(music);
+        //audioRenderer.playSource(music);
 
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -661,7 +662,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void chooseLocation(String routeName) {
-        DemoScene route = routes.get(routeName);
+        DemoScene route = routes.get("Char2DeathRoute");//routeName);
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }
@@ -669,6 +670,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
         loadRoute(route, entIndex);
         gameScreen.flushDialogueTextSequence();
         gameScreen.setDialogueTextSequence(route.startupTextSequence);
+    }
+    
+    public void execSyncPoint() {
+        try {
+            //Ending the route that was started to show the correct character select screen to the player
+            narrativeInstance.startRoute(gameScreen.getRoute());
+            narrativeInstance.endRoute(gameScreen.getRoute());
+        } catch (GraphElementNotFoundException ex) {
+            Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        nifty.gotoScreen("characterSelect");
     }
     
     public void setFlickering(boolean x) {
