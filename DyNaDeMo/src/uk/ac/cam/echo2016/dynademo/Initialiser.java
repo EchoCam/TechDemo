@@ -204,7 +204,7 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"Room", "BlankDoor1", "BlankDoor2", "Monitor1", "Screen1", "Monitor2", "Screen2"}
+            {"Room", "Monitor1", "Monitor2"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
@@ -213,6 +213,45 @@ public class Initialiser {
         HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
         ohGreatOne.getLights().add(lightMap.get("RoomLight"));
        
+        
+        
+        final ConditionEvent lookAt = new OnceConditionEvent("HeadSpawnLookAt") {
+            private final Vector3f centre = new Vector3f(-10, 0, -10);
+            private final float radius = 2f;
+            
+            @Override
+            public boolean checkCondition(MainApplication app) {
+                return isLookedAt(app, new BoundingSphere(radius, centre));
+            }
+            
+            @Override
+            public void performAction(MainApplication app) {
+                app.setFlickering(true);
+                // initiate move sequence for head
+                // start event polling for contact
+//                tRoute.condEvents.add()
+            }
+        };
+        
+        tLocEvent = new LocationEvent(("HeadSpawn"), new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
+            private final Vector3f centre = new Vector3f(-10, 0, -10);
+            private final float radius = 2f;
+            
+            @Override
+            public boolean checkCondition(MainApplication app) {
+                boolean temp = isLookedAt(app, new BoundingSphere(radius, centre));
+                
+                BoundingSphere playerBound =
+                        new BoundingSphere(MainApplication.HALFCHARHEIGHT, app.getPlayerControl().getPhysicsLocation());
+                return (bound.intersects(playerBound) && temp);
+            }
+
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                tRoute.condEvents.add(lookAt);
+            }
+        };
+        tRoute.condEvents.add(tLocEvent);
         
         // EVENTS
         tInterEvent = new InteractionEvent("headInteraction", ohGreatOne);
@@ -409,56 +448,6 @@ public class Initialiser {
         tRoute.setInteractable(door1, tInterEvent);
                 
         // EVENTS
-        
-        final ConditionEvent lookAt = new OnceConditionEvent("HeadSpawnLookAt") {
-            @Override
-            public boolean checkCondition(MainApplication app) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-            
-            @Override
-            public void performAction(MainApplication app) {
-                app.setFlickering(true);
-                // initiate move sequence for head
-                // start event polling for contact
-//                tRoute.condEvents.add()
-            }
-        };
-        
-//        final ConditionEvent lookAway = new OnceConditionEvent("HeadSpawnLookaway") {
-//            @Override
-//            public boolean checkCondition(MainApplication app) {
-//                if ()
-//                
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//            
-//            @Override
-//            public void performAction(MainApplication app) {
-//                tRoute.condEvents.add(lookAt);
-//                app.setFlickering(true);
-//            }
-//        };
-        
-        tLocEvent = new LocationEvent(("HeadSpawn"), new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
-            private final Vector3f centre = new Vector3f(-10, 0, -10);
-            private final float radius = 2f;
-            
-            @Override
-            public boolean checkCondition(MainApplication app) {
-                boolean temp = isLookedAt(app, new BoundingSphere(radius, centre));
-                
-                BoundingSphere playerBound =
-                        new BoundingSphere(MainApplication.HALFCHARHEIGHT, app.getPlayerControl().getPhysicsLocation());
-                return (bound.intersects(playerBound) && temp);
-            }
-
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                tRoute.condEvents.add(lookAt);
-            }
-        };
-        tRoute.condEvents.add(tLocEvent);
         
         
         tLocEvent = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
