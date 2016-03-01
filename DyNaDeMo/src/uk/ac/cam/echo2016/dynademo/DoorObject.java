@@ -12,17 +12,15 @@ public class DoorObject extends KinematicDemoObject implements InteractableObjec
     public final static float SPEED = 1f;
     private boolean open = false;
     private float openAngle;
-    private boolean isActive;
 
-    public DoorObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, float openAngle, boolean isActive) {
+    public DoorObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, float openAngle) {
         super(objId, spatial, mass, isMainParent, bound);
         this.openAngle = -openAngle;
-        this.isActive = isActive;
     }
 
     @Override
     public void interact(MainApplication app) {
-        if (isActive) {
+        if (!open) {
             System.out.println(getTasks());
             if (getTasks().isEmpty()) {
                 if (open) {
@@ -31,7 +29,6 @@ public class DoorObject extends KinematicDemoObject implements InteractableObjec
                     queueRotation(app, 1f/SPEED, Vector3f.UNIT_Y, -openAngle);
                 }
                 open = !open;
-                isActive = false;
             }
         }
     }
