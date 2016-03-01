@@ -489,7 +489,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     task.onComplete();
                     queue.pop();
                     if (queue.isEmpty()) {
-                        System.out.println("removed");
                         taskEventBus.remove(task.getTaskQueueId());
                     }
                 }
@@ -506,6 +505,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
             taskQueue.add(task);
             taskEventBus.put(task.getTaskQueueId(), taskQueue);
         }
+    }   
+    public void addTaskQueue(String taskQueueId, ArrayDeque<DemoTask> taskQueue) {
+        taskEventBus.put(taskQueueId, taskQueue);
     }
 
     @Override

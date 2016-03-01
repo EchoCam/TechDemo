@@ -428,8 +428,8 @@ public class Initialiser {
         
         // OBJECTS
         Spatial door1 = extractDoor(app, 1);
-        door1.setLocalTranslation(0, 0, 0);
-        DoorObject doorObj1 = new DoorObject("doorObj1", door1, 1f, true, null, Vector3f.ZERO, Vector3f.ZERO);
+        door1.setLocalTranslation(-15f, 0, -7.5f);
+        DoorObject doorObj1 = new DoorObject("doorObj1", door1, 1f, true, null, FastMath.PI*2/3);
         doorObj1.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(doorObj1);
         
