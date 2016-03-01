@@ -347,7 +347,6 @@ public class Initialiser {
     }
 
     private static void addLeverRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
-        InteractionEvent eInter;
         final SyncAfterChoiceEvent cpe;
         locList.clear();
         locList.add(new Vector3f(-35, HALFCHARHEIGHT + 1.0f, 0));
@@ -395,8 +394,8 @@ public class Initialiser {
 
         // object events
         tRoute.properties.putInt(leverObj.getObjId(), 0);
-        eInter = new InteractionEvent("leverInteraction", leverObj);
-        tRoute.setInteractable(leverRoot, eInter);
+        tInterEvent = new InteractionEvent("leverInteraction", leverObj);
+        tRoute.setInteractable(leverRoot, tInterEvent);
         
         tRoute.startupTextSequence = new String[]{
             "Left or Right?",
@@ -407,7 +406,6 @@ public class Initialiser {
     }
     
     private static void addObservationRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
-        LocationEvent eLoc;
         locList.clear();
         locList.add(new Vector3f(-5, HALFCHARHEIGHT + 1.0f, -30));
         dirList.clear();
@@ -429,12 +427,18 @@ public class Initialiser {
         addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // OBJECTS
-        Spatial door = extractDoor(app, 1);
+        Spatial door1 = extractDoor(app, 1);
+        door1.setLocalTranslation(0, 0, 0);
+        DoorObject doorObj1 = new DoorObject("doorObj1", door1, 1f, true, null, Vector3f.ZERO, Vector3f.ZERO);
+        doorObj1.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(doorObj1);
         
-        
+        tInterEvent = new InteractionEvent("doorInteraction", doorObj1);
+        tRoute.setInteractable(door1, tInterEvent);
+                
         // EVENTS
-        eLoc = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
-        tRoute.locEvents.add(eLoc);
+        tLocEvent = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
+        tRoute.locEvents.add(tLocEvent);
         
         tRoute.startupTextSequence = new String[]{
             "Seem familiar?",

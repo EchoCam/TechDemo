@@ -489,6 +489,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     task.onComplete();
                     queue.pop();
                     if (queue.isEmpty()) {
+                        System.out.println("removed");
                         taskEventBus.remove(task.getTaskQueueId());
                     }
                 }

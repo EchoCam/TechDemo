@@ -1,15 +1,17 @@
 package uk.ac.cam.echo2016.dynademo;
 
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 /**
  * @author tr393
  */
-public class DoorObject extends KinematicDemoObject {
+public class DoorObject extends KinematicDemoObject implements InteractableObject{
     public final static float SPEED = 30f;
-    private boolean opening = false;
+    private boolean open = false;
     private Vector3f openPos;
     private Vector3f closePos;
 
@@ -19,33 +21,16 @@ public class DoorObject extends KinematicDemoObject {
         this.closePos = closePos;
     }
 
-    public void open(MainApplication app) {
-        if (!opening) {
-            Vector3f pos = getSpatial().getWorldTranslation();
-            if (getTasks().isEmpty()) {
-                Vector3f change = openPos.subtract(pos);
-                queueRotation(app, change.length()/SPEED, change, change.length());
+    @Override
+    public void interact(MainApplication app) {
+        System.out.println(getTasks());
+        if (getTasks().isEmpty()) {
+            if (open) {
+                queueRotation(app, 2f, Vector3f.UNIT_Y, FastMath.PI*2/3);
             } else {
-                getTasks().clear();
-                Vector3f change = openPos.subtract(pos);
-                queueRotation(app, change.length()/SPEED, change, change.length());
+                queueRotation(app, 2f, Vector3f.UNIT_Y, FastMath.PI*-2/3);
             }
+            open = !open;
         }
-        opening = true;
-    }
-
-    public void close(MainApplication app) {
-        if (opening) {
-            Vector3f pos = getSpatial().getWorldTranslation();
-            if (getTasks().isEmpty()) {
-                Vector3f change = closePos.subtract(pos);
-                queueRotation(app, change.length()/SPEED, change, change.length());
-            } else {
-                getTasks().clear();
-                Vector3f change = closePos.subtract(pos);
-                queueRotation(app, change.length()/SPEED, change, change.length());
-            }
-        }
-        opening = false;
     }
 }

@@ -41,7 +41,9 @@ public class RotationTask extends KinematicTask {
     @Override
     public void onComplete() {
         if (endRotation != null) {
-            getObject().getSpatial().setLocalRotation(new Quaternion().fromAngles(endRotation.x, endRotation.y, endRotation.z));
+            
+            getObject().getSpatial().getLocalRotation().fromAngleAxis(endRotation.length(),endRotation.normalize());
+//            getObject().getSpatial().setLocalRotation(new Quaternion().fromAngles(endRotation.x, endRotation.y, endRotation.z));
         }
     }
 
