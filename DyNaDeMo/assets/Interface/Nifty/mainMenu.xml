@@ -8,15 +8,13 @@
     <!-- lay out the main menu                   -->
     <!-- +++++++++++++++++++++++++++++++++++++++ -->
     <screen id="mainMenu" controller="uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen">
-        <layer id="background" childLayout="center" backgroundColor="#f00f">
+        <layer id="background" childLayout="center" backgroundColor="#000f">
+            <image filename="Interface/Nifty/logo.png" imageMode="resize" width="100%" height="70%"></image>
         </layer>
         <layer id="foreground" childLayout="vertical">
             <panel id="panel_top" height="25%" width="75%" align="center" childLayout="center">  
-                <text text="DyNaDemo" font="Interface/Fonts/Default.fnt" width="100%" height="100%" />
             </panel>
             <panel id="panel_mid" height="50%" width="75%" align="center" childLayout="center">       
-                <text text="Welcome to DyNaDeMo, an interactive story experience..." 
-              font="Interface/Fonts/Default.fnt" width="100%" height="100%" wrap="true" />
             </panel>
             <panel id="panel_bottom" height="25%" width="75%" align="center" childLayout="horizontal">  
                 <panel id="panel_bottom_left" height="50%" width="50%" valign="center" childLayout="center">  
