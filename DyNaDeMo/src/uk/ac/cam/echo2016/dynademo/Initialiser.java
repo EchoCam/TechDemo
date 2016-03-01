@@ -464,7 +464,7 @@ public class Initialiser {
         
         tRoute.startupTextSequence = new String[]{
             "Seem familiar?",
-            "Perhaps not to you, Tojamobin...",
+            "Perhaps not to you, " + app.CHAR_2,
             "But to YOU.",
             "Press 'e' to open doors."
         };
