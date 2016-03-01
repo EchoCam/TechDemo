@@ -123,9 +123,9 @@ public class Initialiser {
     private static void addButtonRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         final SyncAfterChoiceEvent choiceHandler;
         locList.clear();
-        locList.add(new Vector3f(35, HALFCHARHEIGHT + 1.0f, 35));
+        locList.add(new Vector3f(-55, HALFCHARHEIGHT + 1.0f, 35));
         dirList.clear();
-        dirList.add(new Vector3f(0, 0, -1));
+        dirList.add(new Vector3f(1, 0, 0));
                 
 
         tRoute = new DemoScene("ButtonRoute", "Scenes/ButtonRoute.j3o", locList, dirList);
@@ -136,7 +136,7 @@ public class Initialiser {
         };
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 18, 0), new Vector3f(35, 8, 20), new Vector3f(-50, 8, 0), new Vector3f(0,18,-20)
+            new Vector3f(-20, 18, 0), new Vector3f(-20, 8, 35), new Vector3f(-20, 8, -50), new Vector3f(0,18,0)
         };
 
         tLightAffected = new String[][]{
@@ -149,13 +149,13 @@ public class Initialiser {
         // OBJECTS
 
         Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
-        button.setLocalTranslation(0f, 14f, -7f);
-        button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI / 4, 0f, 0f));
-        button.move(new Vector3f(0f, 1f, 1f).normalize().mult(0.2f / (float) Math.sqrt(2f)));
+        button.setLocalTranslation(-13f, 14f, 0f);
+        button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI / 4, -FastMath.HALF_PI, 0f));
+        button.move(new Vector3f(-1f, 1f, 0).normalize().mult(0.2f / (float) Math.sqrt(2f)));
 
         // EVENTS
         choiceHandler =
-                new SyncAfterChoiceEvent("Third Select", new BoundingBox(new Vector3f(-50, 1, 0), 5, 14, 5), "Button pressed", "Button not pressed");
+                new SyncAfterChoiceEvent("Third Select", new BoundingBox(new Vector3f(-20, 1, -50), 5, 14, 5), "Button pressed", "Button not pressed");
         tRoute.condEvents.add(choiceHandler);
         
         // object physics
