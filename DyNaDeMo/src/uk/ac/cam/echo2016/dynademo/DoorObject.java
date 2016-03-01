@@ -9,7 +9,7 @@ import com.jme3.scene.Spatial;
  * @author tr393
  */
 public class DoorObject extends KinematicDemoObject implements InteractableObject{
-    public final static float SPEED = 30f;
+    public final static float SPEED = 1f;
     private boolean open = false;
     private float openAngle;
 
@@ -23,9 +23,9 @@ public class DoorObject extends KinematicDemoObject implements InteractableObjec
         System.out.println(getTasks());
         if (getTasks().isEmpty()) {
             if (open) {
-                queueRotation(app, 2f, Vector3f.UNIT_Y, openAngle);
+                queueRotation(app, 1f/SPEED, Vector3f.UNIT_Y, openAngle);
             } else {
-                queueRotation(app, 2f, Vector3f.UNIT_Y, -openAngle);
+                queueRotation(app, 1f/SPEED, Vector3f.UNIT_Y, -openAngle);
             }
             open = !open;
         }
