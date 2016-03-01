@@ -117,7 +117,7 @@ public class CharacterSelectScreen extends AbstractAppState implements ScreenCon
         boolean char1 = b.getBoolean("Char1");
         boolean char2 = b.getBoolean("Char2");
         final String character =
-                char1 ? char2 ? "Timangelise and Tojamobin" : "Timangelise" : char2 ? "Tojamobin" : "None";
+                char1 ? char2 ? app.CHAR_2 + " and " + app.CHAR_1 : app.CHAR_1 : char2 ? app.CHAR_2 : "None";
 
         final String location = b.getString("Location");
         // Add character button to the screen

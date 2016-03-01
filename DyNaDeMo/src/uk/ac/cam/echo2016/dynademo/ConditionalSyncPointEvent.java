@@ -10,15 +10,15 @@ import com.jme3.bounding.BoundingBox;
 
     protected String correctRoute;
 
-    public ConditionalSyncPointEvent(String id, BoundingBox bound, String theCorrectRoute) {
-        super(id, bound);
+    public ConditionalSyncPointEvent(String id, boolean onceOnly, BoundingBox bound, String theCorrectRoute) {
+        super(id, onceOnly, bound);
         correctRoute = theCorrectRoute;
     }
 
     @Override
-    public void onDemoEvent(MainApplication app) {
+    public void performAction(MainApplication app) {
         if (app.getGameScreen().getRoute().equals(correctRoute)) {
-            super.onDemoEvent(app);
+            super.performAction(app);
         }
     }
 }

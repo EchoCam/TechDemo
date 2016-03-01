@@ -15,8 +15,8 @@ public abstract class ProximityEvent extends LocationEvent {
     public DemoObject object;
     public ArrayDeque<DemoObject> activators = new ArrayDeque<>();
 
-    public ProximityEvent(String id, BoundingBox bound, DemoObject object) {
-        super(id, bound);
+    public ProximityEvent(String id, boolean onceOnly, BoundingBox bound, DemoObject object) {
+        super(id, onceOnly, bound);
         this.object = object;
     }
     

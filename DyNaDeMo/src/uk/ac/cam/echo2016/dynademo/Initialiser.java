@@ -1,6 +1,7 @@
 package uk.ac.cam.echo2016.dynademo;
 
 import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingSphere;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
 import com.jme3.light.PointLight;
@@ -97,9 +98,9 @@ public class Initialiser {
             }
         };
         
-        tLocEvent = new LocationEvent("StartConversation", new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5)) {
+        tLocEvent = new LocationEvent("StartConversation", false, new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5)) {
             @Override
-            public void onDemoEvent(MainApplication app) {
+            public void performAction(MainApplication app) {
                 DialogueScreen theDialogue = app.getDialogueScreen();
                 theDialogue.setDialogue("MeetingRoom1");
                 theDialogue.setCharacter("Timangelise");
@@ -155,7 +156,7 @@ public class Initialiser {
 
         // EVENTS
         choiceHandler =
-                new SyncAfterChoiceEvent("Third Select", new BoundingBox(new Vector3f(-20, 1, -50), 5, 14, 5), "Button pressed", "Button not pressed");
+                new SyncAfterChoiceEvent("Third Select", false, new BoundingBox(new Vector3f(-20, 1, -50), 5, 14, 5), "Button pressed", "Button not pressed");
         tRoute.condEvents.add(choiceHandler);
         
         // object physics
@@ -197,8 +198,10 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // EVENTS
+        tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(40,1,40),0,14,0));
+        
         Spatial pills = app.getAssetManager().loadModel("Models/Pills.j3o");
-        PillsObject pillsObj = new PillsObject("head", pills, true);
+        PillsObject pillsObj = new PillsObject("head", pills, true, tSyncPointEvent);
         pillsObj.getLights().add(lightMap.get("MeetingRoomLight"));
         tInterEvent = new InteractionEvent("pillsInteraction", pillsObj);
         tRoute.setInteractable(pills, tInterEvent);
@@ -236,19 +239,67 @@ public class Initialiser {
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
-        Spatial heWhoMustNotBeNamed = app.getAssetManager().loadModel("Models/Head.j3o");
-        HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
-        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
-       
+//        Spatial heWhoMustNotBeNamed = app.getAssetManager().loadModel("Models/Head.j3o");
+//        final HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
+//        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
+        
+        final ConditionEvent lookAt = new ConditionEvent("HeadSpawnLookAt", true) {
+            private final Vector3f centre = new Vector3f(-10, 0, -10);
+            private final float radius = 2f;
+            
+            @Override
+            public boolean checkCondition(MainApplication app) {
+                return isLookedAt(app, new BoundingSphere(radius, centre));
+            }
+            
+            @Override
+            public void performAction(MainApplication app) {
+                
+                app.setFlickering(true);
+                // initiate move sequence for head
+                // start event polling for contact
+//                app.getPollEventBus().add();
+            }
+        };
+        
+        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
+            private final Vector3f centre = new Vector3f(-10, 0, -10);
+            private final float radius = 2f;
+            
+            @Override
+            public boolean checkCondition(MainApplication app) {
+                boolean temp = isLookedAt(app, new BoundingSphere(radius, centre));
+                
+                BoundingSphere playerBound =
+                        new BoundingSphere(MainApplication.HALFCHARHEIGHT, app.getPlayerControl().getPhysicsLocation());
+                return (bound.intersects(playerBound) && temp);
+            }
+
+            @Override
+            public void performAction(MainApplication app) {
+                Spatial theUnnamed = app.getAssetManager().loadModel("Models/Head.j3o");
+                theUnnamed.setLocalTranslation(-10f, 5f, -10f);
+                theUnnamed.rotate(-0, FastMath.PI*3/4, -0);
+                HeadObject theUnnamedObj = new HeadObject("ohGreatOne", theUnnamed, true);
+                theUnnamedObj.getLights().add(lightMap.get("RoomLight"));
+                app.getCurrentScene().objects.add(theUnnamedObj);
+                app.getRootNode().attachChild(theUnnamed);
+//                RigidBodyControl rbc = new RigidBodyControl(0);
+//                app.getBulletAppState().getPhysicsSpace().add(rbc);
+                
+                app.getPollEventBus().add(lookAt);
+            }
+        };
+        tRoute.condEvents.add(tLocEvent);
         
         // EVENTS
-        tInterEvent = new InteractionEvent("headInteraction", ohGreatOne);
-        tRoute.setInteractable(heWhoMustNotBeNamed, tInterEvent);
-
-        tRoute.objects.add(ohGreatOne);
-        
-        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(15,1,15), 5,14,5));
-        tRoute.condEvents.add(tSyncPointEvent);
+//        tInterEvent = new InteractionEvent("headInteraction", ohGreatOne);
+//        tRoute.setInteractable(heWhoMustNotBeNamed, tInterEvent);
+//
+//        tRoute.objects.add(ohGreatOne);
+//        
+//        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(15,1,15), 5,14,5));
+//        tRoute.condEvents.add(tSyncPointEvent);
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -275,7 +326,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(50, 1, 35), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(50, 1, 35), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
@@ -303,7 +354,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, -50), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(0, 1, -50), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
@@ -334,7 +385,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(-35, 1, 0), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(-35, 1, 0), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
@@ -377,7 +428,7 @@ public class Initialiser {
         tRoute.objects.add(leverBaseObj);
 
         choiceHandler =
-                new SyncAfterChoiceEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose left", "Choose right");
+                new SyncAfterChoiceEvent("LeverMovedLeft", false, new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose left", "Choose right");
 
         // TODO bounding box actually required? see button
         LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, choiceHandler);
@@ -432,50 +483,15 @@ public class Initialiser {
                 
         // EVENTS
         
-        /*final ConditionEvent lookAt = new OnceConditionEvent("HeadSpawnLookAt") {
-            @Override
-            public boolean checkCondition(MainApplication app) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-            
-            @Override
-            public void performAction(MainApplication app) {
-                app.setFlickering(true);
-                // initiate move sequence for head
-                // start event polling for contact
-//                tRoute.condEvents.add()
-            }
-        };
         
-        final ConditionEvent lookAway = new OnceConditionEvent("HeadSpawnLookaway") {
-            @Override
-            public boolean checkCondition(MainApplication app) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-            
-            @Override
-            public void performAction(MainApplication app) {
-                tRoute.condEvents.add(lookAt);
-                app.setFlickering(true);
-            }
-        };
-        
-        tLocEvent = new LocationEvent(("HeadSpawnStart"), new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
-            @Override
-            public void onDemoEvent(MainApplication app) {
-                tRoute.condEvents.add(lookAway);
-            }
-        };
-        tRoute.condEvents.add(tLocEvent);*/
-        
-        
-        tLocEvent = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(5, 1, -55), 5, 14, 5));
+        tLocEvent = new SyncPointEvent("LeverOrButton", false, new BoundingBox(new Vector3f(5, 1, -65), 5, 14, 5));
         tRoute.condEvents.add(tLocEvent);
         
         tRoute.startupTextSequence = new String[]{
             "Seem familiar?",
-            "Perhaps not to you, Tojamobin...",
-            "But to YOU."
+            "Perhaps not to you, " + app.CHAR_2,
+            "But to YOU.",
+            "Press 'e' to open doors."
         };
 
         routes.put(tRoute.getId(), tRoute);
@@ -593,9 +609,9 @@ public class Initialiser {
 
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
         
-        tLocEvent = new ProximityEvent("pressurePlate1", bound, plateObj1) {
+        tLocEvent = new ProximityEvent("pressurePlate1", false, bound, plateObj1) {
             @Override
-            public void onDemoEvent(MainApplication app) {
+            public void performAction(MainApplication app) {
                 plateObj1.activate(app);
             }
         };
@@ -605,9 +621,9 @@ public class Initialiser {
         tRoute.condEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
         
-        tLocEvent = new ProximityEvent("pressurePlate2", bound, plateObj2) {
+        tLocEvent = new ProximityEvent("pressurePlate2", false, bound, plateObj2) {
             @Override
-            public void onDemoEvent(MainApplication app) {
+            public void performAction(MainApplication app) {
                 plateObj2.activate(app);
             }
         };
@@ -621,15 +637,15 @@ public class Initialiser {
         };
 
         // EVENTS
-        ctspe = new SyncAfterChoiceEvent("FateDecider", new BoundingBox(new Vector3f(100,100,100),0,0,0), "Puzzle solved", "Puzzle not solved");
+        ctspe = new SyncAfterChoiceEvent("FateDecider", false, new BoundingBox(new Vector3f(100,100,100),0,0,0), "Puzzle solved", "Puzzle not solved");
         
-        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(80, 1, -47.5f), 5, 14, 5), "Puzzle again", ctspe, true);
+        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", false, new BoundingBox(new Vector3f(80, 1, -47.5f), 5, 14, 5), "Puzzle again", ctspe, true);
         cspe1 =
-                new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0, 1, 70), 5, 14, 5), "See puzzle first time");
+                new ConditionalSyncPointEvent("FirstExitEvent", false, new BoundingBox(new Vector3f(0, 1, 70), 5, 14, 5), "See puzzle first time");
         cspe2 =
-                new ExitChoiceEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again", ctspe, false);
+                new ExitChoiceEvent("PuzzleUnsolvedEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again", ctspe, false);
         cspe3 =
-                new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
+                new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
         
         tRoute.condEvents.add(tSyncPointEvent);
         tRoute.condEvents.add(cspe1);
@@ -699,5 +715,20 @@ public class Initialiser {
         default:
             throw new RuntimeException("Too many door handles");
         }
+    }
+    
+    private static boolean isLookedAt(MainApplication app, BoundingSphere bSphere) {
+        boolean result = false;
+        int checkPlane = bSphere.getCheckPlane();
+        bSphere.setCheckPlane(0);
+        switch (app.getCamera().contains(bSphere)) {
+        case Inside:
+            result = true;
+            break;
+        default:
+        }
+        bSphere.setCheckPlane(checkPlane);
+
+        return result;
     }
 }

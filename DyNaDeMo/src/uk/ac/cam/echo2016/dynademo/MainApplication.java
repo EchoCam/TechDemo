@@ -71,12 +71,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public final static boolean DEBUG = false;
     public final static float HALFCHARHEIGHT = 3;
+    public final static ColorRGBA LIGHTCOLOUR = ColorRGBA.Gray;
     public HashMap<String, DemoScene> routes = new HashMap<>();
 
     private Random random = new Random();
     private float timeCounter = 0;
     private boolean lightsOn = true;
     private boolean isFlickering = false;
+    private int lightsOffCount = 0;
     
     private Node playerNode;
     private BulletAppState bulletAppState;
@@ -102,6 +104,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private GameScreen gameScreen;
     private DialogueScreen dialogueScreen;
     private NarrativeInstance narrativeInstance;
+    
+    public final static String CHAR_1 = "Bob";
+    public final static String CHAR_2 = "Alice";
 
     /**
      * The main entry point for the code of the game.
@@ -249,21 +254,22 @@ public class MainApplication extends SimpleApplication implements ActionListener
         // Debug Options//
         if (DEBUG) {
             bulletAppState.setDebugEnabled(true);
-            Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
-            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.getAdditionalRenderState().setWireframe(true);
-            mat.setColor("Color", ColorRGBA.Green);
-            g.setMaterial(mat);
-            playerNode.attachChild(g);
+//            Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
+//            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//            mat.getAdditionalRenderState().setWireframe(true);
+//            mat.setColor("Color", ColorRGBA.Green);
+//            g.setMaterial(mat);
+//            playerNode.attachChild(g);
         }
     }
 
     public void loadRoute(DemoScene route, int entIndex) {
+        currentScene.onUnLoad();
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
-        for (DemoObject object : currentScene.objects) {
+        for (DemoObject object : getCurrentScene().objects) {
             // TODO clean up lights not being removed from rooms?
             Spatial spatial = object.getSpatial();
             if (object.isIsMainParent()) {
@@ -376,6 +382,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         landscape = new RigidBodyControl(sceneShape, 0f);
         currentWorld.addControl(landscape);
         bulletAppState.getPhysicsSpace().add(landscape);
+        
+        currentScene.onLoad();
 
         // TODO freeze for a second
         playerControl.setPhysicsLocation(route.getStartLocs().get(entIndex));
@@ -424,7 +432,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public void simpleUpdate(float tpf) {
         timeCounter += tpf;
         if (isFlickering) {
-            if (FastMath.floor(timeCounter*10) % 10 == 0) flickerLights();
+            // Every time first 2 decimals are muliple of 20
+            if (FastMath.floor(100*(timeCounter - FastMath.floor(timeCounter))) % 20 == 0) flickerLights();
         }
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
@@ -689,22 +698,27 @@ public class MainApplication extends SimpleApplication implements ActionListener
     
     public void flickerLights() {
         if (lightsOn) {
-            if (random.nextInt(4) == 0) {
-                setLight(false);
+            if (random.nextInt(3) == 0) {
+                switchLights(false);
             }
         } else {
             if (random.nextInt(4) == 0) {
-                setLight(true);
+                switchLights(true);
+                lightsOffCount = 0;
+            } else {
+                lightsOffCount++;
             }
         }
     }
-    private void setLight(boolean on) {
-        System.out.println(on);
-        ColorRGBA col = on ? ColorRGBA.White : ColorRGBA.Black;
-        for (DemoLight dLight : currentScene.lights) {
+    private void switchLights(boolean on) {
+        ColorRGBA col = on ? LIGHTCOLOUR : ColorRGBA.Black;
+        for (DemoLight dLight : getCurrentScene().lights) {
             dLight.light.setColor(col);
         }
         lightsOn = on;
+    }
+    public boolean getLightsOn() {
+        return lightsOn;
     }
 
     /**
@@ -712,5 +726,23 @@ public class MainApplication extends SimpleApplication implements ActionListener
      */
     public ArrayDeque<ConditionEvent> getPollEventBus() {
         return pollEventBus;
+    }
+    
+    /**
+     * @return the currentScene
+     */
+    public DemoScene getCurrentScene() {
+        return currentScene;
+    }
+
+    /**
+     * @return the bulletAppState
+     */
+    public BulletAppState getBulletAppState() {
+        return bulletAppState;
+    }
+
+    public int getLightsOffCount() {
+        return lightsOffCount;
     }
 }
