@@ -662,7 +662,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void chooseLocation(String routeName) {
-        DemoScene route = routes.get("ObservationRoute");//routeName);
+        DemoScene route = routes.get("PuzzleRoute");//routeName);
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }
