@@ -47,7 +47,38 @@ public class Initialiser {
         addObservationRoute(app, routes);
         addPuzzleRoute(app, routes);
         addEndingRoute(app, routes);
+        addMasterRoute(app,routes);
         return routes;
+    }
+    
+    private static void addMasterRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
+        locList.clear();
+        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0));
+        
+        dirList.clear();
+        dirList.add(new Vector3f(1,0,0));
+        tRoute = new DemoScene("MasterRoute", "Scenes/Master.j3o", locList, dirList);
+        
+        tLightNames = new String[] {
+            "BedroomLight", "BedroomCLight", "MRoomLight", "MRoomCLeftLight", "MRoomCRightLight", 
+            "ObservationLight", "ObservationShortCLight", "PuzzleLight", "ButtonLight", "ObservationLongCLight",
+            "PuzzleTallLight1", "PuzzleTallLight2", "LeverCLight", "LeverLight", "ButtonCLight", 
+            "PuzzleLongCLight", "EscapeLight", "DoorsLight"
+        };
+        
+        tLightCoords = new Vector3f[] {
+            new Vector3f(0,8,0), new Vector3f(0,8,-15), new Vector3f(-70,8,-15), new Vector3f(-70,8,25),
+            new Vector3f(-70,8,-45), new Vector3f(-110,8,30), new Vector3f(-105,8,-5), new Vector3f(-140,18,-45),
+            new Vector3f(-140,18,-25), new Vector3f(-175,8,10), new Vector3f(-135,18,-65), new Vector3f(-135,18,-85),
+            new Vector3f(-175,8,-45), new Vector3f(-210,8,-45), new Vector3f(-190,8,-25), new Vector3f(-187.5f,8,-125),
+            new Vector3f(-240,8,-90), new Vector3f(-240,18,-25)    
+        };
+        
+        tLightAffected = new String[][] {
+            {"Room1"}, {"BRoomCorridor"}, {"MRoom"}, {"MRoomLC"}, {"MRoomRC"}, {"ObservRoom", "Monitor1", "Monitor2"},
+            {"TallCorridor1"}, {"TallCorridor2"}, {"LeverCLight"}, {"LeverRoom"}, {"ButtonCRoom"}, {"PuzzleLongC"},
+            {"EscapeRoom", "EscapeCorridor", "EscapeAndDoorsC"}, {"DoorsRoom"}
+        };
     }
     
     private static void addBedroomRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
