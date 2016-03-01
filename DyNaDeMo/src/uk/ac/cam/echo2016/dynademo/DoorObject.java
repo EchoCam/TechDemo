@@ -16,7 +16,7 @@ public class DoorObject extends KinematicDemoObject implements InteractableObjec
 
     public DoorObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, float openAngle, boolean isActive) {
         super(objId, spatial, mass, isMainParent, bound);
-        this.openAngle = openAngle;
+        this.openAngle = -openAngle;
         this.isActive = isActive;
     }
 
