@@ -7,12 +7,12 @@ import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 
 public class SyncPointEvent extends ExitEvent {
 
-        public SyncPointEvent(String id, BoundingBox bound) {
-            super(id, bound);
+        public SyncPointEvent(String id, boolean onceOnly, BoundingBox bound) {
+            super(id, onceOnly, bound);
         }
 
         @Override
-        public void onDemoEvent(MainApplication app) {
+        public void performAction(MainApplication app) {
             try {
                 //Ending the route that was started to show the correct character select screen to the player
                 app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());

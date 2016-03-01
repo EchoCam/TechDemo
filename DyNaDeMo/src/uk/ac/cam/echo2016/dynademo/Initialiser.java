@@ -84,7 +84,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5));
+        tLocEvent = new SyncPointEvent("Puzzle Or Observation", false, new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5));
         tRoute.condEvents.add(tLocEvent);
 
         tRoute.startupTextSequence = new String[]{
@@ -127,7 +127,7 @@ public class Initialiser {
 
         // EVENTS
         choiceHandler =
-                new SyncAfterChoiceEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
+                new SyncAfterChoiceEvent("Third Select", false, new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
         tRoute.condEvents.add(choiceHandler);
         
         // object physics
@@ -169,7 +169,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(40,1,40),0,14,0));
+        tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(40,1,40),0,14,0));
         
         Spatial pills = app.getAssetManager().loadModel("Models/Pills.j3o");
         PillsObject pillsObj = new PillsObject("head", pills, true, tSyncPointEvent);
@@ -214,7 +214,7 @@ public class Initialiser {
 //        final HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
 //        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
         
-        final ConditionEvent lookAt = new OnceConditionEvent("HeadSpawnLookAt") {
+        final ConditionEvent lookAt = new ConditionEvent("HeadSpawnLookAt", true) {
             private final Vector3f centre = new Vector3f(-10, 0, -10);
             private final float radius = 2f;
             
@@ -225,15 +225,6 @@ public class Initialiser {
             
             @Override
             public void performAction(MainApplication app) {
-                Spatial theUnnamed = app.getAssetManager().loadModel("Models/Head.j3o");
-                theUnnamed.setLocalTranslation(-10f, 5f, -10f);
-                theUnnamed.rotate(-0, FastMath.PI*3/4, -0);
-                HeadObject theUnnamedObj = new HeadObject("ohGreatOne", theUnnamed, true);
-                theUnnamedObj.getLights().add(lightMap.get("RoomLight"));
-                app.getCurrentScene().objects.add(theUnnamedObj);
-                app.getRootNode().attachChild(theUnnamed);
-//                RigidBodyControl rbc = new RigidBodyControl(0);
-//                app.getBulletAppState().getPhysicsSpace().add(rbc);
                 
                 app.setFlickering(true);
                 // initiate move sequence for head
@@ -242,7 +233,7 @@ public class Initialiser {
             }
         };
         
-        tLocEvent = new LocationEvent(("HeadSpawn"), new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
+        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
             private final Vector3f centre = new Vector3f(-10, 0, -10);
             private final float radius = 2f;
             
@@ -256,7 +247,17 @@ public class Initialiser {
             }
 
             @Override
-            public void onDemoEvent(MainApplication app) {
+            public void performAction(MainApplication app) {
+                Spatial theUnnamed = app.getAssetManager().loadModel("Models/Head.j3o");
+                theUnnamed.setLocalTranslation(-10f, 5f, -10f);
+                theUnnamed.rotate(-0, FastMath.PI*3/4, -0);
+                HeadObject theUnnamedObj = new HeadObject("ohGreatOne", theUnnamed, true);
+                theUnnamedObj.getLights().add(lightMap.get("RoomLight"));
+                app.getCurrentScene().objects.add(theUnnamedObj);
+                app.getRootNode().attachChild(theUnnamed);
+//                RigidBodyControl rbc = new RigidBodyControl(0);
+//                app.getBulletAppState().getPhysicsSpace().add(rbc);
+                
                 app.getPollEventBus().add(lookAt);
             }
         };
@@ -296,7 +297,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
         
         tRoute.startupTextSequence = new String[]{
@@ -329,7 +330,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
@@ -360,7 +361,7 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0, 1, 15), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(0, 1, 15), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
@@ -403,7 +404,7 @@ public class Initialiser {
         tRoute.objects.add(leverBaseObj);
 
         choiceHandler =
-                new SyncAfterChoiceEvent("LeverMovedLeft", new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose left", "Choose right");
+                new SyncAfterChoiceEvent("LeverMovedLeft", false, new BoundingBox(new Vector3f(-45, 1, 0), 5, 14, 5), "Choose left", "Choose right");
 
         // TODO bounding box actually required? see button
         LeverObject leverObj = new LeverObject("leverRod", leverRod, 1f, false, null, choiceHandler);
@@ -459,7 +460,7 @@ public class Initialiser {
         // EVENTS
         
         
-        tLocEvent = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
+        tLocEvent = new SyncPointEvent("LeverOrButton", false, new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
         tRoute.condEvents.add(tLocEvent);
         
         tRoute.startupTextSequence = new String[]{
@@ -582,9 +583,9 @@ public class Initialiser {
 
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
         
-        tLocEvent = new ProximityEvent("pressurePlate1", bound, plateObj1) {
+        tLocEvent = new ProximityEvent("pressurePlate1", false, bound, plateObj1) {
             @Override
-            public void onDemoEvent(MainApplication app) {
+            public void performAction(MainApplication app) {
                 plateObj1.activate(app);
             }
         };
@@ -594,9 +595,9 @@ public class Initialiser {
         tRoute.condEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
         
-        tLocEvent = new ProximityEvent("pressurePlate2", bound, plateObj2) {
+        tLocEvent = new ProximityEvent("pressurePlate2", false, bound, plateObj2) {
             @Override
-            public void onDemoEvent(MainApplication app) {
+            public void performAction(MainApplication app) {
                 plateObj2.activate(app);
             }
         };
@@ -610,15 +611,15 @@ public class Initialiser {
         };
 
         // EVENTS
-        ctspe = new SyncAfterChoiceEvent("FateDecider", new BoundingBox(new Vector3f(100,100,100),0,0,0), "Puzzle solved", "Puzzle not solved");
+        ctspe = new SyncAfterChoiceEvent("FateDecider", false, new BoundingBox(new Vector3f(100,100,100),0,0,0), "Puzzle solved", "Puzzle not solved");
         
-        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5), "Puzzle again", ctspe, true);
+        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", false, new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5), "Puzzle again", ctspe, true);
         cspe1 =
-                new ConditionalSyncPointEvent("FirstExitEvent", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5), "See puzzle first time");
+                new ConditionalSyncPointEvent("FirstExitEvent", false, new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5), "See puzzle first time");
         cspe2 =
-                new ExitChoiceEvent("PuzzleUnsolvedEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again", ctspe, false);
+                new ExitChoiceEvent("PuzzleUnsolvedEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again", ctspe, false);
         cspe3 =
-                new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
+                new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
         
         tRoute.condEvents.add(tSyncPointEvent);
         tRoute.condEvents.add(cspe1);

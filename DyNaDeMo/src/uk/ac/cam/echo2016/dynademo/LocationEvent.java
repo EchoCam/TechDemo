@@ -22,8 +22,8 @@ public abstract class LocationEvent extends ConditionEvent {
      * @param height - height of bounding box
      * @param depth - depth of bounding box
      */
-    public LocationEvent(String id, BoundingBox bound) {
-        super(id);
+    public LocationEvent(String id, boolean onceOnly, BoundingBox bound) {
+        super(id, onceOnly);
         this.bound = bound;
     }
     @Override

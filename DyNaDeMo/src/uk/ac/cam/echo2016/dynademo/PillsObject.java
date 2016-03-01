@@ -23,7 +23,7 @@ public class PillsObject extends StaticDemoObject implements InteractableObject 
 
     @Override
     public void interact(MainApplication app) {
-        spe.onDemoEvent(app);
+        spe.performAction(app);
     }
     
 }

@@ -14,17 +14,17 @@ public class ExitChoiceEvent extends ConditionalSyncPointEvent {
     private SyncAfterChoiceEvent ctspe;
     private boolean trueIfTaken;
     
-    public ExitChoiceEvent(String id, BoundingBox bound, String correctRoute, SyncAfterChoiceEvent ctspe, boolean trueIfTaken) {
-        super(id, bound, correctRoute);
+    public ExitChoiceEvent(String id, boolean onceOnly, BoundingBox bound, String correctRoute, SyncAfterChoiceEvent ctspe, boolean trueIfTaken) {
+        super(id, onceOnly, bound, correctRoute);
         this.ctspe = ctspe;
         this.trueIfTaken = trueIfTaken;
     }
     
     @Override
-    public void onDemoEvent(MainApplication app) {
+    public void performAction(MainApplication app) {
         if (app.getGameScreen().getRoute().equals(correctRoute)) {
             ctspe.setActionTaken(trueIfTaken);
-            ctspe.onDemoEvent(app);
+            ctspe.performAction(app);
         }
     }
 }
