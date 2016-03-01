@@ -62,7 +62,17 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
         
     }
     
+    /**
+     * Process any text that comes from the dialogue.xml.
+     * 
+     * Mainly used to implement global character names, using a huge hack.
+     * @param text
+     * @return 
+     */
     public String process(String text) {
+        //sweet mofo of a hack
+        text = text.replace("Timangelise", app.CHAR_1);
+        text = text.replace("Rojatom", app.CHAR_2);
         return text;
     }
  
