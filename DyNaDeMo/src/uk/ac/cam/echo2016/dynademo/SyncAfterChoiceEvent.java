@@ -24,8 +24,8 @@ public class SyncAfterChoiceEvent extends ExitEvent {
         private String routeIfTrue;
         private String routeIfFalse;
 
-        public SyncAfterChoiceEvent(String id, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
-            super(id, bound);
+        public SyncAfterChoiceEvent(String id, boolean onceOnly, BoundingBox bound, String RouteIfActionTaken, String RouteOtherwise) {
+            super(id, onceOnly, bound);
             routeIfTrue = RouteIfActionTaken;
             routeIfFalse = RouteOtherwise;
         }
@@ -40,7 +40,7 @@ public class SyncAfterChoiceEvent extends ExitEvent {
         }
 
         @Override
-        public void onDemoEvent(MainApplication app) {
+        public void performAction(MainApplication app) {
             try {
                 app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
                 GameChoice gameChoice = app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());

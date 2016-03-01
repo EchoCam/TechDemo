@@ -4,8 +4,8 @@ import com.jme3.bounding.BoundingBox;
 
 public abstract class ExitEvent extends LocationEvent {
     
-    public ExitEvent(String id, BoundingBox bound) {
-        super(id, bound);
+    public ExitEvent(String id, boolean onceOnly, BoundingBox bound) {
+        super(id, onceOnly, bound);
         this.bound = bound;
     }
     public void onLeave() {}

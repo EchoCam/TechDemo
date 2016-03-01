@@ -161,7 +161,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
             setDisplayFps(false);
             setDisplayStatView(false);
         }
-        setFlickering(true);
         // Set-Up for all the screens //
         // initialise nifty gui, the tools we are using for gui elements
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
@@ -428,7 +427,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
     @Override
     public void simpleUpdate(float tpf) {
         timeCounter += tpf;
-        System.out.println(timeCounter);
         if (isFlickering) {
             // Every time first 2 decimals are muliple of 20
             if (FastMath.floor(100*(timeCounter - FastMath.floor(timeCounter))) % 20 == 0) flickerLights();
@@ -684,7 +682,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
     
     public void flickerLights() {
-
         if (lightsOn) {
             if (random.nextInt(3) == 0) {
                 switchLights(false);
@@ -699,7 +696,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
         }
     }
     private void switchLights(boolean on) {
-        System.out.println(on);
         ColorRGBA col = on ? LIGHTCOLOUR : ColorRGBA.Black;
         for (DemoLight dLight : getCurrentScene().lights) {
             dLight.light.setColor(col);
