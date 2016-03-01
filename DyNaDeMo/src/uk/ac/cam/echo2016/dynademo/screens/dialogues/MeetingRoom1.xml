@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter1>
 	<protagonist name="Timangelise">
-		<dialogue speaker="Timangelise" id="Timangelise0">
+		<dialogue speaker="Timangelise" id="END"><!--"Timangelise0">-->
 			<text nextID="Timangelise1">(I see someone here...)</text>
 		</dialogue>
 		<dialogue speaker="Timangelise" id="Timangelise1">
