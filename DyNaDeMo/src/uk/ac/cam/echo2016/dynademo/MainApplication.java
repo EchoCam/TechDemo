@@ -103,6 +103,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private GameScreen gameScreen;
     private DialogueScreen dialogueScreen;
     private NarrativeInstance narrativeInstance;
+    
+    public final static String CHAR_1 = "Bob";
+    public final static String CHAR_2 = "Alice";
 
     /**
      * The main entry point for the code of the game.
