@@ -77,6 +77,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private float timeCounter = 0;
     private boolean lightsOn = true;
     private boolean isFlickering = false;
+    private int lightsOffCount = 0;
     
     private Node playerNode;
     private BulletAppState bulletAppState;
@@ -160,6 +161,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             setDisplayFps(false);
             setDisplayStatView(false);
         }
+        setFlickering(true);
         // Set-Up for all the screens //
         // initialise nifty gui, the tools we are using for gui elements
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
@@ -427,7 +429,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public void simpleUpdate(float tpf) {
         timeCounter += tpf;
         if (isFlickering) {
-            if (FastMath.floor(timeCounter*20) % 20 == 0) flickerLights();
+            if (FastMath.floor(timeCounter) % 20 == 0) flickerLights();
         }
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
@@ -680,23 +682,30 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
     
     public void flickerLights() {
+        System.out.println("Attmempt to switch lights");
         if (lightsOn) {
             if (random.nextInt(4) == 0) {
-                setLight(false);
+                switchLights(false);
             }
         } else {
-            if (random.nextInt(4) > 0) {
-                setLight(true);
+            if (random.nextInt(5) > 0) {
+                switchLights(true);
+                lightsOffCount = 0;
+            } else {
+                lightsOffCount++;
             }
         }
     }
-    private void setLight(boolean on) {
+    private void switchLights(boolean on) {
         System.out.println(on);
         ColorRGBA col = on ? LIGHTCOLOUR : ColorRGBA.Black;
         for (DemoLight dLight : getCurrentScene().lights) {
             dLight.light.setColor(col);
         }
         lightsOn = on;
+    }
+    public boolean getLightsOn() {
+        return lightsOn;
     }
 
     /**
@@ -718,5 +727,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
      */
     public BulletAppState getBulletAppState() {
         return bulletAppState;
+    }
+
+    public int getLightsOffCount() {
+        return lightsOffCount;
     }
 }
