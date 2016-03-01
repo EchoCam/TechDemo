@@ -77,6 +77,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private float timeCounter = 0;
     private boolean lightsOn = true;
     private boolean isFlickering = false;
+    private int lightsOffCount = 0;
     
     private Node playerNode;
     private BulletAppState bulletAppState;
@@ -102,6 +103,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private GameScreen gameScreen;
     private DialogueScreen dialogueScreen;
     private NarrativeInstance narrativeInstance;
+    
+    public final static String CHAR_1 = "Bob";
+    public final static String CHAR_2 = "Alice";
 
     /**
      * The main entry point for the code of the game.
@@ -160,6 +164,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             setDisplayFps(false);
             setDisplayStatView(false);
         }
+        setFlickering(true);
         // Set-Up for all the screens //
         // initialise nifty gui, the tools we are using for gui elements
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
@@ -207,7 +212,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
         // Initialize physics engine //
         bulletAppState = new BulletAppState();
-        stateManager.attach(getBulletAppState());
+        stateManager.attach(bulletAppState);
 
         // Add global Lights //
 
@@ -221,7 +226,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         rootNode.attachChild(currentWorld);
         landscape = new RigidBodyControl();//sceneShape, 0f);
         currentWorld.addControl(landscape);
-        getBulletAppState().getPhysicsSpace().add(landscape);
+        bulletAppState.getPhysicsSpace().add(landscape);
         currentScene = new DemoScene("", "", null, null);
 
         // Load character //
@@ -236,19 +241,19 @@ public class MainApplication extends SimpleApplication implements ActionListener
         playerControl.setGravity(50);
         playerControl.setPhysicsLocation(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0)); // 1.0f off the ground
         playerNode.addControl(playerControl);
-        getBulletAppState().getPhysicsSpace().add(playerControl);
+        bulletAppState.getPhysicsSpace().add(playerControl);
 
         // Attach ghost control to the character
         billMurray = new GhostControl(capsule);
         playerNode.addControl(billMurray);
-        getBulletAppState().getPhysicsSpace().add(billMurray);
+        bulletAppState.getPhysicsSpace().add(billMurray);
 
         // Start at Area 0 //
         loadRoute(routes.get("BedroomRoute"), 0);
 
         // Debug Options//
         if (DEBUG) {
-            getBulletAppState().setDebugEnabled(true);
+            bulletAppState.setDebugEnabled(true);
 //            Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
 //            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 //            mat.getAdditionalRenderState().setWireframe(true);
@@ -259,10 +264,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void loadRoute(DemoScene route, int entIndex) {
+        currentScene.onUnLoad();
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
-        getBulletAppState().getPhysicsSpace().remove(landscape);
+        bulletAppState.getPhysicsSpace().remove(landscape);
         for (DemoObject object : getCurrentScene().objects) {
             // TODO clean up lights not being removed from rooms?
             Spatial spatial = object.getSpatial();
@@ -276,8 +282,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
             }
         }
         // TODO replace with neater method?
-        for (PhysicsRigidBody r : getBulletAppState().getPhysicsSpace().getRigidBodyList()) {
-            getBulletAppState().getPhysicsSpace().remove(r);
+        for (PhysicsRigidBody r : bulletAppState.getPhysicsSpace().getRigidBodyList()) {
+            bulletAppState.getPhysicsSpace().remove(r);
         }
 
         for (DemoLight l : getCurrentScene().lights) { // FIXME should do a search
@@ -310,7 +316,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             if (object instanceof DynamicDemoObject) {
                 rbc.setFriction(1.5f);
             }
-            getBulletAppState().getPhysicsSpace().add(rbc);
+            bulletAppState.getPhysicsSpace().add(rbc);
             for (DemoLight dLight : object.getLights()) {
                 object.getSpatial().addLight(dLight.light);
             }
@@ -341,7 +347,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             for (DemoObject object : getCurrentScene().objects) {
                 if (object.getObjId().equals("crate2")) {
                     RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
-                    getBulletAppState().getPhysicsSpace().remove(rbc);
+                    bulletAppState.getPhysicsSpace().remove(rbc);
                     object.getSpatial().removeControl(rbc);
 
                     rootNode.detachChild(object.getSpatial());
@@ -375,7 +381,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
         landscape = new RigidBodyControl(sceneShape, 0f);
         currentWorld.addControl(landscape);
-        getBulletAppState().getPhysicsSpace().add(landscape);
+        bulletAppState.getPhysicsSpace().add(landscape);
+        
+        currentScene.onLoad();
 
         // TODO freeze for a second
         playerControl.setPhysicsLocation(route.getStartLocs().get(entIndex));
@@ -424,7 +432,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public void simpleUpdate(float tpf) {
         timeCounter += tpf;
         if (isFlickering) {
-            if (FastMath.floor(timeCounter*20) % 20 == 0) flickerLights();
+            if (FastMath.floor(timeCounter) % 20 == 0) flickerLights();
         }
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
@@ -557,7 +565,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     if (isCentreInside) {
                         // Drop current Object held
                         Vector3f location = spatial.getWorldTranslation();
-                        getBulletAppState().getPhysicsSpace().add(spatial);
+                        bulletAppState.getPhysicsSpace().add(spatial);
                         spatial.removeFromParent();
                         rootNode.attachChild(spatial);
                         spatial.setLocalTranslation(location);
@@ -606,14 +614,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public void pauseDemo() {
         if (!isPaused) {
             this.isPaused = true;
-            getBulletAppState().setEnabled(false);
+            bulletAppState.setEnabled(false);
             flyCam.setEnabled(false);
         }
     }
 
     public void unPauseDemo() {
         this.isPaused = false;
-        getBulletAppState().setEnabled(true);
+        bulletAppState.setEnabled(true);
         flyCam.setEnabled(true);
     }
 
@@ -623,7 +631,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 draggedObject = object;
         }
         // Remove it from the physics space
-        getBulletAppState().getPhysicsSpace().remove(spatial.getControl(RigidBodyControl.class));
+        bulletAppState.getPhysicsSpace().remove(spatial.getControl(RigidBodyControl.class));
         // Attach it to the player
         playerNode.attachChild(spatial);
     }
@@ -677,23 +685,30 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
     
     public void flickerLights() {
+        System.out.println("Attmempt to switch lights");
         if (lightsOn) {
             if (random.nextInt(4) == 0) {
-                setLight(false);
+                switchLights(false);
             }
         } else {
-            if (random.nextInt(4) > 0) {
-                setLight(true);
+            if (random.nextInt(5) > 0) {
+                switchLights(true);
+                lightsOffCount = 0;
+            } else {
+                lightsOffCount++;
             }
         }
     }
-    private void setLight(boolean on) {
+    private void switchLights(boolean on) {
         System.out.println(on);
         ColorRGBA col = on ? LIGHTCOLOUR : ColorRGBA.Black;
         for (DemoLight dLight : getCurrentScene().lights) {
             dLight.light.setColor(col);
         }
         lightsOn = on;
+    }
+    public boolean getLightsOn() {
+        return lightsOn;
     }
 
     /**
@@ -715,5 +730,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
      */
     public BulletAppState getBulletAppState() {
         return bulletAppState;
+    }
+
+    public int getLightsOffCount() {
+        return lightsOffCount;
     }
 }

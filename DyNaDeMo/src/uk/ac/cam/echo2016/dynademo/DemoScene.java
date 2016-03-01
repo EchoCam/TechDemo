@@ -91,4 +91,5 @@ public class DemoScene {
     }
     
     public void onLoad() {}
+    public void onUnLoad() {}
 }
