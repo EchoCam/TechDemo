@@ -465,7 +465,8 @@ public class Initialiser {
         tRoute.startupTextSequence = new String[]{
             "Seem familiar?",
             "Perhaps not to you, Tojamobin...",
-            "But to YOU."
+            "But to YOU.",
+            "Press 'e' to open doors."
         };
 
         routes.put(tRoute.getId(), tRoute);
