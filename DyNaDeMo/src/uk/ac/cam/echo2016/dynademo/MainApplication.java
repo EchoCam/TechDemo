@@ -662,7 +662,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void chooseLocation(String routeName) {
-        DemoScene route = routes.get("Char2DeathRoute");//routeName);
+        DemoScene route = routes.get("EscapeRoute");//routeName);
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }

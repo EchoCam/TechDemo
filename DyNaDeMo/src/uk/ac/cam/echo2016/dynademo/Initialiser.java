@@ -255,9 +255,9 @@ public class Initialiser {
 
     private static void addDoorLeftRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(50, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
-        dirList.add(new Vector3f(1, 0, 0));
+        dirList.add(new Vector3f(-1, 0, 0));
 
         tRoute = new DemoScene("DoorLeft", "Scenes/DoorLeftRoute.j3o", locList, dirList);
 
@@ -265,32 +265,27 @@ public class Initialiser {
         tLightNames = new String[]{"RoomLight", "CorridorLight", "CorridorLeftLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 18, 0), new Vector3f(-35, 8, 0), new Vector3f(0, 8, -35)
+            new Vector3f(0, 18, 0), new Vector3f(50, 8, 0), new Vector3f(0, 8, 35)
         };
 
         tLightAffected = new String[][]{
-            {"Room", "BlankDoorLeft", "BlankDoorRight"}, {"Corridor"}, {"CorridorLeft"}
+            {"DoorsRoom"}, {"ButtonDoorsCorridor"}, {"ObserveButtonDoorsC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(50, 1, 35), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
-        
-        tRoute.startupTextSequence = new String[]{
-            "You have found me.",
-            "But I found you long ago..."
-        };
 
         routes.put(tRoute.getId(), tRoute);
     }
 
     private static void addDoorRightRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(50, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
-        dirList.add(new Vector3f(1, 0, 0));
+        dirList.add(new Vector3f(-1, 0, 0));
 
         tRoute = new DemoScene("DoorRight", "Scenes/DoorRightRoute.j3o", locList, dirList);
 
@@ -298,17 +293,17 @@ public class Initialiser {
         tLightNames = new String[]{"RoomLight", "CorridorLight", "CorridorRightLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 18, 0), new Vector3f(-35, 8, 0), new Vector3f(0, 8, 35)
+            new Vector3f(0, 18, 0), new Vector3f(50, 8, 0), new Vector3f(0, 8, -40)
         };
 
         tLightAffected = new String[][]{
-            {"Room", "BlankDoorLeft", "BlankDoorRight"}, {"Corridor"}, {"CorridorRight"}
+            {"DoorsRoom"}, {"ButtonDoorsCorridor"}, {"DoorsEscapeC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, -50), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
@@ -316,30 +311,30 @@ public class Initialiser {
 
     private static void addEscapeRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(25, HALFCHARHEIGHT + 1.0f, 0));
-        locList.add(new Vector3f(-25, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(40, HALFCHARHEIGHT + 1.0f, -35));
+        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 30));
         dirList.clear();
         dirList.add(new Vector3f(-1, 0, 0));
-        dirList.add(new Vector3f(1,0,0));
+        dirList.add(new Vector3f(0,0,-1));
                 
 
         tRoute = new DemoScene("EscapeRoute", "Scenes/EscapeRoute.j3o", locList, dirList);
 
         // LIGHTS
-        tLightNames = new String[]{"RoomLight", "CorridorLight", "Corridor1Light", "Corridor2Light"};
+        tLightNames = new String[]{"RoomLight", "CorridorLight", "CorridorFromDoorsLight", "CorridorFromPuzzleLight"};
 
         tLightCoords = new Vector3f[]{
             new Vector3f(0, 8, 0), new Vector3f(0, 8, 25), new Vector3f(-25, 8, 0), new Vector3f(25, 8, 0)
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor"}, {"Corridor1"}, {"Corridor2"}
+            {"EscapeRoom"}, {"EscapeC"}, {"DoorsEscapeC"}, {"PuzzleEscapeC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0, 1, 15), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(-35, 1, 0), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
