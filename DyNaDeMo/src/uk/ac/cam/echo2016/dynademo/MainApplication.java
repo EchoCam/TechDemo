@@ -428,8 +428,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
     @Override
     public void simpleUpdate(float tpf) {
         timeCounter += tpf;
+        System.out.println(timeCounter);
         if (isFlickering) {
-            if (FastMath.floor(timeCounter) % 20 == 0) flickerLights();
+            // Every time first 2 decimals are muliple of 20
+            if (FastMath.floor(100*(timeCounter - FastMath.floor(timeCounter))) % 20 == 0) flickerLights();
         }
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
@@ -682,13 +684,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
     
     public void flickerLights() {
-        System.out.println("Attmempt to switch lights");
+
         if (lightsOn) {
-            if (random.nextInt(4) == 0) {
+            if (random.nextInt(3) == 0) {
                 switchLights(false);
             }
         } else {
-            if (random.nextInt(5) > 0) {
+            if (random.nextInt(4) == 0) {
                 switchLights(true);
                 lightsOffCount = 0;
             } else {
