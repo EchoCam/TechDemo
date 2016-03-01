@@ -10,7 +10,7 @@ import com.jme3.math.Vector3f;
  *
  * @author tr393
  */
-public abstract class LocationEvent extends DemoEvent {
+public abstract class LocationEvent extends ConditionEvent {
 
     BoundingBox bound;
 
@@ -26,12 +26,11 @@ public abstract class LocationEvent extends DemoEvent {
         super(id);
         this.bound = bound;
     }
-
-    public void checkAndFireEvent(MainApplication app, Vector3f playerLoc) {
+    @Override
+    public boolean checkCondition(MainApplication app) {
         // Capsule not supported by jMonkey :(
-        BoundingSphere playerBound = new BoundingSphere(MainApplication.HALFCHARHEIGHT, playerLoc);
-        if (bound.intersects(playerBound)) {
-            onDemoEvent(app);
-        }
+        BoundingSphere playerBound =
+                new BoundingSphere(MainApplication.HALFCHARHEIGHT, app.getPlayerControl().getPhysicsLocation());
+        return bound.intersects(playerBound);
     }
 }

@@ -19,7 +19,7 @@ public class DemoScene {
     private ArrayList<Vector3f> startLocs = new ArrayList<Vector3f>();
     private ArrayList<Vector3f> startDirs = new ArrayList<Vector3f>();
     public BaseBundle properties = new BaseBundle();
-    public ArrayList<LocationEvent> locEvents = new ArrayList<>();
+    public ArrayList<ConditionEvent> condEvents = new ArrayList<>();
     public ArrayList<DemoLight> lights = new ArrayList<>();
     public ArrayList<AbstractShadowRenderer> shadowRenderers = new ArrayList<>();
     public ArrayList<DemoObject> objects = new ArrayList<>();

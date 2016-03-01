@@ -70,11 +70,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public final static boolean DEBUG = false;
     public final static float HALFCHARHEIGHT = 3;
+    public final static ColorRGBA LIGHTCOLOUR = ColorRGBA.Gray;
     public HashMap<String, DemoScene> routes = new HashMap<>();
 
     private Random random = new Random();
     private float timeCounter = 0;
-    private boolean lightsOn;
+    private boolean lightsOn = true;
+    private boolean isFlickering = false;
+    
     private Node playerNode;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
@@ -87,8 +90,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
-    private ArrayDeque<LocationEvent> locEventBus = new ArrayDeque<>();
-    private HashMap<String, ArrayDeque<DemoTask>> taskEventBus = new HashMap<>();
+    private ArrayDeque<ConditionEvent> pollEventBus = new ArrayDeque<>();
+    private HashMap<String, ArrayDeque<DemoTask>> taskBus = new HashMap<>();
     private Spatial currentWorld;
     private DemoScene currentScene;
     private Nifty nifty;
@@ -246,12 +249,12 @@ public class MainApplication extends SimpleApplication implements ActionListener
         // Debug Options//
         if (DEBUG) {
             bulletAppState.setDebugEnabled(true);
-            Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
-            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.getAdditionalRenderState().setWireframe(true);
-            mat.setColor("Color", ColorRGBA.Green);
-            g.setMaterial(mat);
-            playerNode.attachChild(g);
+//            Geometry g = new Geometry("wireframe cube", new WireBox(HALFCHARHEIGHT / 2, HALFCHARHEIGHT, HALFCHARHEIGHT / 2));
+//            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//            mat.getAdditionalRenderState().setWireframe(true);
+//            mat.setColor("Color", ColorRGBA.Green);
+//            g.setMaterial(mat);
+//            playerNode.attachChild(g);
         }
     }
 
@@ -261,7 +264,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
         bulletAppState.getPhysicsSpace().remove(landscape);
-        for (DemoObject object : currentScene.objects) {
+        for (DemoObject object : getCurrentScene().objects) {
             // TODO clean up lights not being removed from rooms?
             Spatial spatial = object.getSpatial();
             if (object.isIsMainParent()) {
@@ -278,14 +281,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
             bulletAppState.getPhysicsSpace().remove(r);
         }
 
-        for (DemoLight l : currentScene.lights) { // FIXME should do a search
+        for (DemoLight l : getCurrentScene().lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
-        for (AbstractShadowRenderer plsr : currentScene.shadowRenderers) {
+        for (AbstractShadowRenderer plsr : getCurrentScene().shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-        for (LocationEvent oldEvent : currentScene.locEvents) {
-            locEventBus.remove(oldEvent);
+        for (ConditionEvent oldEvent : getCurrentScene().condEvents) {
+            getPollEventBus().remove(oldEvent);
         }
 
         // Load new route (route)
@@ -329,14 +332,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //            bulletAppState.getPhysicsSpace().add(rbc);
 //            this.currentRoute.objects.add(draggedObject);
 //            this.currentRoute.interactions.put(spatial, previousRoute.interactions.get(draggedObject))
-            for (DemoLight dLight : currentScene.lights) {
+            for (DemoLight dLight : getCurrentScene().lights) {
                 draggedObject.getSpatial().addLight(dLight.light);
             }
             playerNode.attachChild(draggedObject.getSpatial());
         }
         // TODO this the proper way
-        if (currentScene.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
-            for (DemoObject object : currentScene.objects) {
+        if (getCurrentScene().getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
+            for (DemoObject object : getCurrentScene().objects) {
                 if (object.getObjId().equals("crate2")) {
                     RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
                     bulletAppState.getPhysicsSpace().remove(rbc);
@@ -366,8 +369,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //        for (AbstractShadowRenderer plsr : route.shadowRenderers) {
 //             viewPort.addProcessor(plsr); // Disabled shadows for now
 //        }
-        for (LocationEvent newEvent : route.locEvents) {
-            locEventBus.add(newEvent);
+        for (ConditionEvent newEvent : route.condEvents) {
+            getPollEventBus().add(newEvent);
         }
 
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
@@ -376,7 +379,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         bulletAppState.getPhysicsSpace().add(landscape);
         
         currentScene.onLoad();
-        
+
         // TODO freeze for a second
         playerControl.setPhysicsLocation(route.getStartLocs().get(entIndex));
         cam.lookAtDirection(route.getStartDirs().get(entIndex), Vector3f.UNIT_Y);
@@ -423,8 +426,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
     @Override
     public void simpleUpdate(float tpf) {
         timeCounter += tpf;
-//        if (FastMath.floor(timeCounter*10) % 10 == 0) flickerLights();
-
+        if (isFlickering) {
+            if (FastMath.floor(timeCounter*20) % 20 == 0) flickerLights();
+        }
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
 //         System.out.println(spat.getName());
@@ -474,15 +478,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             // Check global location event queue
-            for (LocationEvent e : locEventBus) {
-                // TODO cleanup
-                e.checkAndFireEvent(this, playerControl.getPhysicsLocation());
-//                if (e.checkCondition(playerControl.getPhysicsLocation())) {
-//                    e.onDemoEvent(this);
-//                }
+            for (ConditionEvent e : new ArrayDeque<>(getPollEventBus())) {
+                if (e.checkCondition(this)) {
+                    e.onDemoEvent(this);
+                }
             }
             // Update task queue
-            ArrayDeque<ArrayDeque<DemoTask>> x = new ArrayDeque<>(taskEventBus.values());
+            ArrayDeque<ArrayDeque<DemoTask>> x = new ArrayDeque<>(taskBus.values());
             for (ArrayDeque<DemoTask> queue : x) {
                 DemoTask task = queue.peek();
                 task.updateTime(tpf);
@@ -492,7 +494,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     task.onComplete();
                     queue.pop();
                     if (queue.isEmpty()) {
-                        taskEventBus.remove(task.getTaskQueueId());
+                        taskBus.remove(task.getTaskQueueId());
                     }
                 }
             }
@@ -500,14 +502,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void addTask(DemoTask task) {
-        ArrayDeque<DemoTask> taskQueue = taskEventBus.get(task.getTaskQueueId());
+        ArrayDeque<DemoTask> taskQueue = taskBus.get(task.getTaskQueueId());
         if (taskQueue != null) {
             taskQueue.add(task);
         } else {
             taskQueue = new ArrayDeque<>();
             taskQueue.add(task);
-            taskEventBus.put(task.getTaskQueueId(), taskQueue);
+            taskBus.put(task.getTaskQueueId(), taskQueue);
         }
+    }   
+    public void addTaskQueue(String taskQueueId, ArrayDeque<DemoTask> taskQueue) {
+        taskBus.put(taskQueueId, taskQueue);
     }
 
     @Override
@@ -616,7 +621,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void drag(Spatial spatial) {
-        for (DemoObject object : currentScene.objects) {
+        for (DemoObject object : getCurrentScene().objects) {
             if (object.getSpatial() == spatial)
                 draggedObject = object;
         }
@@ -669,24 +674,49 @@ public class MainApplication extends SimpleApplication implements ActionListener
         gameScreen.flushDialogueTextSequence();
         gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
-
+    
+    public void setFlickering(boolean x) {
+        isFlickering = x;
+    }
+    
     public void flickerLights() {
         if (lightsOn) {
             if (random.nextInt(4) == 0) {
                 setLight(false);
             }
         } else {
-            if (random.nextInt(4) == 0) {
+            if (random.nextInt(4) > 0) {
                 setLight(true);
             }
         }
     }
     private void setLight(boolean on) {
         System.out.println(on);
-        ColorRGBA col = on ? ColorRGBA.White : ColorRGBA.Black;
-        for (DemoLight dLight : currentScene.lights) {
+        ColorRGBA col = on ? LIGHTCOLOUR : ColorRGBA.Black;
+        for (DemoLight dLight : getCurrentScene().lights) {
             dLight.light.setColor(col);
         }
         lightsOn = on;
+    }
+
+    /**
+     * @return the pollEventBus
+     */
+    public ArrayDeque<ConditionEvent> getPollEventBus() {
+        return pollEventBus;
+    }
+
+    /**
+     * @return the currentScene
+     */
+    public DemoScene getCurrentScene() {
+        return currentScene;
+    }
+
+    /**
+     * @return the bulletAppState
+     */
+    public BulletAppState getBulletAppState() {
+        return bulletAppState;
     }
 }

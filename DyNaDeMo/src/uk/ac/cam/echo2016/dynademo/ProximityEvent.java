@@ -19,17 +19,13 @@ public abstract class ProximityEvent extends LocationEvent {
         super(id, bound);
         this.object = object;
     }
-
+    
     @Override
-    public void checkAndFireEvent(MainApplication app, Vector3f playerLoc) {
+    public boolean checkCondition(MainApplication app) {
         for (DemoObject activator : activators) {
-            if (bound.intersects(activator.getBound())) {
-                onDemoEvent(app);
-            }
+            if (bound.intersects(activator.getBound())) return true;
         }
-        BoundingSphere playerBound = new BoundingSphere(MainApplication.HALFCHARHEIGHT, playerLoc);
-        if (bound.intersects(playerBound)) {
-            onDemoEvent(app);
-        }
+        BoundingSphere playerBound = new BoundingSphere(MainApplication.HALFCHARHEIGHT, app.getPlayerControl().getPhysicsLocation());
+        return bound.intersects(playerBound);
     }
 }

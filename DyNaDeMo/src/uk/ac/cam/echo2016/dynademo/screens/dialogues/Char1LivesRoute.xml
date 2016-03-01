@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <protagonist name="None">
-    <dialogue speaker="You" id="You1">
-        <text nextID="END">Char1 lives</text>
+    <dialogue speaker="Head" id="You1">
+        <text nextID="You2">Timangelise lives. Conglaturation!!!</text>
     </dialogue>
-    
+    <dialogue speaker="Head" id="You2">
+        <text nextID="You3">But...</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You3">
+        <text nextID="You4">It looks Rojatom hasn't come out.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You4">
+        <text nextID="You5">I wonder why? Hehehehe...</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You5">
+        <text nextID="You6">Funny he chose to run to me instead of escaping.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You6">
+        <text nextID="You7">I guess he didn't make the RIGHT choice? Hehe...</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You7">
+        <text nextID="END">It is possible for both of you to live. Try again?</text>
+    </dialogue>
     <dialogue id="END"></dialogue>
 </protagonist>

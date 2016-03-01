@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <protagonist name="None">
-    <dialogue speaker="You" id="You1">
-        <text nextID="END">Both die</text>
+    <dialogue speaker="Head" id="You1">
+        <text nextID="You2">Hehehe. So it seems Timangelise and Rojatom both died. How tragic...</text>
     </dialogue>
-    
+    <dialogue speaker="Head" id="You2">
+        <text nextID="You3">Think back to the choices you made.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You3">
+        <text nextID="You4">Rojatam was right, Timangelise and Rojatam have to work together to get out of the rooms.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You4">
+        <text nextID="You5">Could going to the pill room have been avoided? Was there another path that would open out?</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You5">
+        <text nextID="You6">Hehehe. Also, here's a hint: when in doubt, your best bet would the RIGHT choice.</text>
+    </dialogue>
+    <dialogue speaker="Head" id="You6">
+        <text nextID="END">It is possible for both of you to live. Try again?</text>
+    </dialogue>
     <dialogue id="END"></dialogue>
 </protagonist>
