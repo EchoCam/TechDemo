@@ -31,6 +31,7 @@ public class DoorObject extends KinematicDemoObject implements InteractableObjec
                     queueRotation(app, 2f, Vector3f.UNIT_Y, -openAngle);
                 }
                 open = !open;
+                isActive = false;
             }
         }
     }
