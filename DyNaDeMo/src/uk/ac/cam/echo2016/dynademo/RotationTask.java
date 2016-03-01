@@ -11,7 +11,7 @@ public class RotationTask extends KinematicTask {
     private float angularSpeed; // Rad/s
     private Vector3f axis;
     private Vector3f endRotation;
-    
+
     /**
      *
      * @param taskQueueId - Id for the event time slot
@@ -41,7 +41,7 @@ public class RotationTask extends KinematicTask {
     @Override
     public void onComplete() {
         if (endRotation != null) {
-//            System.out.println(getObject().getSpatial().getLocalRotation());
+            
             getObject().getSpatial().getLocalRotation().fromAngleAxis(endRotation.length(),endRotation.normalize());
 //            getObject().getSpatial().setLocalRotation(new Quaternion().fromAngles(endRotation.x, endRotation.y, endRotation.z));
         }

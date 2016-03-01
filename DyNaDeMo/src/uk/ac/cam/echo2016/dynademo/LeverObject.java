@@ -22,7 +22,7 @@ public class LeverObject extends KinematicDemoObject implements InteractableObje
     @Override
     public void interact(MainApplication app) {
         DemoScene leverRoute = app.routes.get("LeverRoute");
-        if (leverCount < 9) {
+        if (leverCount < 10) {
             this.cpe.setActionTaken(!this.cpe.getActionTaken());
             if (leverCount % 2 == 0) {
                 queueRotation(app, 0.2f, new Vector3f(1f, 0f, 0), -FastMath.PI / 2);

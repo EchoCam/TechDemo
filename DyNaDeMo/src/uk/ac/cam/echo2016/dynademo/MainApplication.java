@@ -480,8 +480,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
             ArrayDeque<ArrayDeque<DemoTask>> x = new ArrayDeque<>(taskBus.values());
             for (ArrayDeque<DemoTask> queue : x) {
                 DemoTask task = queue.peek();
-                task.onTimeStep(tpf);
                 task.updateTime(tpf);
+                task.onTimeStep(tpf);
                 if (task.isFinished()) {
 //                    System.out.println("TaskType: " + task.getClass() + " from queue: " + task.getTaskQueueId() + " completed");
                     task.onComplete();
