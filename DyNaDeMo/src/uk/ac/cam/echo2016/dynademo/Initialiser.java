@@ -212,8 +212,6 @@ public class Initialiser {
         Spatial heWhoMustNotBeNamed = app.getAssetManager().loadModel("Models/Head.j3o");
         HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
         ohGreatOne.getLights().add(lightMap.get("RoomLight"));
-       
-        
         
         final ConditionEvent lookAt = new OnceConditionEvent("HeadSpawnLookAt") {
             private final Vector3f centre = new Vector3f(-10, 0, -10);
@@ -229,7 +227,7 @@ public class Initialiser {
                 app.setFlickering(true);
                 // initiate move sequence for head
                 // start event polling for contact
-//                tRoute.condEvents.add()
+//                app.getPollEventBus().add();
             }
         };
         
@@ -248,7 +246,7 @@ public class Initialiser {
 
             @Override
             public void onDemoEvent(MainApplication app) {
-                tRoute.condEvents.add(lookAt);
+                app.getPollEventBus().add(lookAt);
             }
         };
         tRoute.condEvents.add(tLocEvent);
@@ -259,8 +257,8 @@ public class Initialiser {
 
         tRoute.objects.add(ohGreatOne);
         
-        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(15,1,15), 5,14,5));
-        tRoute.condEvents.add(tSyncPointEvent);
+//        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(15,1,15), 5,14,5));
+//        tRoute.condEvents.add(tSyncPointEvent);
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -632,7 +630,7 @@ public class Initialiser {
     
     private static DemoLight addLight(final MainApplication app, DemoScene route, Vector3f loc, String[] spatialNames) {
         PointLight l = new PointLight();
-        l.setColor(ColorRGBA.Gray);
+        l.setColor(MainApplication.LIGHTCOLOUR);
         l.setPosition(loc);
         l.setRadius(1000f);
 

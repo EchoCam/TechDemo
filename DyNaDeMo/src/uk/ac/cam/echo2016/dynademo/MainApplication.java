@@ -70,6 +70,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public final static boolean DEBUG = false;
     public final static float HALFCHARHEIGHT = 3;
+    public final static ColorRGBA LIGHTCOLOUR = ColorRGBA.Gray;
     public HashMap<String, DemoScene> routes = new HashMap<>();
 
     private Random random = new Random();
@@ -423,7 +424,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public void simpleUpdate(float tpf) {
         timeCounter += tpf;
         if (isFlickering) {
-            if (FastMath.floor(timeCounter*10) % 10 == 0) flickerLights();
+            if (FastMath.floor(timeCounter*20) % 20 == 0) flickerLights();
         }
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
@@ -474,7 +475,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             // Check global location event queue
-            for (ConditionEvent e : getPollEventBus()) {
+            for (ConditionEvent e : new ArrayDeque<>(getPollEventBus())) {
                 if (e.checkCondition(this)) {
                     e.onDemoEvent(this);
                 }
@@ -681,14 +682,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 setLight(false);
             }
         } else {
-            if (random.nextInt(4) == 0) {
+            if (random.nextInt(4) > 0) {
                 setLight(true);
             }
         }
     }
     private void setLight(boolean on) {
         System.out.println(on);
-        ColorRGBA col = on ? ColorRGBA.White : ColorRGBA.Black;
+        ColorRGBA col = on ? LIGHTCOLOUR : ColorRGBA.Black;
         for (DemoLight dLight : currentScene.lights) {
             dLight.light.setColor(col);
         }
