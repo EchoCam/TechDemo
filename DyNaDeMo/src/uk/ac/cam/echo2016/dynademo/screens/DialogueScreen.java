@@ -61,7 +61,11 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
         return dialogue.isEnd();
         
     }
-
+    
+    public String process(String text) {
+        return text;
+    }
+ 
     public void advanceText() {
         if (this.isEnd()) {
             if (eventOnClose != null) {
@@ -70,15 +74,15 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
                 nifty.gotoScreen("game");
             }
         }
-        String text = dialogue.getDialogueText();
-        String chara = dialogue.getSpeakingCharacter();
+        String text = process(dialogue.getDialogueText());
+        String chara = process(dialogue.getSpeakingCharacter());
 
         if (dialogue.hasOptions()) {
             final NodeList options = dialogue.getDialogueOptionsNodes();
             System.out.println(options.getLength());
             for (int i = 0; i < options.getLength(); i++) {
                 Element opt = nifty.getScreen("dialogue").findElementByName("option" + i);
-                opt.getRenderer(TextRenderer.class).setText(options.item(i).getTextContent());
+                opt.getRenderer(TextRenderer.class).setText(process(options.item(i).getTextContent()));
             }   
         } else {
             for (int i = 0; i < 3; i++) {
