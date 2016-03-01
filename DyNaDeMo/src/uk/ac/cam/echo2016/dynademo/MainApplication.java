@@ -74,7 +74,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     private Random random = new Random();
     private float timeCounter = 0;
-    private boolean lightsOn;
+    private boolean lightsOn = true;
+    private boolean isFlickering = false;
+    
     private Node playerNode;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
@@ -284,7 +286,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             viewPort.removeProcessor(plsr);
         }
         for (ConditionEvent oldEvent : currentScene.condEvents) {
-            pollEventBus.remove(oldEvent);
+            getPollEventBus().remove(oldEvent);
         }
 
         // Load new route (route)
@@ -366,7 +368,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //             viewPort.addProcessor(plsr); // Disabled shadows for now
 //        }
         for (ConditionEvent newEvent : route.condEvents) {
-            pollEventBus.add(newEvent);
+            getPollEventBus().add(newEvent);
         }
 
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
@@ -420,8 +422,9 @@ public class MainApplication extends SimpleApplication implements ActionListener
     @Override
     public void simpleUpdate(float tpf) {
         timeCounter += tpf;
-//        if (FastMath.floor(timeCounter*10) % 10 == 0) flickerLights();
-
+        if (isFlickering) {
+            if (FastMath.floor(timeCounter*10) % 10 == 0) flickerLights();
+        }
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
 //         System.out.println(spat.getName());
@@ -471,7 +474,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             // Check global location event queue
-            for (ConditionEvent e : pollEventBus) {
+            for (ConditionEvent e : getPollEventBus()) {
                 if (e.checkCondition(this)) {
                     e.onDemoEvent(this);
                 }
@@ -667,7 +670,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
         gameScreen.flushDialogueTextSequence();
         gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
-
+    
+    public void setFlickering(boolean x) {
+        isFlickering = x;
+    }
+    
     public void flickerLights() {
         if (lightsOn) {
             if (random.nextInt(4) == 0) {
@@ -686,5 +693,12 @@ public class MainApplication extends SimpleApplication implements ActionListener
             dLight.light.setColor(col);
         }
         lightsOn = on;
+    }
+
+    /**
+     * @return the pollEventBus
+     */
+    public ArrayDeque<ConditionEvent> getPollEventBus() {
+        return pollEventBus;
     }
 }

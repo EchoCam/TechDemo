@@ -406,10 +406,38 @@ public class Initialiser {
                 
         // EVENTS
         
-        tLocEvent = new LocationEvent(("HeadSpawn"), new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
+        final ConditionEvent lookAt = new OnceConditionEvent("HeadSpawnLookAt") {
+            @Override
+            public boolean checkCondition(MainApplication app) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+            
+            @Override
+            public void performAction(MainApplication app) {
+                app.setFlickering(true);
+                // initiate move sequence for head
+                // start event polling for contact
+//                tRoute.condEvents.add()
+            }
+        };
+        
+        final ConditionEvent lookAway = new OnceConditionEvent("HeadSpawnLookaway") {
+            @Override
+            public boolean checkCondition(MainApplication app) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+            
+            @Override
+            public void performAction(MainApplication app) {
+                tRoute.condEvents.add(lookAt);
+                app.setFlickering(true);
+            }
+        };
+        
+        tLocEvent = new LocationEvent(("HeadSpawnStart"), new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
             @Override
             public void onDemoEvent(MainApplication app) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                tRoute.condEvents.add(lookAway);
             }
         };
         tRoute.condEvents.add(tLocEvent);
