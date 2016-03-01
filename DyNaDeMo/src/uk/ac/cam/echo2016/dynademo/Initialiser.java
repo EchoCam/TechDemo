@@ -11,6 +11,7 @@ import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.PointLight;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
