@@ -1,24 +1,19 @@
 package uk.ac.cam.echo2016.dynademo;
 
-import com.jme3.bounding.BoundingBox;
-import com.jme3.bounding.BoundingSphere;
-import com.jme3.bullet.control.RigidBodyControl;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingSphere;
 import com.jme3.light.PointLight;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.Camera.FrustumIntersect;
-import static com.jme3.renderer.Camera.FrustumIntersect.Inside;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
-import java.util.ArrayList;
-
-import java.util.HashMap;
 
 /**
  * @author tr393
@@ -214,9 +209,15 @@ public class Initialiser {
 //        final HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
 //        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
         
-        final ConditionEvent lookAt = new ConditionEvent("HeadSpawnLookAt", true) {
+        class HeadLookAtEvent extends ConditionEvent {
             private final Vector3f centre = new Vector3f(-10, 0, -10);
             private final float radius = 2f;
+            private HeadObject head;
+            public HeadLookAtEvent(String id, boolean onceOnly , HeadObject head) {
+                super(id, onceOnly);
+                this.head = head;
+                
+            }
             
             @Override
             public boolean checkCondition(MainApplication app) {
@@ -229,10 +230,10 @@ public class Initialiser {
                 app.setFlickering(true);
                 // initiate move sequence for head
                 // start event polling for contact
-//                app.getPollEventBus().add();
+                app.addTask(new HeadMoveTask(head.getObjId(),100f, head, app));
             }
         };
-        
+                
         tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
             private final Vector3f centre = new Vector3f(-10, 0, -10);
             private final float radius = 2f;
@@ -257,8 +258,7 @@ public class Initialiser {
                 app.getRootNode().attachChild(theUnnamed);
 //                RigidBodyControl rbc = new RigidBodyControl(0);
 //                app.getBulletAppState().getPhysicsSpace().add(rbc);
-                
-                app.getPollEventBus().add(lookAt);
+                app.getPollEventBus().add(new HeadLookAtEvent("HeadSpawnLookAt", true, theUnnamedObj));
             }
         };
         tRoute.condEvents.add(tLocEvent);

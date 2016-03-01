@@ -9,13 +9,16 @@ public class HeadMoveTask extends DemoTask {
     public HeadMoveTask(String taskQueueId, float completionTime, HeadObject headOjb, MainApplication app) {
         super(taskQueueId, completionTime);
         this.headObj = headOjb;
+        this.app = app;
     }
     
     @Override
     public void onTimeStep(float timePassed){
-        if (app.getLightsOn() && prevLight == false && app.getLightsOffCount() > 10) {
+        if (app.getLightsOn() && prevLight == false) {
+            System.out.println(app.getLightsOffCount());
             moveHead();
         }
+        resetTime();
         prevLight = app.getLightsOn();
     }
     public void moveHead() {
