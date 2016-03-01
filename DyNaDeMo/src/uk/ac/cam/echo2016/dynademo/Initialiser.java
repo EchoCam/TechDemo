@@ -503,12 +503,12 @@ public class Initialiser {
         };
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 18f, 0), new Vector3f(-35, 8, 0), new Vector3f(70, 8, 0),
+            new Vector3f(-10, 18f, 0), new Vector3f(-35, 8, 0), new Vector3f(70, 8, 0),
             new Vector3f(5, 18, -20), new Vector3f(5, 18, -40), new Vector3f(5,8,-70)
         };
 
         tLightAffected = new String[][]{
-            {"PuzzleRoom"}, {"PuzzleLeverC"}, {"MRoomPuzzleRoomC"}, 
+            {"PuzzleRoom"}, {"PuzzleLeverC"}, {"MRoomPuzzleC"}, 
             {"PuzzleTallC1"}, {"PuzzleTallC2"}, {"PuzzleEscapeC"}
         };
 
@@ -539,8 +539,9 @@ public class Initialiser {
         // Door
         Spatial door1 = extractDoor(app, 0);
 
-        door1.setLocalTranslation(0,0,0);//5f, 0f, -9.99f);
-        final PanelObject doorObj1 = new PanelObject("door1", door1, 1f, true, null, new Vector3f(10f, 9f, 2.5f), new Vector3f(10f, 0f, 2.5f));
+        door1.setLocalTranslation(2.5f,0,-9.99f);
+        //door1.setLocalRotation();
+        final PanelObject doorObj1 = new PanelObject("door1", door1, 1f, true, null, new Vector3f(0,0,0), new Vector3f(0,0,0));//10f, 9f, 2.5f), new Vector3f(10f, 0f, 2.5f));
         doorObj1.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(doorObj1);
         
