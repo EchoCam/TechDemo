@@ -356,7 +356,7 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor"}
+            {"LeverRoom"}, {"PuzzleLeverC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
@@ -401,7 +401,7 @@ public class Initialiser {
     
     private static void addObservationRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(-5, HALFCHARHEIGHT + 1.0f, -30));
+        locList.add(new Vector3f(40, HALFCHARHEIGHT + 1.0f, -20));
         dirList.clear();
         dirList.add(new Vector3f(0, 0, 1));
 
@@ -411,28 +411,28 @@ public class Initialiser {
         tLightNames = new String[]{"RoomLight", "CorridorLight1", "CorridorLight2"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0), new Vector3f(-5, 8, -30), new Vector3f(-30, 8, -5)
+            new Vector3f(0, 8, 0), new Vector3f(40, 8, -5), new Vector3f(5, 8, -35)
         };
 
         tLightAffected = new String[][]{
-            {"Room", "Monitor1", "Screen1", "Monitor2", "Screen2"}, {"Corridor1"}, {"Corridor2"}
+            {"ObserveRoom", "ObserveMonitor1", "ObserveMonitor2"}, {"MRoomObserveRoomC"}, {"ObserveButtonDoorsC"}
         };
 
         addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // OBJECTS
-        Spatial door1 = extractDoor(app, 1);
+        /*Spatial door1 = extractDoor(app, 1);
         door1.setLocalTranslation(-15f, 0, -7.5f);
         DoorObject doorObj1 = new DoorObject("doorObj1", door1, 1f, true, null, FastMath.PI*2/3);
         doorObj1.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(doorObj1);
         
         tInterEvent = new InteractionEvent("doorInteraction", doorObj1);
-        tRoute.setInteractable(door1, tInterEvent);
+        tRoute.setInteractable(door1, tInterEvent);*/
                 
         // EVENTS
         
-        final ConditionEvent lookAt = new OnceConditionEvent("HeadSpawnLookAt") {
+        /*final ConditionEvent lookAt = new OnceConditionEvent("HeadSpawnLookAt") {
             @Override
             public boolean checkCondition(MainApplication app) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -466,10 +466,10 @@ public class Initialiser {
                 tRoute.condEvents.add(lookAway);
             }
         };
-        tRoute.condEvents.add(tLocEvent);
+        tRoute.condEvents.add(tLocEvent);*/
         
         
-        tLocEvent = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
+        tLocEvent = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(5, 1, -55), 5, 14, 5));
         tRoute.condEvents.add(tLocEvent);
         
         tRoute.startupTextSequence = new String[]{
