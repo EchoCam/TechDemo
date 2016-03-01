@@ -87,8 +87,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private boolean keyLeft = false, keyRight = false, keyUp = false, keyDown = false;
     private boolean isPaused = false;
     NiftyJmeDisplay pauseDisplay;
-    private ArrayDeque<LocationEvent> locEventBus = new ArrayDeque<>();
-    private HashMap<String, ArrayDeque<DemoTask>> taskEventBus = new HashMap<>();
+    private ArrayDeque<ConditionEvent> pollEventBus = new ArrayDeque<>();
+    private HashMap<String, ArrayDeque<DemoTask>> taskBus = new HashMap<>();
     private Spatial currentWorld;
     private DemoScene currentScene;
     private Nifty nifty;
@@ -283,8 +283,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
         for (AbstractShadowRenderer plsr : currentScene.shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-        for (LocationEvent oldEvent : currentScene.locEvents) {
-            locEventBus.remove(oldEvent);
+        for (ConditionEvent oldEvent : currentScene.condEvents) {
+            pollEventBus.remove(oldEvent);
         }
 
         // Load new route (route)
@@ -365,8 +365,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //        for (AbstractShadowRenderer plsr : route.shadowRenderers) {
 //             viewPort.addProcessor(plsr); // Disabled shadows for now
 //        }
-        for (LocationEvent newEvent : route.locEvents) {
-            locEventBus.add(newEvent);
+        for (ConditionEvent newEvent : route.condEvents) {
+            pollEventBus.add(newEvent);
         }
 
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(currentWorld);
@@ -471,15 +471,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             // Check global location event queue
-            for (LocationEvent e : locEventBus) {
-                // TODO cleanup
-                e.checkAndFireEvent(this, playerControl.getPhysicsLocation());
-//                if (e.checkCondition(playerControl.getPhysicsLocation())) {
-//                    e.onDemoEvent(this);
-//                }
+            for (ConditionEvent e : pollEventBus) {
+                if (e.checkCondition(this)) {
+                    e.onDemoEvent(this);
+                }
             }
             // Update task queue
-            ArrayDeque<ArrayDeque<DemoTask>> x = new ArrayDeque<>(taskEventBus.values());
+            ArrayDeque<ArrayDeque<DemoTask>> x = new ArrayDeque<>(taskBus.values());
             for (ArrayDeque<DemoTask> queue : x) {
                 DemoTask task = queue.peek();
                 task.onTimeStep(tpf);
@@ -489,7 +487,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                     task.onComplete();
                     queue.pop();
                     if (queue.isEmpty()) {
-                        taskEventBus.remove(task.getTaskQueueId());
+                        taskBus.remove(task.getTaskQueueId());
                     }
                 }
             }
@@ -497,17 +495,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void addTask(DemoTask task) {
-        ArrayDeque<DemoTask> taskQueue = taskEventBus.get(task.getTaskQueueId());
+        ArrayDeque<DemoTask> taskQueue = taskBus.get(task.getTaskQueueId());
         if (taskQueue != null) {
             taskQueue.add(task);
         } else {
             taskQueue = new ArrayDeque<>();
             taskQueue.add(task);
-            taskEventBus.put(task.getTaskQueueId(), taskQueue);
+            taskBus.put(task.getTaskQueueId(), taskQueue);
         }
     }   
     public void addTaskQueue(String taskQueueId, ArrayDeque<DemoTask> taskQueue) {
-        taskEventBus.put(taskQueueId, taskQueue);
+        taskBus.put(taskQueueId, taskQueue);
     }
 
     @Override

@@ -27,8 +27,8 @@ public class Initialiser {
     private static String[] tLightNames;
     private static Vector3f[] tLightCoords;
     private static String[][] tLightAffected;
-    private static ArrayList<Vector3f> locList= new ArrayList<Vector3f>();
-    private static ArrayList<Vector3f> dirList= new ArrayList<Vector3f>();
+    private static ArrayList<Vector3f> locList = new ArrayList<>();
+    private static ArrayList<Vector3f> dirList = new ArrayList<>();
     private static HashMap<String, DemoLight> lightMap;
 
     /**
@@ -80,7 +80,7 @@ public class Initialiser {
 
         // EVENTS
         tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5));
-        tRoute.locEvents.add(tLocEvent);
+        tRoute.condEvents.add(tLocEvent);
 
         tRoute.startupTextSequence = new String[]{
             "Press 'e' on to scroll through this text...",
@@ -123,7 +123,7 @@ public class Initialiser {
         // EVENTS
         choiceHandler =
                 new SyncAfterChoiceEvent("Third Select", new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
-        tRoute.locEvents.add(choiceHandler);
+        tRoute.condEvents.add(choiceHandler);
         
         // object physics
         ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null, choiceHandler);
@@ -217,7 +217,7 @@ public class Initialiser {
         tRoute.objects.add(ohGreatOne);
         
         tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(15,1,15), 5,14,5));
-        tRoute.locEvents.add(tSyncPointEvent);
+        tRoute.condEvents.add(tSyncPointEvent);
         
         routes.put(tRoute.getId(), tRoute);
     }
@@ -245,7 +245,7 @@ public class Initialiser {
 
         // EVENTS
         tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5));
-        tRoute.locEvents.add(tSyncPointEvent);
+        tRoute.condEvents.add(tSyncPointEvent);
         
         tRoute.startupTextSequence = new String[]{
             "You have found me.",
@@ -278,7 +278,7 @@ public class Initialiser {
 
         // EVENTS
         tSyncPointEvent = new SyncPointEvent("Fate Decider", new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5));
-        tRoute.locEvents.add(tSyncPointEvent);
+        tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
     }
@@ -309,7 +309,7 @@ public class Initialiser {
 
         // EVENTS
         tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(0, 1, 15), 5, 14, 5));
-        tRoute.locEvents.add(tSyncPointEvent);
+        tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
     }
@@ -358,7 +358,7 @@ public class Initialiser {
         leverObj.getLights().add(lightMap.get("RoomLight"));
 
         // EVENTS
-        tRoute.locEvents.add(choiceHandler);
+        tRoute.condEvents.add(choiceHandler);
 
         // object events
         tRoute.properties.putInt(leverObj.getObjId(), 0);
@@ -405,9 +405,18 @@ public class Initialiser {
         tRoute.setInteractable(door1, tInterEvent);
                 
         // EVENTS
-
+        
+        tLocEvent = new LocationEvent(("HeadSpawn"), new BoundingBox(new Vector3f(7.5f,5f,7.5f),1.5f,5f,1.5f)) {
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
+        tRoute.condEvents.add(tLocEvent);
+        
+        
         tLocEvent = new SyncPointEvent("LeverOrButton", new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
-        tRoute.locEvents.add(tLocEvent);
+        tRoute.condEvents.add(tLocEvent);
         
         tRoute.startupTextSequence = new String[]{
             "Seem familiar?",
@@ -537,7 +546,7 @@ public class Initialiser {
 
         ((ProximityEvent) tLocEvent).activators.add(crateObj1);
         ((ProximityEvent) tLocEvent).activators.add(crateObj2);
-        tRoute.locEvents.add(tLocEvent);
+        tRoute.condEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
         
         tLocEvent = new ProximityEvent("pressurePlate2", bound, plateObj2) {
@@ -549,7 +558,7 @@ public class Initialiser {
 
         ((ProximityEvent) tLocEvent).activators.add(crateObj1);
         ((ProximityEvent) tLocEvent).activators.add(crateObj2);
-        tRoute.locEvents.add(tLocEvent);
+        tRoute.condEvents.add(tLocEvent);
 
         tRoute.startupTextSequence = new String[]{
             "Press 'e' to interact with objects."
@@ -566,10 +575,10 @@ public class Initialiser {
         cspe3 =
                 new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
         
-        tRoute.locEvents.add(tSyncPointEvent);
-        tRoute.locEvents.add(cspe1);
-        tRoute.locEvents.add(cspe2);
-        tRoute.locEvents.add(cspe3);
+        tRoute.condEvents.add(tSyncPointEvent);
+        tRoute.condEvents.add(cspe1);
+        tRoute.condEvents.add(cspe2);
+        tRoute.condEvents.add(cspe3);
 
         routes.put(tRoute.getId(), tRoute);
     }
