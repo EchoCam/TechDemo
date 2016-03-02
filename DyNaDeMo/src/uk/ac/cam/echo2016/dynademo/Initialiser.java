@@ -699,7 +699,16 @@ public class Initialiser {
         dirList.clear();
         dirList.add(new Vector3f(1,0,0));
         
-        tRoute = new DemoScene("Ending", "Scenes/Ending.j3o", locList, dirList);
+        tRoute = new DemoScene("Ending", "Scenes/Ending.j3o", locList, dirList) {
+            @Override
+            public void onLoad() {
+                app.getMusic().stop();
+                AudioNode music = new AudioNode(app.getAssetManager(), "Sound/cheery.wav", false);
+                music.setLooping(true);
+                music.setPositional(false);        
+                music.play();
+            }
+        };
         
         routes.put(tRoute.getId(), tRoute);
         
