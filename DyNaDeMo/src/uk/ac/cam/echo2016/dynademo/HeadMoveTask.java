@@ -46,10 +46,10 @@ public class HeadMoveTask extends DemoTask {
         case 3:
             toMove.multLocal(1f/2f);
             Vector3f displacement3 = app.getPlayerControl().getPhysicsLocation().subtract(headObj.getSpatial().getLocalTranslation()).add(new Vector3f(0,MainApplication.HALFCHARHEIGHT*3/4,0));
-            displacement3.crossLocal(Vector3f.UNIT_Y);
-            displacement3.crossLocal(toMove);
-            System.out.println(displacement3);
-            app.getCamera().lookAtDirection(toMove.negate(), displacement3);
+            Vector3f upDir = displacement3.cross(Vector3f.UNIT_Y);
+            upDir.crossLocal(displacement3);
+            System.out.println(upDir);
+            app.getCamera().lookAtDirection(displacement3.negate(), upDir);
             app.getFlyByCamera().setEnabled(false);
             app.setSpeed(0);
             app.getInputManager().setCursorVisible(false);
@@ -64,10 +64,7 @@ public class HeadMoveTask extends DemoTask {
         headObj.getSpatial().move(toMove);
         
         Vector3f displacement2 = app.getPlayerControl().getPhysicsLocation().subtract(headObj.getSpatial().getLocalTranslation());
-        System.out.println("Displacement2" + displacement2);
-        
         float angle = FastMath.atan(displacement2.z/-displacement2.x);
-        System.out.println("angle " + angle);
                 
         if (displacement2.x > 0) {
             angle = FastMath.PI + angle;
