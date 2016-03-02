@@ -702,11 +702,13 @@ public class Initialiser {
         tRoute = new DemoScene("Ending", "Scenes/Ending.j3o", locList, dirList) {
             @Override
             public void onLoad() {
-                app.getMusic().stop();
-                AudioNode music = new AudioNode(app.getAssetManager(), "Sound/cheery.wav", false);
-                music.setLooping(true);
-                music.setPositional(false);        
-                music.play();
+                if(app.getGameScreen().getRoute().equals("BothLiveRoute")) {
+                    app.getMusic().stop();
+                    AudioNode music = new AudioNode(app.getAssetManager(), "Sound/cheery.wav", false);
+                    music.setLooping(true);
+                    music.setPositional(false);        
+                    music.play();
+                }
             }
         };
         
