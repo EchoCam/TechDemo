@@ -9,7 +9,6 @@ public class HeadMoveTask extends DemoTask {
     private boolean prevLight = false;
     private int prevLightOffCount = 0;
     private int moveCount = 0;
-    private Vector3f prevDisplacement;
     private MainApplication app;
     
     public HeadMoveTask(String taskQueueId, float completionTime, HeadObject headOjb, MainApplication app) {
@@ -31,16 +30,13 @@ public class HeadMoveTask extends DemoTask {
     public void moveHead() {
         Vector3f displacement = app.getPlayerControl().getPhysicsLocation().subtract(headObj.getSpatial().getLocalTranslation());
         System.out.println("Displacement" + displacement);
-        System.out.println("oldDisplacement" + prevDisplacement);
         
-        if (prevDisplacement != null) {
-            float dot = displacement.dot(prevDisplacement);
-            float mag = displacement.length()*prevDisplacement.length();
-            headObj.getSpatial().rotate(0, displacement.angleBetween(prevDisplacement), 0);
-            System.out.println(FastMath.acos(dot/mag));
-            System.out.println(displacement.angleBetween(prevDisplacement));
+        float angle = FastMath.asin(displacement.z/displacement.x);
+        System.out.println("angle " + angle);
+        if (displacement.z*displacement.x > 0) {
+            angle = 180 - angle;
         }
-        prevDisplacement = displacement.clone();
+        headObj.getSpatial().setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
         
         Vector3f toMove = displacement.clone();
         switch (moveCount) {
@@ -60,9 +56,6 @@ public class HeadMoveTask extends DemoTask {
             toMove.multLocal(0f);
         }
         headObj.getSpatial().move(toMove);
-
-//        Vector3f rot = app.getPlayerControl().getViewDirection();
-//        headObj.getSpatial().setLocalRotation(new Quaternion().fromAngleAxis(angle, axis);
             
         moveCount++;
     }

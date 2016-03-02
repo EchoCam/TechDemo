@@ -429,10 +429,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
      */
     @Override
     public void simpleUpdate(float tpf) {
-        timeCounter += tpf;
+        timeCounter ++;
         if (isFlickering) {
             // Every time first 2 decimals are muliple of 20
-            if (FastMath.floor(100*(timeCounter - FastMath.floor(timeCounter))) % 20 == 0) flickerLights();
+            if (timeCounter % 20 == 0) flickerLights();
         }
 //         if (!rootNode.descendantMatches("Models/Crate.blend").isEmpty()) {
 //         Spatial spat = rootNode.descendantMatches("Models/Crate.blend").get(0);
@@ -526,8 +526,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         case "Left":
             keyLeft = isPressed;
             break;
-        case "Right":        Random random = new Random();
-
+        case "Right":
             keyRight = isPressed;
             break;
         case "Up":
@@ -670,7 +669,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void chooseLocation(String routeName) {
-        DemoScene route = routes.get(routeName);
+        DemoScene route = routes.get("Char2DeathRoute");
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }
