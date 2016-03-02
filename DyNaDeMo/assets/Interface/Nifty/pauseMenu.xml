@@ -8,7 +8,7 @@
     <!-- lay out the main menu                   -->
     <!-- +++++++++++++++++++++++++++++++++++++++ -->
     <screen id="pauseMenu" controller="uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen">
-        <layer id="background" childLayout="center" backgroundColor="#f00f">
+        <layer id="background" childLayout="center" backgroundColor="#000f">
         </layer>
         <layer id="foreground" childLayout="vertical">
             <panel id="panel_top" height="25%" width="75%" align="center" childLayout="center">  

@@ -10,26 +10,32 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.builder.TextBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import uk.ac.cam.echo2016.dynademo.DialogueEvent;
 
 public class DialogueScreen extends AbstractAppState implements ScreenController {
 
     private Nifty nifty;
-    private Screen screen;
     private MainApplication app;
+    private Screen screen;
     private DemoDialogue dialogue;
+    private DialogueEvent eventOnClose;
 
     public DialogueScreen() {
         super();
         
     }
+    
+    public void setEventOnClose(DialogueEvent theEvent) {
+        eventOnClose = theEvent;
+    }
 
     public void setDialogue(String dialogue_location) {
         dialogue = new DemoDialogue(this.getClass().getResourceAsStream("dialogues/" + dialogue_location + ".xml"));
+        eventOnClose = null;
     }
     
     public void jumpToDialogue(String dialogId) {
@@ -55,20 +61,38 @@ public class DialogueScreen extends AbstractAppState implements ScreenController
         return dialogue.isEnd();
         
     }
-
+    
+    /**
+     * Process any text that comes from the dialogue.xml.
+     * 
+     * Mainly used to implement global character names, using a huge hack.
+     * @param text
+     * @return 
+     */
+    public String process(String text) {
+        //sweet mofo of a hack
+        text = text.replace("Timangelise", app.CHAR_1);
+        text = text.replace("Rojatom", app.CHAR_2);
+        return text;
+    }
+ 
     public void advanceText() {
         if (this.isEnd()) {
-            nifty.gotoScreen("game");
+            if (eventOnClose != null) {
+                eventOnClose.onDemoEvent(app);
+            } else {
+                nifty.gotoScreen("game");
+            }
         }
-        String text = dialogue.getDialogueText();
-        String chara = dialogue.getSpeakingCharacter();
+        String text = process(dialogue.getDialogueText());
+        String chara = process(dialogue.getSpeakingCharacter());
 
         if (dialogue.hasOptions()) {
             final NodeList options = dialogue.getDialogueOptionsNodes();
             System.out.println(options.getLength());
             for (int i = 0; i < options.getLength(); i++) {
                 Element opt = nifty.getScreen("dialogue").findElementByName("option" + i);
-                opt.getRenderer(TextRenderer.class).setText(options.item(i).getTextContent());
+                opt.getRenderer(TextRenderer.class).setText(process(options.item(i).getTextContent()));
             }   
         } else {
             for (int i = 0; i < 3; i++) {

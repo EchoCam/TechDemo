@@ -1,5 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import com.jme3.audio.AudioNode;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
 import java.util.ArrayList;
@@ -7,14 +8,24 @@ import java.util.HashMap;
 
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
+import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
+
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.PointLight;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PointLightShadowRenderer;
+import java.util.ArrayList;
+
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import uk.ac.cam.echo2016.dynademo.screens.DialogueScreen;
+import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 
 /**
  * @author tr393
@@ -22,6 +33,8 @@ import com.jme3.shadow.PointLightShadowRenderer;
 public class Initialiser {
 
     private static DemoScene tRoute;
+    private static Spatial tDoor;
+    private static DoorObject tDoorObj;
     private static LocationEvent tLocEvent;
     private static InteractionEvent tInterEvent;
     private static SyncPointEvent tSyncPointEvent;
@@ -51,37 +64,88 @@ public class Initialiser {
         addEndingRoute(app, routes);
         return routes;
     }
-    
+
     private static void addBedroomRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 0));
-        locList.add(new Vector3f(-65, HALFCHARHEIGHT + 1.0f,-15));
-        
+
         dirList.clear();
-        dirList.add(new Vector3f(1,0,0));
-        dirList.add(new Vector3f(-1,0,0));
+        dirList.add(new Vector3f(1, 0, 0));
         tRoute = new DemoScene("BedroomRoute", "Scenes/BedroomRoute.j3o", locList, dirList);
 
         // LIGHTS
         tLightNames = new String[]{
             "RoomLight1", "RoomLight2", "RoomLight3", "RoomLight4",
             "RoomLight5", "RoomLight6", "CorridorLight1", "CorridorLight2",
-            "MeetingRoomLight"};
+            "MeetingRoomLight"
+        };
 
         tLightCoords = new Vector3f[]{
             new Vector3f(0f, 6f, 0f), new Vector3f(25f, 6f, 0f), new Vector3f(25f, 6f, -30f),
             new Vector3f(0f, 6f, -30f), new Vector3f(-25f, 6f, -30f), new Vector3f(-25f, 6f, 0f),
-            new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f), new Vector3f(-70,8,-15)};
+            new Vector3f(25f, 6f, -15f), new Vector3f(-25f, 6f, -15f), new Vector3f(-70, 6, -15)
+        };
 
         tLightAffected = new String[][]{
-            {"Room1"}, {"Room2"}, {"Room3"}, {"Room4"},
-            {"Room5"}, {"Room6"}, {"Corridor"}, {"Corridor", "MeetingRoom"},{"MeetingRoom","Corridor"}};
+            {"BedRoom1"}, {"BedRoom2"}, {"BedRoom3"}, {"BedRoom4"},
+            {"BedRoom5"}, {"BedRoom6"}, {"BedRoomMRoomC"}, {"BedRoomMRoomC"}, {"MRoom", "MRoomTable"}
+        };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // OBJECTS
+        tDoor = extractDoor(app, 0);
+        tDoor.setLocalTranslation(-59, 0, -12.5f);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-67.5f, 0, -30);
+        tDoor.rotate(0, -FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-72.5f, 0, 0);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        
         // EVENTS
-        tLocEvent = new SyncPointEvent("Puzzle Or Observation", false, new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5));
+        
+        
+        final DialogueEvent showCharacterScreen = new DialogueEvent("ShowFirstChars") {
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                try {
+                    app.getNarrativeInstance().startRoute(app.getGameScreen().getRoute());
+                    app.getNarrativeInstance().endRoute(app.getGameScreen().getRoute());
+                } catch (GraphElementNotFoundException ex) {
+                    Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                app.getNifty().gotoScreen("characterSelect");
+            }
+        };
+
+        tLocEvent = new LocationEvent("StartConversation", false, new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5)) {
+            @Override
+            public void performAction(MainApplication app) {
+                DialogueScreen theDialogue = app.getDialogueScreen();
+                theDialogue.setDialogue("MeetingRoom1");
+                theDialogue.setCharacter("Timangelise");
+                theDialogue.setEventOnClose(showCharacterScreen);
+                app.getNifty().gotoScreen("dialogue");
+            }
+        };
+
         tRoute.condEvents.add(tLocEvent);
+        /*tLocEvent = new SyncPointEvent("Puzzle Or Observation", new BoundingBox(new Vector3f(-70, 1, -15), 5, 14, 5));
+         tRoute.condEvents.add(tLocEvent);*/
 
         tRoute.startupTextSequence = new String[]{
             "Press 'e' on to scroll through this text...",
@@ -94,114 +158,225 @@ public class Initialiser {
     private static void addButtonRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         final SyncAfterChoiceEvent choiceHandler;
         locList.clear();
-        locList.add(new Vector3f(-40, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(-55, HALFCHARHEIGHT + 1.0f, 35));
         dirList.clear();
         dirList.add(new Vector3f(1, 0, 0));
-                
 
-        tRoute = new DemoScene("ButtonRoute", "Scenes/ButtonRoute.j3o", locList, dirList);
+
+        tRoute = new DemoScene("ButtonRoute", "Scenes/ButtonRoute.j3o", locList, dirList) {
+            @Override
+            public void onLoad() {
+                for(DemoObject object: app.routes.get("PuzzleRoom").objects) {
+                    app.getRootNode().attachChild(object.getSpatial());
+                }
+            }
+            @Override
+            public void onUnload() {
+                for(DemoObject object: app.routes.get("PuzzleRoom").objects) {
+                    app.getRootNode().detachChild(object.getSpatial());
+                }
+            }
+        };
 
         // LIGHTS
-        tLightNames = new String[]{"RoomLight", "CorridorLight1", "CorridorLight2"};
+        tLightNames = new String[]{"ButtonRoomLight", "EntryCorridorLight", "ExitCorridorLight",
+                                    "PuzzleRoomLight", "DoorsRoomLight"
+        };
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0), new Vector3f(-35, 8, 0), new Vector3f(35, 8, 0)
+            new Vector3f(-20, 18, 0), new Vector3f(-45, 8, 35), new Vector3f(-20, 8, -50), 
+            new Vector3f(0,18,0), new Vector3f(-20,18,-100)
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor1"}, {"Corridor2"}
+            {"ButtonRoom"}, {"ObserveButtonC"}, {"ButtonDoorsCorridor"}, 
+            {"PuzzleRoom", "PuzzleLeverC", "MRoomPuzzleC", "PuzzleTallC1"}, {"DoorsRoom"}
+
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-69, 0, 32.5f);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("EntryCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-57.5f, 0, 29);
+        tDoor.rotate(0,FastMath.HALF_PI, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("EntryCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-22.5f, 0, -21);
+        tDoor.rotate(0, FastMath.HALF_PI, 0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("ButtonRoomLight"));
+        tDoorObj.getLights().add(lightMap.get("ExitCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
 
         Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
-        button.setLocalTranslation(0f, 4f, -7f);
-        button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI / 4, 0f, 0f));
-        button.move(new Vector3f(0f, 1f, 1f).normalize().mult(0.2f / (float) Math.sqrt(2f)));
+        button.setLocalTranslation(-13f, 14f, 0f);
+        button.setLocalRotation(new Quaternion().fromAngles(FastMath.PI / 4, -FastMath.HALF_PI, 0f));
+        button.move(new Vector3f(-1f, 1f, 0).normalize().mult(0.2f / (float) Math.sqrt(2f)));
 
         // EVENTS
         choiceHandler =
-                new SyncAfterChoiceEvent("Third Select", false, new BoundingBox(new Vector3f(40, 1, 0), 10, 14, 5), "Button pressed", "Button not pressed");
+                new SyncAfterChoiceEvent("Third Select", false, new BoundingBox(new Vector3f(-20, 1, -40), 5, 14, 5), "Button pressed", "Button not pressed");
         tRoute.condEvents.add(choiceHandler);
-        
+
         // object physics
         ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null, choiceHandler);
-        buttonObj.getLights().add(lightMap.get("RoomLight"));
+        buttonObj.getLights().add(lightMap.get("ButtonRoomLight"));
 
         tInterEvent = new InteractionEvent("buttonInteraction", buttonObj);
         tRoute.setInteractable(button, tInterEvent);
 
         tRoute.objects.add(buttonObj);
-        
+
         tRoute.startupTextSequence = new String[]{
             "It's so tempting when it's right there...",
-            "But who knows if you should press it?"
+            "But who knows if you should press it?",
+            "Press \"space\" to jump."
         };
-        
+
         routes.put(tRoute.getId(), tRoute);
     }
 
-    private static void addChar1DeathRoute( final MainApplication app, final HashMap<String, DemoScene> routes) {
+    private static void addChar1DeathRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 5));
+        locList.add(new Vector3f(-10, HALFCHARHEIGHT + 1.0f, -30));
         dirList.clear();
-        dirList.add(new Vector3f(0, 0, -1));
-        
-        tRoute = new DemoScene("Char1DeathRoute", "Scenes/Char1DeathRoute.j3o", locList, dirList);
+        dirList.add(new Vector3f(1, 0, 0));
+
+        tRoute = new DemoScene("Char1DeathRoute", "Scenes/Char1DeathRoute.j3o", locList, dirList) {
+            @Override
+            public void onLoad() {
+                app.getMusic().stop();
+                AudioNode music = new AudioNode(app.getAssetManager(), "Sound/pills.wav", false);
+                music.setLooping(false);
+                music.setPositional(false);
+                app.setMusic(music);
+                music.play();
+            }
+            
+            @Override 
+            public void onUnload() {
+                app.getMusic().stop();
+                AudioNode music = new AudioNode(app.getAssetManager(), "Sound/eery.wav", false);
+                music.setLooping(true);
+                music.setPositional(false);  
+                app.setMusic(music);
+                music.play();
+            }
+        };
+
 
         // LIGHTS
-        tLightNames = new String[]{"MeetingRoomLight"};
+        tLightNames = new String[]{"MeetingRoomLight", "CorridorLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0)
+           new Vector3f(0, 8, 0), new Vector3f(0,8,-30)
         };
 
         tLightAffected = new String[][]{
-            {"MeetingRoom"}
+            {"MRoom"}, {"MRoomPuzzleC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
+
+        // OBJECTS
+        tDoor = extractDoor(app, 1);
+        tDoor.setLocalTranslation(-50, 0, -32.5f);
+        tDoor.rotate(0, FastMath.PI, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, 15);
+        tDoor.rotate(0, FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("dorrObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(11, 0, -2.5f);
+        tDoorObj = new DoorObject("dorrObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,1);
+        tDoor.setLocalTranslation(2.5f, 0, -16);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        final DoorObject doorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, -FastMath.PI*2/3);
+        doorObj.getLights().add(lightMap.get("CorridorLight"));
+        doorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(doorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", doorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(40,1,40),0,14,0));
+        tLocEvent = new LocationEvent("doorSlam", true,new BoundingBox(new Vector3f(0,0,-10), 5,10,5)) {
+            @Override
+            public void performAction(MainApplication app) {
+                doorObj.interact(app);
+                doorObj.deactivate();
+            }
+        };
+        tRoute.condEvents.add(tLocEvent);
         
+        tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(40, 1, 40), 0, 14, 0));
+
         Spatial pills = app.getAssetManager().loadModel("Models/Pills.j3o");
         PillsObject pillsObj = new PillsObject("head", pills, true, tSyncPointEvent);
         pillsObj.getLights().add(lightMap.get("MeetingRoomLight"));
         tInterEvent = new InteractionEvent("pillsInteraction", pillsObj);
         tRoute.setInteractable(pills, tInterEvent);
 
-        tRoute.objects.add(pillsObj);        
-        
-        
+        tRoute.objects.add(pillsObj);
+
+
         tRoute.startupTextSequence = new String[]{
             "This room.",
             "Where you had your first 'chat'...",
             "Will be the last you see."
         };
-        
+
         routes.put(tRoute.getId(), tRoute);
     }
-    
+
     private static void addChar2DeathRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(-15, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(-130, HALFCHARHEIGHT + 1.0f, -30));
         dirList.clear();
         dirList.add(new Vector3f(1, 0, 0));
-        
-        tRoute = new DemoScene("Char2DeathRoute", "Scenes/Char2DeathRoute.j3o", locList, dirList);
+
+        tRoute = new DemoScene("Char2DeathRoute", "Scenes/Char2DeathRoute.j3o", locList, dirList) {
+            @Override
+            public void onLoad() {
+                AudioNode pant = new AudioNode(app.getAssetManager(), "Sound/panting.wav", false);
+                pant.setLooping(true);
+                pant.play();
+            }
+        };;
 
         // LIGHTS
-        tLightNames = new String[]{"RoomLight"};
+        tLightNames = new String[]{"RoomLight", "DoorsCorridorLight", "ObserveCorridorLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0)
+            new Vector3f(0, 8, 0), new Vector3f(-130, 8, -30), new Vector3f(5, 8, -30)
         };
 
         tLightAffected = new String[][]{
-            {"Room", "Monitor1", "Monitor2"}
+            {"ObserveRoom", "ObserveMonitor1", "ObserveMonitor2"}, {"DoorsObserveC"}, {"ObserveButtonC", "DoorsObserveC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
@@ -209,40 +384,42 @@ public class Initialiser {
 //        Spatial heWhoMustNotBeNamed = app.getAssetManager().loadModel("Models/Head.j3o");
 //        final HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
 //        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
-        
+
         class HeadLookAtEvent extends ConditionEvent {
+
             private final Vector3f centre = new Vector3f(-10, 0, -10);
             private final float radius = 2f;
             private HeadObject head;
-            public HeadLookAtEvent(String id, boolean onceOnly , HeadObject head) {
+
+            public HeadLookAtEvent(String id, boolean onceOnly, HeadObject head) {
                 super(id, onceOnly);
                 this.head = head;
-                
+
             }
-            
+
             @Override
             public boolean checkCondition(MainApplication app) {
                 return isLookedAt(app, new BoundingSphere(radius, centre));
             }
-            
+
             @Override
             public void performAction(MainApplication app) {
-                
+
                 app.setFlickering(true);
                 // initiate move sequence for head
                 // start event polling for contact
-                app.addTask(new HeadMoveTask(head.getObjId(),100f, head, app));
+                app.addTask(new HeadMoveTask(head.getObjId(), 100f, head, app));
             }
         };
-                
-        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f,5f,7.5f),15f,5f,15f)) {
-            private final Vector3f centre = new Vector3f(-1, 0, -1);
+
+        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f, 5f, 7.5f), 15f, 5f, 15f)) {
+            private final Vector3f centre = new Vector3f(-10, 0, -10);
             private final float radius = 2f;
-            
+
             @Override
             public boolean checkCondition(MainApplication app) {
                 boolean temp = isLookedAt(app, new BoundingSphere(radius, centre));
-                
+
                 BoundingSphere playerBound =
                         new BoundingSphere(MainApplication.HALFCHARHEIGHT, app.getPlayerControl().getPhysicsLocation());
                 System.out.println(temp);
@@ -252,8 +429,9 @@ public class Initialiser {
             @Override
             public void performAction(MainApplication app) {
                 Spatial theUnnamed = app.getAssetManager().loadModel("Models/Head.j3o");
+
                 theUnnamed.setLocalTranslation(-10f, HALFCHARHEIGHT, -10f);
-                theUnnamed.rotate(-0, FastMath.PI*3/4, -0);
+                theUnnamed.rotate(-0, FastMath.PI * 3 / 4, -0);
                 HeadObject theUnnamedObj = new HeadObject("ohGreatOne", theUnnamed, true);
                 theUnnamedObj.getLights().add(lightMap.get("RoomLight"));
                 app.getCurrentScene().objects.add(theUnnamedObj);
@@ -265,23 +443,74 @@ public class Initialiser {
         };
         tRoute.condEvents.add(tLocEvent);
         
+        // OBJECTS
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-132.5f, 0, -45);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("DoorsCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app, 0);
+        tDoor.setLocalTranslation(-9, 0, -67.5f);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(15, 0, -2.5f);
+        tDoor.rotate(0,FastMath.PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(0, 0, -32.5f);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
+        tDoorObj.getLights().add(lightMap.get("DoorsCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInt1", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
+        tDoor = extractDoor(app, 0);
+        tDoor.setLocalTranslation(7.5f, 0, -15f);
+        tDoor.rotate(0, -FastMath.HALF_PI, 0);
+        final DoorObject doorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI * 2 / 3);
+        doorObj.getLights().add(lightMap.get("RoomLight"));
+        doorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
+        tRoute.objects.add(doorObj);
+
+        tInterEvent = new InteractionEvent("doorInteraction", doorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+
         // EVENTS
+        tLocEvent = new LocationEvent("doorSlam", true, new BoundingBox(new Vector3f(-15,0,15), 20,10,20)) {
+            @Override
+            public void performAction(MainApplication app) {
+                doorObj.interact(app);
+                doorObj.deactivate();
+            }
+        };
+        tRoute.condEvents.add(tLocEvent);
+        
 //        tInterEvent = new InteractionEvent("headInteraction", ohGreatOne);
 //        tRoute.setInteractable(heWhoMustNotBeNamed, tInterEvent);
-
+//
 //        tRoute.objects.add(ohGreatOne);
-        
+//        
 //        tSyncPointEvent = new SyncPointEvent("To Endings", new BoundingBox(new Vector3f(15,1,15), 5,14,5));
 //        tRoute.condEvents.add(tSyncPointEvent);
-        
+
         routes.put(tRoute.getId(), tRoute);
     }
 
     private static void addDoorLeftRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(50, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
-        dirList.add(new Vector3f(1, 0, 0));
+        dirList.add(new Vector3f(-1, 0, 0));
 
         tRoute = new DemoScene("DoorLeft", "Scenes/DoorLeftRoute.j3o", locList, dirList);
 
@@ -289,32 +518,54 @@ public class Initialiser {
         tLightNames = new String[]{"RoomLight", "CorridorLight", "CorridorLeftLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 18, 0), new Vector3f(-35, 8, 0), new Vector3f(0, 8, -35)
+            new Vector3f(0, 18, 0), new Vector3f(50, 8, 0), new Vector3f(0, 8, 35)
         };
 
         tLightAffected = new String[][]{
-            {"Room", "BlankDoorLeft", "BlankDoorRight"}, {"Corridor"}, {"CorridorLeft"}
+            {"DoorsRoom"}, {"ButtonDoorsCorridor"}, {"DoorsObserveC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
-        // EVENTS
-        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5));
-        tRoute.condEvents.add(tSyncPointEvent);
+        // OBJECTS
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(80, 0, -2.5f);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
         
-        tRoute.startupTextSequence = new String[]{
-            "You have found me.",
-            "But I found you long ago..."
-        };
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, -20);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 9f, 19);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(130, 0, 32.5f);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLeftLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        // EVENTS
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(50, 1, 35), 5, 14, 5));
+        tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
     }
 
     private static void addDoorRightRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(-30, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(50, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
-        dirList.add(new Vector3f(1, 0, 0));
+        dirList.add(new Vector3f(-1, 0, 0));
 
         tRoute = new DemoScene("DoorRight", "Scenes/DoorRightRoute.j3o", locList, dirList);
 
@@ -322,17 +573,45 @@ public class Initialiser {
         tLightNames = new String[]{"RoomLight", "CorridorLight", "CorridorRightLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 18, 0), new Vector3f(-35, 8, 0), new Vector3f(0, 8, 35)
+            new Vector3f(0, 18, 0), new Vector3f(50, 8, 0), new Vector3f(0, 8, -40)
         };
 
         tLightAffected = new String[][]{
-            {"Room", "BlankDoorLeft", "BlankDoorRight"}, {"Corridor"}, {"CorridorRight"}
+            {"DoorsRoom"}, {"ButtonDoorsCorridor"}, {"DoorsEscapeC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // OBJECTS
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(80, 0, -2.5f);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 9, -20);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, 19);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, -55);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorOjc4", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorRightLight"));
+        tRoute.objects.add(tDoorObj);
+        
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(0, 1, -50), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
@@ -340,30 +619,56 @@ public class Initialiser {
 
     private static void addEscapeRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(25, HALFCHARHEIGHT + 1.0f, 0));
-        locList.add(new Vector3f(-25, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(95, HALFCHARHEIGHT + 1.0f, -25));
+        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 30));
         dirList.clear();
-        dirList.add(new Vector3f(-1, 0, 0));
-        dirList.add(new Vector3f(1,0,0));
-                
+        dirList.add(new Vector3f(0, 0, -1));
+        dirList.add(new Vector3f(0, 0, -1));
+
 
         tRoute = new DemoScene("EscapeRoute", "Scenes/EscapeRoute.j3o", locList, dirList);
 
         // LIGHTS
-        tLightNames = new String[]{"RoomLight", "CorridorLight", "Corridor1Light", "Corridor2Light"};
+        tLightNames = new String[]{"RoomLight", "CorridorLight", "CorridorFromDoorsLight", "CorridorFromPuzzleLight1",
+        "CorridorFromPuzzleLight2"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0), new Vector3f(0, 8, 25), new Vector3f(-25, 8, 0), new Vector3f(25, 8, 0)
+            new Vector3f(0, 8, 0), new Vector3f(-25, 8, 0), new Vector3f(0, 8, 30), 
+            new Vector3f(0, 8, -35), new Vector3f(95,8,-35)
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor"}, {"Corridor1"}, {"Corridor2"}
+            {"EscapeRoom"}, {"EscapeC"}, {"DoorsEscapeC"}, {"PuzzleEscapeC"}, {"PuzzleEscapeC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // OBJECTS
+        tDoor = extractDoor(app,1);
+        tDoor.setLocalTranslation(92.5f, 0, -5);
+        tDoor.rotate(0,-FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorFromPuzzleLight2"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,1);
+        tDoor.setLocalTranslation(-2.5f, 0, 45);
+        tDoor.rotate(0,-FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null,0);
+        tDoorObj.getLights().add(lightMap.get("CorridorFromDoorsLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,2);
+        tDoor.setLocalTranslation(-40, 0, 2.5f);
+        tDoor.rotate(0,FastMath.PI*5/6,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        
+        
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(0, 1, 15), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(-35, 1, 0), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
@@ -372,7 +677,7 @@ public class Initialiser {
     private static void addLeverRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         final SyncAfterChoiceEvent choiceHandler;
         locList.clear();
-        locList.add(new Vector3f(-35, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(-15, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
         dirList.add(new Vector3f(1, 0, 0));
 
@@ -385,13 +690,31 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor"}
+            {"LeverRoom"}, {"PuzzleLeverC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
         
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-50, 0, 2.5f);
+        tDoor.rotate(0,FastMath.PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-21, 0, 2.5f);
+        tDoor.rotate(0,FastMath.PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInter", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+
         Spatial leverRoot = app.getAssetManager().loadModel("Models/Lever.j3o");
         leverRoot.setLocalTranslation(0f, 5f, 0f);
         leverRoot.setLocalRotation(new Quaternion().fromAngles(0, 0f, FastMath.PI / 2));
@@ -419,7 +742,7 @@ public class Initialiser {
         tRoute.properties.putInt(leverObj.getObjId(), 0);
         tInterEvent = new InteractionEvent("leverInteraction", leverObj);
         tRoute.setInteractable(leverRoot, tInterEvent);
-        
+
         tRoute.startupTextSequence = new String[]{
             "Left or Right?",
             "Let's hope you make the right choice..."
@@ -427,44 +750,60 @@ public class Initialiser {
 
         routes.put(tRoute.getId(), tRoute);
     }
-    
+
     private static void addObservationRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(-5, HALFCHARHEIGHT + 1.0f, -30));
+        locList.add(new Vector3f(40, HALFCHARHEIGHT + 1.0f, -20));
         dirList.clear();
         dirList.add(new Vector3f(0, 0, 1));
 
         tRoute = new DemoScene("ObservationRoute", "Scenes/ObservationRoute.j3o", locList, dirList);
-        
+
         // LIGHTS
         tLightNames = new String[]{"RoomLight", "CorridorLight1", "CorridorLight2"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0), new Vector3f(-5, 8, -30), new Vector3f(-30, 8, -5)
-        };
+            new Vector3f(0, 8, 0), new Vector3f(40, 8, -5), new Vector3f(5, 8, -35),};
 
         tLightAffected = new String[][]{
-            {"Room", "Monitor1", "Screen1", "Monitor2", "Screen2"}, {"Corridor1"}, {"Corridor2"}
+            {"ObserveRoom", "ObserveMonitor1", "ObserveMonitor2"}, {"MRoomObserveC"}, {"ObserveButtonC"}
         };
 
-        addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
-        
+        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
+
         // OBJECTS
-        Spatial door1 = extractDoor(app, 1);
-        door1.setLocalTranslation(-15f, 0, -7.5f);
-        DoorObject doorObj1 = new DoorObject("doorObj1", door1, 1f, true, null, FastMath.PI*2/3);
-        doorObj1.getLights().add(lightMap.get("RoomLight"));
-        tRoute.objects.add(doorObj1);
         
-        tInterEvent = new InteractionEvent("doorInteraction", doorObj1);
-        tRoute.setInteractable(door1, tInterEvent);
-                
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(37.5f, 0, -40);
+        tDoor.rotate(0, FastMath.HALF_PI, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor= extractDoor(app,0);
+        tDoor.setLocalTranslation(-1, 0, -27.5f);
+        tDoor.rotate(0, FastMath.PI, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
+        tRoute.objects.add(tDoorObj);
+
+        tDoor = extractDoor(app, 0);
+        tDoor.setLocalTranslation(7.5f, 0, -15f);
+        tDoor.rotate(0, -FastMath.HALF_PI, 0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI * 2 / 3);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
+        tRoute.objects.add(tDoorObj);
+
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+
         // EVENTS
-        
-        
-        tLocEvent = new SyncPointEvent("LeverOrButton", false, new BoundingBox(new Vector3f(-40, 1, -5), 5, 14, 5));
+
+
+        tLocEvent = new SyncPointEvent("LeverOrButton", false, new BoundingBox(new Vector3f(5, 1, -65), 5, 14, 5));
         tRoute.condEvents.add(tLocEvent);
-        
+
         tRoute.startupTextSequence = new String[]{
             "Seem familiar?",
             "Perhaps not to you, " + app.CHAR_2,
@@ -480,38 +819,87 @@ public class Initialiser {
         ConditionalSyncPointEvent cspe2;
         ConditionalSyncPointEvent cspe3;
         SyncAfterChoiceEvent ctspe;
-        
+
         BoundingBox bound;
         locList.clear();
+        locList.add(new Vector3f(-10, HALFCHARHEIGHT + 1.0f, 70));
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45));
-        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 45));
         dirList.clear();
+        dirList.add(new Vector3f(1, 0, 0));
         dirList.add(new Vector3f(0, 0, 1));
-        dirList.add(new Vector3f(0, 0, -1));
 
         tRoute = new DemoScene("PuzzleRoute", "Scenes/PuzzleRoute.j3o", locList, dirList);
         // LIGHTS
         tLightNames = new String[]{
-            "RoomLight", "CorridorLight1", "CorridorLight2", "TallCorridorLight1", "TallCorridorLight2"
+            "RoomLight", "CorridorLight1", "CorridorLight2", "TallCorridorLight1", "TallCorridorLight2",
+            "EscapeCorridorLight"
         };
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8f, 0), new Vector3f(0, 6, -45), new Vector3f(0, 6, 35),
-            new Vector3f(20, 10, 5), new Vector3f(40, 10, 5)
+            new Vector3f(0, 18f, 0), new Vector3f(0, 6, -35), new Vector3f(0, 6, 70),
+            new Vector3f(20, 18, -5), new Vector3f(40, 18, -5), new Vector3f(80, 8, -5)
         };
 
         tLightAffected = new String[][]{
-            {"Room"}, {"Corridor1"}, {"Corridor2"}, {"TallCorridor1"}, {"TallCorridor2"}
+            {"PuzzleRoom", "MRoomPuzzleC"}, {"PuzzleLeverC"}, {"MRoomPuzzleC"}, {"PuzzleTallC1"},
+            {"PuzzleTallC2"}, {"PuzzleEscapeC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
+        
+        // Doors
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, -50);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-14, 0, 67.5f);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, -21);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInter1", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
+        tDoor = extractDoor(app,1);
+        tDoor.setLocalTranslation(-2.5f, 0, 21);
+        tDoor.rotate(0,-FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, -FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInter2", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(51, 0, -7.5f);
+        tDoorObj = new DoorObject("doorObj5", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("TallCorridorLight2"));
+        tDoorObj.getLights().add(lightMap.get("EscapeCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInter3", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent); 
+        
         // Crate
         Spatial crate1 = app.getAssetManager().loadModel("Models/Crate.j3o");
         Spatial crate2 = app.getAssetManager().loadModel("Models/Crate.j3o");
         bound = new BoundingBox(new Vector3f(0, 0.75f, 0), 1.5f, 1.5f, 1.5f);
-        crate1.setLocalTranslation(0, 0, -30);
+        crate1.setLocalTranslation(0, 0, 15);
         crate2.setLocalTranslation(0, 5f, 0);
 
         // object physics
@@ -530,16 +918,15 @@ public class Initialiser {
 
         // Door
         Spatial door1 = extractDoor(app, 0);
-
-        door1.setLocalTranslation(9.99f, 0f, 2.5f);
-        final PanelObject doorObj1 = new PanelObject("door1", door1, 1f, true, null, new Vector3f(10f, 9f, 2.5f), new Vector3f(10f, 0f, 2.5f));
-        doorObj1.getLights().add(lightMap.get("RoomLight"));
+        door1.setLocalTranslation(29.9f, 0f, -7.5f);
+        final PanelObject doorObj1 = new PanelObject("door2", door1, 1f, true, null, new Vector3f(30f, 9f, -7.5f), new Vector3f(30f, 0f, -7.5f));
+        doorObj1.getLights().add(lightMap.get("TallCorridorLight1"));
         tRoute.objects.add(doorObj1);
         
         Spatial door2 = extractDoor(app, 0);
-        door2.setLocalTranslation(29.9f, 0f, 2.5f);
-        final PanelObject doorObj2 = new PanelObject("door2", door2, 1f, true, null, new Vector3f(30f, 9f, 2.5f), new Vector3f(30f, 0f, 2.5f));
-        doorObj2.getLights().add(lightMap.get("TallCorridorLight1"));
+        door2.setLocalTranslation(9.99f, 0f, -7.5f);
+        final PanelObject doorObj2 = new PanelObject("door1", door2, 1f, true, null, new Vector3f(10f, 9f, -7.5f), new Vector3f(10f, 0f, -7.5f));
+        doorObj2.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(doorObj2);
 
         // PressurePlate
@@ -555,16 +942,15 @@ public class Initialiser {
             public void onPressed() {
                 doorObj1.open(app);
             }
+
             @Override
             public void onRelease() {
                 doorObj1.close(app);
             }
         };
         bound = new BoundingBox(new Vector3f(0, 0.4f, 0), 1.5f, 0.4f, 1.5f) {
-            
         };
         final PressurePlateObject plateObj2 = new PressurePlateObject("pressurePlate2", pressPlate2, 1f, true, bound, new Vector3f(-5f, 0, 5f), new Vector3f(-5f, -0.8f, 5f)) {
-
             @Override
             public void onPressed() {
                 doorObj2.open(app);
@@ -584,7 +970,7 @@ public class Initialiser {
         tRoute.properties.putBoolean(plateObj2.getObjId(), false);
 
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, -5f), 1.3f, 0.4f, 1.3f);
-        
+
         tLocEvent = new ProximityEvent("pressurePlate1", false, bound, plateObj1) {
             @Override
             public void performAction(MainApplication app) {
@@ -596,7 +982,7 @@ public class Initialiser {
         ((ProximityEvent) tLocEvent).activators.add(crateObj2);
         tRoute.condEvents.add(tLocEvent);
         bound = new BoundingBox(new Vector3f(-5f, 0.4f, 5f), 1.3f, 0.4f, 1.3f);
-        
+
         tLocEvent = new ProximityEvent("pressurePlate2", false, bound, plateObj2) {
             @Override
             public void performAction(MainApplication app) {
@@ -613,16 +999,16 @@ public class Initialiser {
         };
 
         // EVENTS
-        ctspe = new SyncAfterChoiceEvent("FateDecider", false, new BoundingBox(new Vector3f(100,100,100),0,0,0), "Puzzle solved", "Puzzle not solved");
-        
-        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", false, new BoundingBox(new Vector3f(45, 1, 5), 5, 14, 5), "Puzzle again", ctspe, true);
+        ctspe = new SyncAfterChoiceEvent("FateDecider", false, new BoundingBox(new Vector3f(100, 100, 100), 0, 0, 0), "Puzzle solved", "Puzzle not solved");
+
+        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", false, new BoundingBox(new Vector3f(75, 1, -5f), 5, 14, 5), "Puzzle again", ctspe, true);
         cspe1 =
-                new ConditionalSyncPointEvent("FirstExitEvent", false, new BoundingBox(new Vector3f(0, 1, 45), 5, 14, 5), "See puzzle first time");
+                new ConditionalSyncPointEvent("FirstExitEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "See puzzle first time");
         cspe2 =
-                new ExitChoiceEvent("PuzzleUnsolvedEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again", ctspe, false);
+                new ExitChoiceEvent("PuzzleUnsolvedEvent", false, new BoundingBox(new Vector3f(0, 1, 70), 5, 14, 5), "Puzzle again", ctspe, false);
         cspe3 =
-                new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
-        
+                new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", false, new BoundingBox(new Vector3f(0, 1, 70), 5, 14, 5), "Puzzle unsolvable");
+
         tRoute.condEvents.add(tSyncPointEvent);
         tRoute.condEvents.add(cspe1);
         tRoute.condEvents.add(cspe2);
@@ -631,21 +1017,51 @@ public class Initialiser {
         routes.put(tRoute.getId(), tRoute);
     }
 
-    private static void addEndingRoute (final MainApplication app, final HashMap<String, DemoScene> routes) {
+    private static void addEndingRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(0,HALFCHARHEIGHT + 1.0f ,0));
+        locList.add(new Vector3f(0, HALFCHARHEIGHT + 2.0f, 0));
         dirList.clear();
-        dirList.add(new Vector3f(1,0,0));
-        
-        tRoute = new DemoScene("Ending", "Scenes/Ending.j3o", locList, dirList);
+        dirList.add(new Vector3f(1, 0, 0));
+
+        tRoute = new DemoScene("Ending", "Scenes/Ending.j3o", locList, dirList) {
+            @Override
+            public void onLoad() {
+                if (app.getGameScreen().getRoute().equals("BothLiveRoute")) {
+                    app.getMusic().stop();
+                    AudioNode music = new AudioNode(app.getAssetManager(), "Sound/cheery.wav", false);
+                    music.setLooping(true);
+                    music.setPositional(false);
+                    music.play();
+                }
+            }
+        };
+
+        final DialogueEvent close = new DialogueEvent("closeGame") {
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                app.stop();
+            }
+        };
+
+        tLocEvent = new LocationEvent("StartConversation", true, new BoundingBox(new Vector3f(0, 0, 0), 100, 100, 100)) {
+            @Override
+            public void performAction(MainApplication app) {
+                DialogueScreen theDialogue = app.getDialogueScreen();
+                theDialogue.setDialogue(app.getGameScreen().getRoute());
+                theDialogue.setCharacter(app.getGameScreen().getCharacter());
+                theDialogue.setEventOnClose(close);
+                app.getNifty().gotoScreen("dialogue");
+            }
+        };
+        tRoute.condEvents.add(tLocEvent);
         
         routes.put(tRoute.getId(), tRoute);
-        
+
     }
-    
+
     private static DemoLight addLight(final MainApplication app, DemoScene route, Vector3f loc, String[] spatialNames) {
         PointLight l = new PointLight();
-        l.setColor(MainApplication.LIGHTCOLOUR);
+        l.setColor(ColorRGBA.Gray);
         l.setPosition(loc);
         l.setRadius(1000f);
 
@@ -679,19 +1095,20 @@ public class Initialiser {
      * @param type - 0
      * @return
      */
-    private static Spatial extractDoor(final MainApplication app, int numberOfHandles) {
+    private static Spatial extractDoor(final MainApplication app, int option) {
         Spatial doors = app.getAssetManager().loadModel("Models/Doors.j3o");
-        switch (numberOfHandles) {
+        switch (option) {
         case 0:
             return ((Node) doors).descendantMatches("BlankDoor").get(0);
         case 1:
-            return ((Node) doors).descendantMatches("BlankDoor").get(0);
+            return ((Node) doors).descendantMatches("MirroredBlankDoor").get(0);
         case 2:
-            return ((Node) doors).descendantMatches("BlankDoor").get(0);
+            return ((Node) doors).descendantMatches("DoubledHandledDoor").get(0);
         default:
-            throw new RuntimeException("Too many door handles");
+            throw new RuntimeException("Option not available");
         }
     }
+
     private static boolean isLookedAt(MainApplication app, BoundingSphere bSphere) {
         boolean result = false;
         int checkPlane = bSphere.getCheckPlane();

@@ -53,6 +53,7 @@ import com.jme3.shadow.AbstractShadowRenderer;
 import com.jme3.system.AppSettings;
 
 import de.lessvoid.nifty.Nifty;
+import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 
 /**
  * The God class of the game.
@@ -103,6 +104,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private GameScreen gameScreen;
     private DialogueScreen dialogueScreen;
     private NarrativeInstance narrativeInstance;
+    
+    private AudioNode music;
     
     public final static String CHAR_1 = "Bob";
     public final static String CHAR_2 = "Alice";
@@ -197,11 +200,11 @@ public class MainApplication extends SimpleApplication implements ActionListener
         getNifty().gotoScreen("mainMenu");
 
         // Set up the audio system //
-        AudioNode music = new AudioNode(assetManager, "Sound/eery.wav", false);
+        music = new AudioNode(assetManager, "Sound/eery.wav", false);
         music.setLooping(true);
         music.setPositional(false);        
-        audioRenderer.playSource(music);
-
+        music.play();
+        
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         setupKeys();
@@ -263,7 +266,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void loadRoute(DemoScene route, int entIndex) {
-        currentScene.onUnLoad();
+        currentScene.onUnload();
         // Unload old route (currentRoute)
         currentWorld.removeControl(landscape);
         currentWorld.removeFromParent();
@@ -285,13 +288,13 @@ public class MainApplication extends SimpleApplication implements ActionListener
             bulletAppState.getPhysicsSpace().remove(r);
         }
 
-        for (DemoLight l : getCurrentScene().lights) { // FIXME should do a search
+        for (DemoLight l : currentScene.lights) { // FIXME should do a search
             rootNode.removeLight(l.light);
         }
-        for (AbstractShadowRenderer plsr : getCurrentScene().shadowRenderers) {
+        for (AbstractShadowRenderer plsr : currentScene.shadowRenderers) {
             viewPort.removeProcessor(plsr);
         }
-        for (ConditionEvent oldEvent : getCurrentScene().condEvents) {
+        for (ConditionEvent oldEvent : currentScene.condEvents) {
             getPollEventBus().remove(oldEvent);
         }
 
@@ -336,14 +339,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
 //            bulletAppState.getPhysicsSpace().add(rbc);
 //            this.currentRoute.objects.add(draggedObject);
 //            this.currentRoute.interactions.put(spatial, previousRoute.interactions.get(draggedObject))
-            for (DemoLight dLight : getCurrentScene().lights) {
+            for (DemoLight dLight : currentScene.lights) {
                 draggedObject.getSpatial().addLight(dLight.light);
             }
             playerNode.attachChild(draggedObject.getSpatial());
         }
         // TODO this the proper way
-        if (getCurrentScene().getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
-            for (DemoObject object : getCurrentScene().objects) {
+        if (currentScene.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
+            for (DemoObject object : currentScene.objects) {
                 if (object.getObjId().equals("crate2")) {
                     RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
                     bulletAppState.getPhysicsSpace().remove(rbc);
@@ -483,7 +486,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             // Check global location event queue
-            for (ConditionEvent e : new ArrayDeque<>(getPollEventBus())) {
+            for (ConditionEvent e : getPollEventBus()) {
                 if (e.checkCondition(this)) {
                     e.onDemoEvent(this);
                 }
@@ -625,7 +628,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void drag(Spatial spatial) {
-        for (DemoObject object : getCurrentScene().objects) {
+        for (DemoObject object : currentScene.objects) {
             if (object.getSpatial() == spatial)
                 draggedObject = object;
         }
@@ -637,6 +640,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public Nifty getNifty() {
         return nifty;
+    }
+    
+    public AudioNode getMusic() {
+        return music;
+    }
+    
+    public void setMusic(AudioNode music) {
+        this.music = music;
     }
 
     public CharacterControl getPlayerControl() {
@@ -679,6 +690,17 @@ public class MainApplication extends SimpleApplication implements ActionListener
         gameScreen.setDialogueTextSequence(route.startupTextSequence);
     }
     
+    public void execSyncPoint() {
+        try {
+            //Ending the route that was started to show the correct character select screen to the player
+            narrativeInstance.startRoute(gameScreen.getRoute());
+            narrativeInstance.endRoute(gameScreen.getRoute());
+        } catch (GraphElementNotFoundException ex) {
+            Logger.getLogger(Initialiser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        nifty.gotoScreen("characterSelect");
+    }
+    
     public void setFlickering(boolean x) {
         isFlickering = x;
     }
@@ -714,7 +736,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public ArrayDeque<ConditionEvent> getPollEventBus() {
         return pollEventBus;
     }
-
+    
     /**
      * @return the currentScene
      */

@@ -8,7 +8,7 @@
     <!-- lay out the character selection screen  -->
     <!-- +++++++++++++++++++++++++++++++++++++++ -->
     <screen id="characterSelect" controller="uk.ac.cam.echo2016.dynademo.screens.CharacterSelectScreen">
-        <layer id="background" childLayout="center" backgroundColor="#f00f">
+        <layer id="background" childLayout="center" backgroundColor="#000f">
         </layer>
         <layer id="foreground" childLayout="vertical">
             <panel id="panel_top" height="25%" width="75%" align="center" childLayout="center">  

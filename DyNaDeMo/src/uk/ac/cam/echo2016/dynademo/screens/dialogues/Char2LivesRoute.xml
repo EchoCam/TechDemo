@@ -10,7 +10,7 @@
         <text nextID="You4">It looks Timangelise hasn't come out.</text>
     </dialogue>
     <dialogue speaker="Head" id="You4">
-        <text nextID="You5">Suicide pills, you say? How heroic.</text>
+        <text nextID="You5">Suicide pills, you say? How... disappointing.</text>
     </dialogue>
     <dialogue speaker="Head" id="You5">
         <text nextID="You6">Are you sure there was no other route available?</text>

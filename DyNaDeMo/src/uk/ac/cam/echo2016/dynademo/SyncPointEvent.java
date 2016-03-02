@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 
-public class SyncPointEvent extends ExitEvent {
+public class SyncPointEvent extends LocationEvent {
 
         public SyncPointEvent(String id, boolean onceOnly, BoundingBox bound) {
             super(id, onceOnly, bound);

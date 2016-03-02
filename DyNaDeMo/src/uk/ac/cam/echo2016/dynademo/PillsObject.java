@@ -4,6 +4,7 @@
  */
 package uk.ac.cam.echo2016.dynademo;
 
+import com.jme3.audio.AudioNode;
 import com.jme3.scene.Spatial;
 import java.util.logging.Level;
 import java.util.logging.Logger;
