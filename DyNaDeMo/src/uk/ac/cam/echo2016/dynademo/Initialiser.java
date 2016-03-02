@@ -668,7 +668,7 @@ public class Initialiser {
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(80, 0, -2.5f);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, false);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight"));
         tRoute.objects.add(tDoorObj);
         
