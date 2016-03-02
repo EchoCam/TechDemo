@@ -32,6 +32,8 @@ import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 public class Initialiser {
 
     private static DemoScene tRoute;
+    private static Spatial tDoor;
+    private static DoorObject tDoorObj;
     private static LocationEvent tLocEvent;
     private static InteractionEvent tInterEvent;
     private static SyncPointEvent tSyncPointEvent;
@@ -480,17 +482,33 @@ public class Initialiser {
             {"ObserveRoom", "ObserveMonitor1", "ObserveMonitor2"}, {"MRoomObserveC"}, {"ObserveButtonC"}
         };
 
-        addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
+        lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
         
         // OBJECTS
-        /*Spatial door1 = extractDoor(app, 1);
-        door1.setLocalTranslation(-15f, 0, -7.5f);
-        DoorObject doorObj1 = new DoorObject("doorObj1", door1, 1f, true, null, FastMath.PI*2/3);
-        doorObj1.getLights().add(lightMap.get("RoomLight"));
-        tRoute.objects.add(doorObj1);
         
-        tInterEvent = new InteractionEvent("doorInteraction", doorObj1);
-        tRoute.setInteractable(door1, tInterEvent);*/
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(37.5f, 0, -39);
+        tDoor.rotate(0, FastMath.HALF_PI, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor= extractDoor(app,0);
+        tDoor.setLocalTranslation(0, 0, -27.5f);
+        tDoor.rotate(0, FastMath.PI, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app, 0);
+        tDoor.setLocalTranslation(7.5f, 0, -15f);
+        tDoor.rotate(0, -FastMath.HALF_PI, 0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
                 
         // EVENTS
         
@@ -714,17 +732,15 @@ public class Initialiser {
      * @param type - 0
      * @return
      */
-    private static Spatial extractDoor(final MainApplication app, int numberOfHandles) {
+    private static Spatial extractDoor(final MainApplication app, int option) {
         Spatial doors = app.getAssetManager().loadModel("Models/Doors.j3o");
-        switch (numberOfHandles) {
+        switch (option) {
         case 0:
             return ((Node) doors).descendantMatches("BlankDoor").get(0);
         case 1:
-            return ((Node) doors).descendantMatches("BlankDoor").get(0);
-        case 2:
-            return ((Node) doors).descendantMatches("BlankDoor").get(0);
+            return ((Node) doors).descendantMatches("MirroredBlankDoor").get(0);
         default:
-            throw new RuntimeException("Too many door handles");
+            throw new RuntimeException("Option not available");
         }
     }
     

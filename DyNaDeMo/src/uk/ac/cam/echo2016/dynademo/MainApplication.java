@@ -201,7 +201,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         AudioNode music = new AudioNode(assetManager, "Sound/eery.wav", false);
         music.setLooping(true);
         music.setPositional(false);        
-        music.play();
+        //music.play();
         
         // Application related setup //
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
