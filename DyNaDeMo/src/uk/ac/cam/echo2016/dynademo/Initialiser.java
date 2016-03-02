@@ -423,7 +423,7 @@ public class Initialiser {
 
         class HeadLookAtEvent extends ConditionEvent {
 
-            private final Vector3f centre = new Vector3f(-10, 0, -10);
+            private final Vector3f centre = new Vector3f(10, 0, -10);
             private final float radius = 2f;
             private HeadObject head;
 
@@ -448,8 +448,8 @@ public class Initialiser {
             }
         };
 
-        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(7.5f, 5f, 7.5f), 15f, 5f, 15f)) {
-            private final Vector3f centre = new Vector3f(-10, 0, -10);
+        tLocEvent = new LocationEvent(("HeadSpawn"), true, new BoundingBox(new Vector3f(-7.5f, 5f, 7.5f), 15f, 5f, 15f)) {
+            private final Vector3f centre = new Vector3f(10, 0, -10);
             private final float radius = 2f;
 
             @Override
@@ -458,7 +458,6 @@ public class Initialiser {
 
                 BoundingSphere playerBound =
                         new BoundingSphere(MainApplication.HALFCHARHEIGHT, app.getPlayerControl().getPhysicsLocation());
-                System.out.println(temp);
                 return (bound.intersects(playerBound) && temp);
             }
 
@@ -466,8 +465,8 @@ public class Initialiser {
             public void performAction(MainApplication app) {
                 Spatial theUnnamed = app.getAssetManager().loadModel("Models/Head.j3o");
 
-                theUnnamed.setLocalTranslation(-10f, HALFCHARHEIGHT, -10f);
-                theUnnamed.rotate(-0, FastMath.PI * 3 / 4, -0);
+                theUnnamed.setLocalTranslation(10f, HALFCHARHEIGHT, -10f);
+                theUnnamed.rotate(-0, FastMath.PI * 1 / 4, -0);
                 HeadObject theUnnamedObj = new HeadObject("ohGreatOne", theUnnamed, true);
                 theUnnamedObj.getLights().add(lightMap.get("RoomLight"));
                 app.getCurrentScene().objects.add(theUnnamedObj);
