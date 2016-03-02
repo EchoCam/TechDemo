@@ -105,6 +105,8 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private DialogueScreen dialogueScreen;
     private NarrativeInstance narrativeInstance;
     
+    private AudioNode music;
+    
     public final static String CHAR_1 = "Bob";
     public final static String CHAR_2 = "Alice";
 
@@ -198,7 +200,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
         getNifty().gotoScreen("mainMenu");
 
         // Set up the audio system //
-        AudioNode music = new AudioNode(assetManager, "Sound/eery.wav", false);
+        music = new AudioNode(assetManager, "Sound/eery.wav", false);
         music.setLooping(true);
         music.setPositional(false);        
         music.play();
@@ -639,6 +641,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
 
     public Nifty getNifty() {
         return nifty;
+    }
+    
+    public AudioNode getMusic() {
+        return music;
     }
 
     public CharacterControl getPlayerControl() {
