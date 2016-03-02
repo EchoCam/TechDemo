@@ -662,7 +662,7 @@ public class Initialiser {
     private static void addLeverRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         final SyncAfterChoiceEvent choiceHandler;
         locList.clear();
-        locList.add(new Vector3f(-35, HALFCHARHEIGHT + 1.0f, 0));
+        locList.add(new Vector3f(-15, HALFCHARHEIGHT + 1.0f, 0));
         dirList.clear();
         dirList.add(new Vector3f(1, 0, 0));
 
@@ -681,6 +681,24 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-50, 0, 2.5f);
+        tDoor.rotate(0,FastMath.PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-21, 0, 2.5f);
+        tDoor.rotate(0,FastMath.PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInter", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
 
         Spatial leverRoot = app.getAssetManager().loadModel("Models/Lever.j3o");
         leverRoot.setLocalTranslation(0f, 5f, 0f);
