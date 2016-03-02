@@ -1,5 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import com.jme3.audio.AudioNode;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -55,6 +56,11 @@ public class HeadMoveTask extends DemoTask {
             app.getInputManager().setCursorVisible(false);
             break;
         default:
+            app.getMusic().stop();
+            AudioNode music = new AudioNode(app.getAssetManager(), "Sound/eery.wav", false);
+            music.setLooping(true);
+            music.setPositional(false);
+            music.play();
             app.setFlickering(false);
             app.setSpeed(1);
             app.getInputManager().setCursorVisible(true);

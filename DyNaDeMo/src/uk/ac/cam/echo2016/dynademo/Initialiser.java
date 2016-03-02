@@ -400,9 +400,10 @@ public class Initialiser {
             public void onLoad() {
                 AudioNode pant = new AudioNode(app.getAssetManager(), "Sound/panting.wav", false);
                 pant.setLooping(true);
+                app.setMusic(pant);
                 pant.play();
             }
-        };;
+        };
 
         // LIGHTS
         tLightNames = new String[]{"RoomLight", "DoorsCorridorLight", "ObserveCorridorLight"};
