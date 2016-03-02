@@ -179,7 +179,8 @@ public class Initialiser {
         
         tRoute.startupTextSequence = new String[]{
             "It's so tempting when it's right there...",
-            "But who knows if you should press it?"
+            "But who knows if you should press it?",
+            "Press \"space\" to jump."
         };
         
         routes.put(tRoute.getId(), tRoute);
