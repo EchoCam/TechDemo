@@ -594,7 +594,7 @@ public class Initialiser {
         tRoute.objects.add(tDoorObj);
         
         // EVENTS
-        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(50, 1, 35), 5, 14, 5));
+        tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(10, 1, 35), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
 
         routes.put(tRoute.getId(), tRoute);
