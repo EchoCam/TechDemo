@@ -427,8 +427,59 @@ public class Initialiser {
             }
         };
         tRoute.condEvents.add(tLocEvent);
+        
+        // OBJECTS
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-132.5f, 0, -45);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("DoorsCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app, 0);
+        tDoor.setLocalTranslation(-9, 0, -67.5f);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(15, 0, -2.5f);
+        tDoor.rotate(0,FastMath.PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(0, 0, -32.5f);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
+        tDoorObj.getLights().add(lightMap.get("DoorsCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInt1", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
+        tDoor = extractDoor(app, 0);
+        tDoor.setLocalTranslation(7.5f, 0, -15f);
+        tDoor.rotate(0, -FastMath.HALF_PI, 0);
+        final DoorObject doorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI * 2 / 3);
+        doorObj.getLights().add(lightMap.get("RoomLight"));
+        doorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
+        tRoute.objects.add(doorObj);
+
+        tInterEvent = new InteractionEvent("doorInteraction", doorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
 
         // EVENTS
+        tLocEvent = new LocationEvent("doorSlam", true, new BoundingBox(new Vector3f(-15,0,15), 20,10,20)) {
+            @Override
+            public void performAction(MainApplication app) {
+                doorObj.interact(app);
+                doorObj.deactivate();
+            }
+        };
+        tRoute.condEvents.add(tLocEvent);
+        
 //        tInterEvent = new InteractionEvent("headInteraction", ohGreatOne);
 //        tRoute.setInteractable(heWhoMustNotBeNamed, tInterEvent);
 //
