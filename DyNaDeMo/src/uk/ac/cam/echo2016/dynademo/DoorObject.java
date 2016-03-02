@@ -20,16 +20,14 @@ public class DoorObject extends KinematicDemoObject implements InteractableObjec
 
     @Override
     public void interact(MainApplication app) {
-        if (!open) {
-            System.out.println(getTasks());
-            if (getTasks().isEmpty()) {
-                if (open) {
-                    queueRotation(app, 1f/SPEED, Vector3f.UNIT_Y, openAngle);
-                } else {
-                    queueRotation(app, 1f/SPEED, Vector3f.UNIT_Y, -openAngle);
-                }
-                open = !open;
+        System.out.println(getTasks());
+        if (getTasks().isEmpty()) {
+            if (open) {
+                queueRotation(app, 1f/SPEED, Vector3f.UNIT_Y, openAngle);
+            } else {
+                queueRotation(app, 1f/SPEED, Vector3f.UNIT_Y, -openAngle);
             }
+            open = !open;
         }
     }
 }
