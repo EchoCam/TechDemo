@@ -177,7 +177,7 @@ public class Initialiser {
 
         tLightAffected = new String[][]{
             {"ButtonRoom"}, {"ObserveButtonC"}, {"ButtonDoorsCorridor"}, 
-            {"PuzzleRoom", "PuzzleLeverC", "MRoomPuzzleRoomC", "PuzzleTallC1"}, {"DoorsRoom"}
+            {"PuzzleRoom", "PuzzleLeverC", "MRoomPuzzleC", "PuzzleTallC1"}, {"DoorsRoom"}
 
         };
 
@@ -604,10 +604,10 @@ public class Initialiser {
 
     private static void addEscapeRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(40, HALFCHARHEIGHT + 1.0f, -35));
+        locList.add(new Vector3f(95, HALFCHARHEIGHT + 1.0f, -25));
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 30));
         dirList.clear();
-        dirList.add(new Vector3f(-1, 0, 0));
+        dirList.add(new Vector3f(0, 0, -1));
         dirList.add(new Vector3f(0, 0, -1));
 
 
@@ -619,7 +619,7 @@ public class Initialiser {
 
         tLightCoords = new Vector3f[]{
             new Vector3f(0, 8, 0), new Vector3f(-25, 8, 0), new Vector3f(0, 8, 30), 
-            new Vector3f(0, 8, -35), new Vector3f(115,8,-35)
+            new Vector3f(0, 8, -35), new Vector3f(95,8,-35)
         };
 
         tLightAffected = new String[][]{
@@ -630,7 +630,7 @@ public class Initialiser {
 
         // OBJECTS
         tDoor = extractDoor(app,1);
-        tDoor.setLocalTranslation(102.5f, 0, -5);
+        tDoor.setLocalTranslation(92.5f, 0, -5);
         tDoor.rotate(0,-FastMath.HALF_PI,0);
         tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
         tDoorObj.getLights().add(lightMap.get("CorridorFromPuzzleLight2"));
@@ -807,11 +807,11 @@ public class Initialiser {
 
         BoundingBox bound;
         locList.clear();
+        locList.add(new Vector3f(-10, HALFCHARHEIGHT + 1.0f, 70));
         locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, -45));
-        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 45));
         dirList.clear();
+        dirList.add(new Vector3f(1, 0, 0));
         dirList.add(new Vector3f(0, 0, 1));
-        dirList.add(new Vector3f(0, 0, -1));
 
         tRoute = new DemoScene("PuzzleRoute", "Scenes/PuzzleRoute.j3o", locList, dirList);
         // LIGHTS
@@ -822,7 +822,7 @@ public class Initialiser {
 
         tLightCoords = new Vector3f[]{
             new Vector3f(0, 18f, 0), new Vector3f(0, 6, -35), new Vector3f(0, 6, 70),
-            new Vector3f(20, 18, 5), new Vector3f(40, 18, 5), new Vector3f(80, 8, 5)
+            new Vector3f(20, 18, -5), new Vector3f(40, 18, -5), new Vector3f(80, 8, -5)
         };
 
         tLightAffected = new String[][]{
@@ -871,7 +871,7 @@ public class Initialiser {
         tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
-        tDoor.setLocalTranslation(51, 0, 2.5f);
+        tDoor.setLocalTranslation(51, 0, -7.5f);
         tDoorObj = new DoorObject("doorObj5", tDoor, 1f, true, null, FastMath.PI*2/3);
         tDoorObj.getLights().add(lightMap.get("TallCorridorLight2"));
         tDoorObj.getLights().add(lightMap.get("EscapeCorridorLight"));
@@ -884,7 +884,7 @@ public class Initialiser {
         Spatial crate1 = app.getAssetManager().loadModel("Models/Crate.j3o");
         Spatial crate2 = app.getAssetManager().loadModel("Models/Crate.j3o");
         bound = new BoundingBox(new Vector3f(0, 0.75f, 0), 1.5f, 1.5f, 1.5f);
-        crate1.setLocalTranslation(0, 0, -30);
+        crate1.setLocalTranslation(0, 0, 15);
         crate2.setLocalTranslation(0, 5f, 0);
 
         // object physics
@@ -903,16 +903,15 @@ public class Initialiser {
 
         // Door
         Spatial door1 = extractDoor(app, 0);
-
-        door1.setLocalTranslation(9.99f, 0f, 2.5f);
-        final PanelObject doorObj1 = new PanelObject("door1", door1, 1f, true, null, new Vector3f(10f, 9f, 2.5f), new Vector3f(10f, 0f, 2.5f));
-        doorObj1.getLights().add(lightMap.get("RoomLight"));
+        door1.setLocalTranslation(29.9f, 0f, -7.5f);
+        final PanelObject doorObj1 = new PanelObject("door2", door1, 1f, true, null, new Vector3f(30f, 9f, -7.5f), new Vector3f(30f, 0f, -7.5f));
+        doorObj1.getLights().add(lightMap.get("TallCorridorLight1"));
         tRoute.objects.add(doorObj1);
-
+        
         Spatial door2 = extractDoor(app, 0);
-        door2.setLocalTranslation(29.9f, 0f, 2.5f);
-        final PanelObject doorObj2 = new PanelObject("door2", door2, 1f, true, null, new Vector3f(30f, 9f, 2.5f), new Vector3f(30f, 0f, 2.5f));
-        doorObj2.getLights().add(lightMap.get("TallCorridorLight1"));
+        door2.setLocalTranslation(9.99f, 0f, -7.5f);
+        final PanelObject doorObj2 = new PanelObject("door1", door2, 1f, true, null, new Vector3f(10f, 9f, -7.5f), new Vector3f(10f, 0f, -7.5f));
+        doorObj2.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(doorObj2);
 
         // PressurePlate
@@ -987,13 +986,13 @@ public class Initialiser {
         // EVENTS
         ctspe = new SyncAfterChoiceEvent("FateDecider", false, new BoundingBox(new Vector3f(100, 100, 100), 0, 0, 0), "Puzzle solved", "Puzzle not solved");
 
-        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", false, new BoundingBox(new Vector3f(80, 1, -47.5f), 5, 14, 5), "Puzzle again", ctspe, true);
+        tSyncPointEvent = new ExitChoiceEvent("PuzzleSolvedExit", false, new BoundingBox(new Vector3f(75, 1, -5f), 5, 14, 5), "Puzzle again", ctspe, true);
         cspe1 =
-                new ConditionalSyncPointEvent("FirstExitEvent", false, new BoundingBox(new Vector3f(0, 1, 70), 5, 14, 5), "See puzzle first time");
+                new ConditionalSyncPointEvent("FirstExitEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "See puzzle first time");
         cspe2 =
-                new ExitChoiceEvent("PuzzleUnsolvedEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle again", ctspe, false);
+                new ExitChoiceEvent("PuzzleUnsolvedEvent", false, new BoundingBox(new Vector3f(0, 1, 70), 5, 14, 5), "Puzzle again", ctspe, false);
         cspe3 =
-                new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", false, new BoundingBox(new Vector3f(0, 1, -45), 5, 14, 5), "Puzzle unsolvable");
+                new ConditionalSyncPointEvent("PuzzleUnsolvableEvent", false, new BoundingBox(new Vector3f(0, 1, 70), 5, 14, 5), "Puzzle unsolvable");
 
         tRoute.condEvents.add(tSyncPointEvent);
         tRoute.condEvents.add(cspe1);
