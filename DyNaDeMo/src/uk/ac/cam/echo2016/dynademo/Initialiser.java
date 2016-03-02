@@ -903,8 +903,8 @@ public class Initialiser {
         tRoute.objects.add(tDoorObj);
         
         tDoor = extractDoor(app,0);
-        tDoor.setLocalTranslation(-2.5f, 0, -21);
-        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoor.setLocalTranslation(2.5f, 0, -20);
+        tDoor.rotate(0,-FastMath.HALF_PI,0);
         tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
@@ -914,8 +914,8 @@ public class Initialiser {
         tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,1);
-        tDoor.setLocalTranslation(-2.5f, 0, 21);
-        tDoor.rotate(0,-FastMath.HALF_PI,0);
+        tDoor.setLocalTranslation(2.5f, 0, 20);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
         tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, -FastMath.PI*2/3);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
