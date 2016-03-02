@@ -104,9 +104,12 @@ public class GameScreen extends AbstractAppState implements ScreenController {
         }
     }
 
-    // temp functino to show variable passing
     public void setCharacter(String character) {
         this.character = character;
+    }
+    
+    public String getCharacter() {
+        return character;
     }
 
     public void setRoute(String routeName) {

@@ -1021,6 +1021,25 @@ public class Initialiser {
             }
         };
 
+        final DialogueEvent close = new DialogueEvent("closeGame") {
+            @Override
+            public void onDemoEvent(MainApplication app) {
+                app.stop();
+            }
+        };
+
+        tLocEvent = new LocationEvent("StartConversation", true, new BoundingBox(new Vector3f(0, 0, 0), 100, 100, 100)) {
+            @Override
+            public void performAction(MainApplication app) {
+                DialogueScreen theDialogue = app.getDialogueScreen();
+                theDialogue.setDialogue(app.getGameScreen().getRoute());
+                theDialogue.setCharacter(app.getGameScreen().getCharacter());
+                theDialogue.setEventOnClose(close);
+                app.getNifty().gotoScreen("dialogue");
+            }
+        };
+        tRoute.condEvents.add(tLocEvent);
+        
         routes.put(tRoute.getId(), tRoute);
 
     }
