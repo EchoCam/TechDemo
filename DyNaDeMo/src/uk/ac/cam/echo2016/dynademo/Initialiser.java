@@ -171,7 +171,7 @@ public class Initialiser {
         };
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(-20, 18, 0), new Vector3f(-20, 8, 35), new Vector3f(-20, 8, -50), 
+            new Vector3f(-20, 18, 0), new Vector3f(-45, 8, 35), new Vector3f(-20, 8, -50), 
             new Vector3f(0,18,0), new Vector3f(-20,18,-100)
         };
 
@@ -184,18 +184,28 @@ public class Initialiser {
 
         // OBJECTS
         tDoor = extractDoor(app,0);
-        tDoor.setLocalTranslation(-70, 0, 32.5f);
+        tDoor.setLocalTranslation(-69, 0, 32.5f);
         tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
         tDoorObj.getLights().add(lightMap.get("EntryCorridorLight"));
         tRoute.objects.add(tDoorObj);
         
         tDoor = extractDoor(app,0);
-        tDoor.setLocalTranslation(-57.5f, 0, 30);
-        tDoor.rotate(0,FastMath.PI, 0);
+        tDoor.setLocalTranslation(-57.5f, 0, 29);
+        tDoor.rotate(0,FastMath.HALF_PI, 0);
         tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
         tDoorObj.getLights().add(lightMap.get("EntryCorridorLight"));
         tRoute.objects.add(tDoorObj);
         
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-22.5f, 0, -21);
+        tDoor.rotate(0, FastMath.HALF_PI, 0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("ButtonRoomLight"));
+        tDoorObj.getLights().add(lightMap.get("ExitCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
 
         Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
         button.setLocalTranslation(-13f, 14f, 0f);
@@ -204,7 +214,7 @@ public class Initialiser {
 
         // EVENTS
         choiceHandler =
-                new SyncAfterChoiceEvent("Third Select", false, new BoundingBox(new Vector3f(-20, 1, -50), 5, 14, 5), "Button pressed", "Button not pressed");
+                new SyncAfterChoiceEvent("Third Select", false, new BoundingBox(new Vector3f(-20, 1, -30), 5, 14, 5), "Button pressed", "Button not pressed");
         tRoute.condEvents.add(choiceHandler);
         
         // object physics
@@ -535,14 +545,14 @@ public class Initialiser {
         // OBJECTS
         
         tDoor = extractDoor(app,0);
-        tDoor.setLocalTranslation(37.5f, 0, -39);
+        tDoor.setLocalTranslation(37.5f, 0, -40);
         tDoor.rotate(0, FastMath.HALF_PI, 0);
         tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
         tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
         tRoute.objects.add(tDoorObj);
         
         tDoor= extractDoor(app,0);
-        tDoor.setLocalTranslation(0, 0, -27.5f);
+        tDoor.setLocalTranslation(-1, 0, -27.5f);
         tDoor.rotate(0, FastMath.PI, 0);
         tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
         tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
@@ -553,6 +563,7 @@ public class Initialiser {
         tDoor.rotate(0, -FastMath.HALF_PI, 0);
         tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
         tRoute.objects.add(tDoorObj);
         
         tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
