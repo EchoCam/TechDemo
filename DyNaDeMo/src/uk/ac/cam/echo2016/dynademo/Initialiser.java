@@ -92,7 +92,32 @@ public class Initialiser {
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // OBJECTS
+        tDoor = extractDoor(app, 0);
+        tDoor.setLocalTranslation(-59, 0, -12.5f);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-67.5f, 0, -30);
+        tDoor.rotate(0, -FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-72.5f, 0, 0);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        
         // EVENTS
+        
+        
         final DialogueEvent showCharacterScreen = new DialogueEvent("ShowFirstChars") {
             @Override
             public void onDemoEvent(MainApplication app) {
@@ -156,6 +181,8 @@ public class Initialiser {
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
+        
+        
 
         Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
         button.setLocalTranslation(-13f, 14f, 0f);
