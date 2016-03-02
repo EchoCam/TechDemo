@@ -512,6 +512,33 @@ public class Initialiser {
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // OBJECTS
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(80, 0, -2.5f);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, -20);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 9f, 19);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(130, 0, 32.5f);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLeftLight"));
+        tRoute.objects.add(tDoorObj);
+        
         // EVENTS
         tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(50, 1, 35), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
@@ -540,6 +567,34 @@ public class Initialiser {
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // OBJECTS
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(80, 0, -2.5f);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 9, -20);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, 19);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, -55);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorOjc4", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorRightLight"));
+        tRoute.objects.add(tDoorObj);
+        
         // EVENTS
         tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(0, 1, -50), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
