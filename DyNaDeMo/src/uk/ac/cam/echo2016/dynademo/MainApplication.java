@@ -646,6 +646,10 @@ public class MainApplication extends SimpleApplication implements ActionListener
     public AudioNode getMusic() {
         return music;
     }
+    
+    public void setMusic(AudioNode music) {
+        this.music = music;
+    }
 
     public CharacterControl getPlayerControl() {
         return playerControl;

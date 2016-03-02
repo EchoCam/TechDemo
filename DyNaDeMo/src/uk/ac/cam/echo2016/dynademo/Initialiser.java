@@ -215,7 +215,7 @@ public class Initialiser {
 
         // EVENTS
         choiceHandler =
-                new SyncAfterChoiceEvent("Third Select", false, new BoundingBox(new Vector3f(-20, 1, -30), 5, 14, 5), "Button pressed", "Button not pressed");
+                new SyncAfterChoiceEvent("Third Select", false, new BoundingBox(new Vector3f(-20, 1, -40), 5, 14, 5), "Button pressed", "Button not pressed");
         tRoute.condEvents.add(choiceHandler);
 
         // object physics
@@ -238,9 +238,9 @@ public class Initialiser {
 
     private static void addChar1DeathRoute(final MainApplication app, final HashMap<String, DemoScene> routes) {
         locList.clear();
-        locList.add(new Vector3f(0, HALFCHARHEIGHT + 1.0f, 10));
+        locList.add(new Vector3f(-10, HALFCHARHEIGHT + 1.0f, -30));
         dirList.clear();
-        dirList.add(new Vector3f(0, 0, -1));
+        dirList.add(new Vector3f(1, 0, 0));
 
         tRoute = new DemoScene("Char1DeathRoute", "Scenes/Char1DeathRoute.j3o", locList, dirList) {
             @Override
@@ -249,25 +249,77 @@ public class Initialiser {
                 AudioNode music = new AudioNode(app.getAssetManager(), "Sound/pills.wav", false);
                 music.setLooping(false);
                 music.setPositional(false);
+                app.setMusic(music);
+                music.play();
+            }
+            
+            @Override 
+            public void onUnLoad() {
+                app.getMusic().stop();
+                AudioNode music = new AudioNode(app.getAssetManager(), "Sound/eery.wav", false);
+                music.setLooping(true);
+                music.setPositional(false);  
+                app.setMusic(music);
                 music.play();
             }
         };
 
 
         // LIGHTS
-        tLightNames = new String[]{"MeetingRoomLight"};
+        tLightNames = new String[]{"MeetingRoomLight", "CorridorLight"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0)
+           new Vector3f(0, 8, 0), new Vector3f(0,8,-30)
         };
 
         tLightAffected = new String[][]{
-            {"MRoom"}
+            {"MRoom"}, {"MRoomPuzzleC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // OBJECTS
+        tDoor = extractDoor(app, 1);
+        tDoor.setLocalTranslation(-50, 0, -32.5f);
+        tDoor.rotate(0, FastMath.PI, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, 15);
+        tDoor.rotate(0, FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("dorrObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(11, 0, -2.5f);
+        tDoorObj = new DoorObject("dorrObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,1);
+        tDoor.setLocalTranslation(2.5f, 0, -16);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        final DoorObject doorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, -FastMath.PI*2/3);
+        doorObj.getLights().add(lightMap.get("CorridorLight"));
+        doorObj.getLights().add(lightMap.get("MeetingRoomLight"));
+        tRoute.objects.add(doorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", doorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
         // EVENTS
+        tLocEvent = new LocationEvent("doorSlam", true,new BoundingBox(new Vector3f(0,0,-10), 5,10,5)) {
+            @Override
+            public void performAction(MainApplication app) {
+                doorObj.interact(app);
+                doorObj.deactivate();
+            }
+        };
+        tRoute.condEvents.add(tLocEvent);
+        
         tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(40, 1, 40), 0, 14, 0));
 
         Spatial pills = app.getAssetManager().loadModel("Models/Pills.j3o");
