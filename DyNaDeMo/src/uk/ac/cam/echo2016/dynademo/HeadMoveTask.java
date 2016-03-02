@@ -31,11 +31,13 @@ public class HeadMoveTask extends DemoTask {
         Vector3f displacement = app.getPlayerControl().getPhysicsLocation().subtract(headObj.getSpatial().getLocalTranslation());
         System.out.println("Displacement" + displacement);
         
-        float angle = FastMath.asin(displacement.z/displacement.x);
+        float angle = FastMath.acos(displacement.z/-displacement.x);
         System.out.println("angle " + angle);
-        if (displacement.z*displacement.x > 0) {
-            angle = 180 - angle;
-        }
+        
+//        if (displacement.z*displacement.x < 0) {
+//            angle = FastMath.PI - angle;
+//        }
+
         headObj.getSpatial().setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
         
         Vector3f toMove = displacement.clone();

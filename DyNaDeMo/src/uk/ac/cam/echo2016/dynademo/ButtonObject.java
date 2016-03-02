@@ -25,11 +25,11 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
     }
 
     public void onPress() {
+        performAction();
         cpe.setActionTaken(true);
         if(!activated) {
             activated = true;
         }
-        performAction();
     }
     public void performAction() {
     }
@@ -48,5 +48,12 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
             queueDelay(app, DELAY);
             queueDisplacement(app, 0.1f, displacement, displacement.length());
         }
+    }
+
+    /**
+     * @return the activated
+     */
+    public boolean isActivated() {
+        return activated;
     }
 }
