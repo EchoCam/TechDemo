@@ -826,13 +826,60 @@ public class Initialiser {
         };
 
         tLightAffected = new String[][]{
-            {"PuzzleRoom"}, {"PuzzleLeverC"}, {"MRoomPuzzleC"}, {"PuzzleTallC1"},
+            {"PuzzleRoom", "MRoomPuzzleC"}, {"PuzzleLeverC"}, {"MRoomPuzzleC"}, {"PuzzleTallC1"},
             {"PuzzleTallC2"}, {"PuzzleEscapeC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
+        
+        // Doors
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, -50);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-14, 0, 67.5f);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-2.5f, 0, -21);
+        tDoor.rotate(0,FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInter1", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
+        tDoor = extractDoor(app,1);
+        tDoor.setLocalTranslation(-2.5f, 0, 21);
+        tDoor.rotate(0,-FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, -FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("RoomLight"));
+        tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInter2", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(51, 0, 2.5f);
+        tDoorObj = new DoorObject("doorObj5", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj.getLights().add(lightMap.get("TallCorridorLight2"));
+        tDoorObj.getLights().add(lightMap.get("EscapeCorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInter3", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent); 
+        
         // Crate
         Spatial crate1 = app.getAssetManager().loadModel("Models/Crate.j3o");
         Spatial crate2 = app.getAssetManager().loadModel("Models/Crate.j3o");
