@@ -1,5 +1,6 @@
 package uk.ac.cam.echo2016.dynademo;
 
+import com.jme3.audio.AudioNode;
 import static uk.ac.cam.echo2016.dynademo.MainApplication.HALFCHARHEIGHT;
 
 import java.util.ArrayList;
@@ -217,7 +218,8 @@ public class Initialiser {
         
         tRoute.startupTextSequence = new String[]{
             "It's so tempting when it's right there...",
-            "But who knows if you should press it?"
+            "But who knows if you should press it?",
+            "Press \"space\" to jump."
         };
         
         routes.put(tRoute.getId(), tRoute);
@@ -271,7 +273,14 @@ public class Initialiser {
         dirList.clear();
         dirList.add(new Vector3f(1, 0, 0));
         
-        tRoute = new DemoScene("Char2DeathRoute", "Scenes/Char2DeathRoute.j3o", locList, dirList);
+        tRoute = new DemoScene("Char2DeathRoute", "Scenes/Char2DeathRoute.j3o", locList, dirList) {
+            @Override
+            public void onLoad() {
+                AudioNode pant = new AudioNode(app.getAssetManager(), "Sound/panting.wav", false);
+                pant.setLooping(true);
+                pant.play();
+            }
+        };;
 
         // LIGHTS
         tLightNames = new String[]{"RoomLight", "DoorsCorridorLight", "ObserveCorridorLight"};
