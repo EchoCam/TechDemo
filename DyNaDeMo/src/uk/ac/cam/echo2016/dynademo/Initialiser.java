@@ -166,22 +166,34 @@ public class Initialiser {
 
         // LIGHTS
         tLightNames = new String[]{"ButtonRoomLight", "EntryCorridorLight", "ExitCorridorLight",
-                                    "PuzzleRoomLight"
+                                    "PuzzleRoomLight", "DoorsRoomLight"
         };
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(-20, 18, 0), new Vector3f(-20, 8, 35), new Vector3f(-20, 8, -50), new Vector3f(0,18,0)
+            new Vector3f(-20, 18, 0), new Vector3f(-20, 8, 35), new Vector3f(-20, 8, -50), 
+            new Vector3f(0,18,0), new Vector3f(-20,18,-100)
         };
 
         tLightAffected = new String[][]{
             {"ButtonRoom"}, {"ObserveButtonC"}, {"ButtonDoorsCorridor"}, 
-            {"PuzzleRoom", "PuzzleLeverC", "MRoomPuzzleRoomC", "PuzzleTallC1"}
+            {"PuzzleRoom", "PuzzleLeverC", "MRoomPuzzleRoomC", "PuzzleTallC1"}, {"DoorsRoom"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
         // OBJECTS
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-70, 0, 32.5f);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("EntryCorridorLight"));
+        tRoute.objects.add(tDoorObj);
         
+        tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(-57.5f, 0, 30);
+        tDoor.rotate(0,FastMath.PI, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("EntryCorridorLight"));
+        tRoute.objects.add(tDoorObj);
         
 
         Spatial button = app.getAssetManager().loadModel("Models/Button.j3o");
