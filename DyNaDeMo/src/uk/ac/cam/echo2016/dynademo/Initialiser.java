@@ -167,7 +167,18 @@ public class Initialiser {
             @Override
             public void onLoad() {
                 for(DemoObject object: app.routes.get("PuzzleRoute").objects) {
-                    app.getRootNode().attachChild(object.getSpatial());
+                    if (object.isIsMainParent()) {
+                        app.getRootNode().attachChild(object.getSpatial());
+                    }
+                    RigidBodyControl rbc = new RigidBodyControl(object.getMass());
+                    object.getSpatial().addControl(rbc);
+                    if (object instanceof KinematicDemoObject) {
+                        rbc.setKinematic(true);
+                    }
+                    if (object instanceof DynamicDemoObject) {
+                        rbc.setFriction(1.5f);
+                    }
+                    app.getBulletAppState().getPhysicsSpace().add(rbc);
                     for (DemoLight dLight : object.getLights()) {
                         object.getSpatial().addLight(dLight.light);
                     }
@@ -177,7 +188,12 @@ public class Initialiser {
             @Override
             public void onUnload() {
                 for(DemoObject object: app.routes.get("PuzzleRoute").objects) {
-                    app.getRootNode().detachChild(object.getSpatial());
+                    Spatial spatial = object.getSpatial();
+                    if (object.isIsMainParent()) {
+                        app.getRootNode().detachChild(spatial);
+                    }
+                    RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
+                    spatial.removeControl(rbc);
                     for (DemoLight dLight : object.getLights()) {
                         object.getSpatial().removeLight(dLight.light);
                     }
@@ -242,7 +258,15 @@ public class Initialiser {
         ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null, choiceHandler) {
             @Override
             public void performAction() {
-                
+                if (!isActivated()) {
+                    for (DemoObject object : app.routes.get("PuzzleRoute").objects) {
+                        if(object.getObjId().equals("crate2")) {
+                            RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
+                            rbc.activate();
+                            rbc.setPhysicsLocation(new Vector3f(0,25f,7.5f));
+                        }
+                    }
+                }
             }
         };
         buttonObj.getLights().add(lightMap.get("ButtonRoomLight"));
@@ -840,26 +864,7 @@ public class Initialiser {
         dirList.add(new Vector3f(1, 0, 0));
         dirList.add(new Vector3f(0, 0, 1));
 
-        tRoute = new DemoScene("PuzzleRoute", "Scenes/PuzzleRoute.j3o", locList, dirList) {
-            @Override
-            public void onLoad() {
-                if (app.getCurrentScene().getId().equals("PuzzleRoute") && !app.getGameScreen().getRoute().equals("Puzzle again")) {
-                    for (DemoObject object : app.getCurrentScene().objects) {
-                        if (object.getObjId().equals("crate2")) {
-                            RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
-                            app.getBulletAppState().getPhysicsSpace().remove(rbc);
-                            object.getSpatial().removeControl(rbc);
-
-                            app.getRootNode().detachChild(object.getSpatial());
-
-                            for (DemoLight dLight : object.getLights()) {
-                                object.getSpatial().removeLight(dLight.light);
-                            }
-                        }
-                    }
-                }
-            }
-        };
+        tRoute = new DemoScene("PuzzleRoute", "Scenes/PuzzleRoute.j3o", locList, dirList);
         // LIGHTS
         tLightNames = new String[]{
             "RoomLight", "CorridorLight1", "CorridorLight2", "TallCorridorLight1", "TallCorridorLight2",
@@ -931,7 +936,7 @@ public class Initialiser {
         Spatial crate2 = app.getAssetManager().loadModel("Models/Crate.j3o");
         bound = new BoundingBox(new Vector3f(0, 0.75f, 0), 1.5f, 1.5f, 1.5f);
         crate1.setLocalTranslation(0, 0, 15);
-        crate2.setLocalTranslation(0, 5f, 0);
+        crate2.setLocalTranslation(0f, 50f, 7.5f);
 
         // object physics
         CrateObject crateObj1 = new CrateObject("crate1", crate1, 5f, true, bound);
