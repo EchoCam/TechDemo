@@ -510,10 +510,10 @@ public class Initialiser {
         tInterEvent = new InteractionEvent("doorInt1", tDoorObj);
         tRoute.setInteractable(tDoor, tInterEvent);
         
-        tDoor = extractDoor(app, 0);
-        tDoor.setLocalTranslation(7.5f, 0, -15f);
+        tDoor = extractDoor(app, 1);
+        tDoor.setLocalTranslation(2.5f, 0, -15f);
         tDoor.rotate(0, -FastMath.HALF_PI, 0);
-        final DoorObject doorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI * 2 / 3);
+        final DoorObject doorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, -FastMath.PI * 2 / 3);
         doorObj.getLights().add(lightMap.get("RoomLight"));
         doorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
         tRoute.objects.add(doorObj);
@@ -823,10 +823,10 @@ public class Initialiser {
         tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
         tRoute.objects.add(tDoorObj);
 
-        tDoor = extractDoor(app, 0);
-        tDoor.setLocalTranslation(7.5f, 0, -15f);
+        tDoor = extractDoor(app, 1);
+        tDoor.setLocalTranslation(2.5f, 0, -15f);
         tDoor.rotate(0, -FastMath.HALF_PI, 0);
-        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI * 2 / 3);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, -FastMath.PI * 2 / 3);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
         tRoute.objects.add(tDoorObj);
@@ -837,7 +837,7 @@ public class Initialiser {
         // EVENTS
 
 
-        tLocEvent = new SyncPointEvent("LeverOrButton", false, new BoundingBox(new Vector3f(5, 1, -65), 5, 14, 5));
+        tLocEvent = new SyncPointEvent("LeverOrButton", false, new BoundingBox(new Vector3f(5, 1, -65), 10, 14, 10));
         tRoute.condEvents.add(tLocEvent);
 
         tRoute.startupTextSequence = new String[]{
