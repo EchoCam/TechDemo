@@ -29,10 +29,11 @@ public class ButtonObject extends KinematicDemoObject implements InteractableObj
         if(!activated) {
             activated = true;
         }
-        //FIXME
-//        route.properties.putBoolean(getObjId(), true);
+        performAction();
     }
-
+    public void performAction() {
+    }
+    
     @Override
     public void interact(MainApplication app) {
         

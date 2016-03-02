@@ -344,23 +344,6 @@ public class MainApplication extends SimpleApplication implements ActionListener
             }
             playerNode.attachChild(draggedObject.getSpatial());
         }
-        // TODO this the proper way
-        if (currentScene.getId().equals("PuzzleRoute") && !gameScreen.getRoute().equals("Puzzle again")) {
-            for (DemoObject object : currentScene.objects) {
-                if (object.getObjId().equals("crate2")) {
-                    RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
-                    bulletAppState.getPhysicsSpace().remove(rbc);
-                    object.getSpatial().removeControl(rbc);
-
-                    rootNode.detachChild(object.getSpatial());
-
-                    for (DemoLight dLight : object.getLights()) {
-                        object.getSpatial().removeLight(dLight.light);
-                    }
-                }
-            }
-        }
-
 
         for (DemoLight l : route.lights) {
             for (String roomName : l.affectedRooms) {
@@ -680,7 +663,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void chooseLocation(String routeName) {
-        DemoScene route = routes.get("Char2DeathRoute");
+        DemoScene route = routes.get(routeName);
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }

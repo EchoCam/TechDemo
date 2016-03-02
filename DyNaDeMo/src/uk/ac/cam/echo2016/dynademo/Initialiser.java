@@ -166,14 +166,21 @@ public class Initialiser {
         tRoute = new DemoScene("ButtonRoute", "Scenes/ButtonRoute.j3o", locList, dirList) {
             @Override
             public void onLoad() {
-                for(DemoObject object: app.routes.get("PuzzleRoom").objects) {
+                for(DemoObject object: app.routes.get("PuzzleRoute").objects) {
                     app.getRootNode().attachChild(object.getSpatial());
+                    for (DemoLight dLight : object.getLights()) {
+                        object.getSpatial().addLight(dLight.light);
+                    }
                 }
+                
             }
             @Override
             public void onUnload() {
-                for(DemoObject object: app.routes.get("PuzzleRoom").objects) {
+                for(DemoObject object: app.routes.get("PuzzleRoute").objects) {
                     app.getRootNode().detachChild(object.getSpatial());
+                    for (DemoLight dLight : object.getLights()) {
+                        object.getSpatial().removeLight(dLight.light);
+                    }
                 }
             }
         };
@@ -232,7 +239,12 @@ public class Initialiser {
         tRoute.condEvents.add(choiceHandler);
 
         // object physics
-        ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null, choiceHandler);
+        ButtonObject buttonObj = new ButtonObject("button", button, 1f, true, null, choiceHandler) {
+            @Override
+            public void performAction() {
+                
+            }
+        };
         buttonObj.getLights().add(lightMap.get("ButtonRoomLight"));
 
         tInterEvent = new InteractionEvent("buttonInteraction", buttonObj);
@@ -828,7 +840,26 @@ public class Initialiser {
         dirList.add(new Vector3f(1, 0, 0));
         dirList.add(new Vector3f(0, 0, 1));
 
-        tRoute = new DemoScene("PuzzleRoute", "Scenes/PuzzleRoute.j3o", locList, dirList);
+        tRoute = new DemoScene("PuzzleRoute", "Scenes/PuzzleRoute.j3o", locList, dirList) {
+            @Override
+            public void onLoad() {
+                if (app.getCurrentScene().getId().equals("PuzzleRoute") && !app.getGameScreen().getRoute().equals("Puzzle again")) {
+                    for (DemoObject object : app.getCurrentScene().objects) {
+                        if (object.getObjId().equals("crate2")) {
+                            RigidBodyControl rbc = object.getSpatial().getControl(RigidBodyControl.class);
+                            app.getBulletAppState().getPhysicsSpace().remove(rbc);
+                            object.getSpatial().removeControl(rbc);
+
+                            app.getRootNode().detachChild(object.getSpatial());
+
+                            for (DemoLight dLight : object.getLights()) {
+                                object.getSpatial().removeLight(dLight.light);
+                            }
+                        }
+                    }
+                }
+            }
+        };
         // LIGHTS
         tLightNames = new String[]{
             "RoomLight", "CorridorLight1", "CorridorLight2", "TallCorridorLight1", "TallCorridorLight2",
