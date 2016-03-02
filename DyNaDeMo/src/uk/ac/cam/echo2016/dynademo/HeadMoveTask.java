@@ -10,11 +10,13 @@ public class HeadMoveTask extends DemoTask {
     private int prevLightOffCount = 0;
     private int moveCount = 0;
     private MainApplication app;
+    private SyncPointEvent callBack;
     
-    public HeadMoveTask(String taskQueueId, float completionTime, HeadObject headOjb, MainApplication app) {
+    public HeadMoveTask(String taskQueueId, float completionTime, HeadObject headOjb, MainApplication app, SyncPointEvent callBack) {
         super(taskQueueId, completionTime);
         this.headObj = headOjb;
         this.app = app;
+        this.callBack = callBack;
     }
     
     @Override
@@ -46,6 +48,7 @@ public class HeadMoveTask extends DemoTask {
             break;
         default:
             toMove.multLocal(0f);
+            callBack.performAction(app);
         }
         headObj.getSpatial().move(toMove);
         

@@ -420,6 +420,8 @@ public class Initialiser {
 //        Spatial heWhoMustNotBeNamed = app.getAssetManager().loadModel("Models/Head.j3o");
 //        final HeadObject ohGreatOne = new HeadObject("ohGreatOne", heWhoMustNotBeNamed, true);
 //        ohGreatOne.getLights().add(lightMap.get("RoomLight"));
+        
+        final SyncPointEvent char2Dies = new SyncPointEvent("death", true, null);
 
         class HeadLookAtEvent extends ConditionEvent {
 
@@ -444,7 +446,7 @@ public class Initialiser {
                 app.setFlickering(true);
                 // initiate move sequence for head
                 // start event polling for contact
-                app.addTask(new HeadMoveTask(head.getObjId(), 100f, head, app));
+                app.addTask(new HeadMoveTask(head.getObjId(), 100f, head, app, char2Dies));
             }
         };
 
@@ -471,6 +473,7 @@ public class Initialiser {
                 theUnnamedObj.getLights().add(lightMap.get("RoomLight"));
                 app.getCurrentScene().objects.add(theUnnamedObj);
                 app.getRootNode().attachChild(theUnnamed);
+                app.getRootNode().addLight(app.getCurrentScene().lightMap.get("RoomLight").light);
 //                RigidBodyControl rbc = new RigidBodyControl(0);
 //                app.getBulletAppState().getPhysicsSpace().add(rbc);
                 app.getPollEventBus().add(new HeadLookAtEvent("HeadSpawnLookAt", true, theUnnamedObj));
@@ -524,6 +527,7 @@ public class Initialiser {
         tLocEvent = new LocationEvent("doorSlam", true, new BoundingBox(new Vector3f(-15,0,15), 20,10,20)) {
             @Override
             public void performAction(MainApplication app) {
+                System.out.println("Doing action!");
                 doorObj.interact(app);
                 doorObj.deactivate();
             }
@@ -1094,7 +1098,7 @@ public class Initialiser {
 
     }
 
-    private static DemoLight addLight(final MainApplication app, DemoScene route, Vector3f loc, String[] spatialNames) {
+    private static DemoLight addLight(final MainApplication app, DemoScene route, Vector3f loc, String name, String[] spatialNames) {
         PointLight l = new PointLight();
         l.setColor(ColorRGBA.Gray);
         l.setPosition(loc);
@@ -1102,6 +1106,7 @@ public class Initialiser {
 
         DemoLight dLight = new DemoLight(l, spatialNames);
         route.lights.add(dLight);
+        route.lightMap.put(name, dLight);
 
         PointLightShadowRenderer plsr = new PointLightShadowRenderer(app.getAssetManager(), 1024);
         plsr.setLight(l);
@@ -1120,7 +1125,7 @@ public class Initialiser {
         }
 
         for (int i = 0; i < spatialNames.length; ++i) {
-            result.put(lightNames[i], addLight(app, route, lightCoords[i], spatialNames[i]));
+            result.put(lightNames[i], addLight(app, route, lightCoords[i], lightNames[i], spatialNames[i]));
         }
         return result;
     }

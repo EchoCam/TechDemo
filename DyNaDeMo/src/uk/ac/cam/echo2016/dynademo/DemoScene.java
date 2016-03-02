@@ -21,6 +21,7 @@ public class DemoScene {
     public BaseBundle properties = new BaseBundle();
     public ArrayList<ConditionEvent> condEvents = new ArrayList<>();
     public ArrayList<DemoLight> lights = new ArrayList<>();
+    public HashMap<String, DemoLight> lightMap = new HashMap<>();
     public ArrayList<AbstractShadowRenderer> shadowRenderers = new ArrayList<>();
     public ArrayList<DemoObject> objects = new ArrayList<>();
 //    public ArrayList<Spatial> dynamicObjects = new ArrayList<>();

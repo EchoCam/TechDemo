@@ -7,7 +7,7 @@
         <text nextID="You3">Think back to the choices you made.</text>
     </dialogue>
     <dialogue speaker="Head" id="You3">
-        <text nextID="You4">Rojatam was right, Timangelise and Rojatam have to work together to get out of the rooms.</text>
+        <text nextID="You4">Rojatom was right, Timangelise and Rojatom have to work together to get out of the rooms.</text>
     </dialogue>
     <dialogue speaker="Head" id="You4">
         <text nextID="You5">Could going to the pill room have been avoided? Was there another path that would open out?</text>
