@@ -29,17 +29,7 @@ public class HeadMoveTask extends DemoTask {
     }
     public void moveHead() {
         Vector3f displacement = app.getPlayerControl().getPhysicsLocation().subtract(headObj.getSpatial().getLocalTranslation());
-        System.out.println("Displacement" + displacement);
-        
-        float angle = FastMath.acos(displacement.z/-displacement.x);
-        System.out.println("angle " + angle);
-        
-//        if (displacement.z*displacement.x < 0) {
-//            angle = FastMath.PI - angle;
-//        }
 
-        headObj.getSpatial().setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
-        
         Vector3f toMove = displacement.clone();
         switch (moveCount) {
         case 0:
@@ -58,7 +48,18 @@ public class HeadMoveTask extends DemoTask {
             toMove.multLocal(0f);
         }
         headObj.getSpatial().move(toMove);
-            
+        
+        Vector3f displacement2 = app.getPlayerControl().getPhysicsLocation().subtract(headObj.getSpatial().getLocalTranslation());
+        System.out.println("Displacement2" + displacement2);
+        
+        float angle = FastMath.atan(displacement2.z/-displacement2.x);
+        System.out.println("angle " + angle);
+                
+        if (displacement2.x > 0) {
+            angle = FastMath.PI + angle;
+        }
+        headObj.getSpatial().setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
+
         moveCount++;
     }
 

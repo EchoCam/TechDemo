@@ -469,7 +469,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
                 }
             }
             // Check global location event queue
-            for (ConditionEvent e : getPollEventBus()) {
+            for (ConditionEvent e : new ArrayDeque<>(getPollEventBus())) {
                 if (e.checkCondition(this)) {
                     e.onDemoEvent(this);
                 }
