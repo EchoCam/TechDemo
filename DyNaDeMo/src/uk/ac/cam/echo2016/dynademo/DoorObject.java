@@ -12,16 +12,19 @@ public class DoorObject extends KinematicDemoObject implements InteractableObjec
     public final static float SPEED = 1f;
     private boolean open = false;
     private float openAngle;
-    private boolean active = true;
+    public boolean locked;
 
-    public DoorObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, float openAngle) {
+    public DoorObject(String objId, Spatial spatial, float mass, boolean isMainParent, BoundingVolume bound, float openAngle, boolean isLocked) {
         super(objId, spatial, mass, isMainParent, bound);
         this.openAngle = -openAngle;
+        locked = isLocked;
     }
 
     @Override
     public void interact(MainApplication app) {
-        if (active) {
+        if (locked) {
+            app.getGameScreen().setDialogueTextSequence(new String[]{"The door is locked"});
+        } else {
             System.out.println(getTasks());
             if (getTasks().isEmpty()) {
                 if (open) {
@@ -35,6 +38,6 @@ public class DoorObject extends KinematicDemoObject implements InteractableObjec
     }
     
     public void deactivate() {
-        active = false;
+        locked = true;
     }
 }

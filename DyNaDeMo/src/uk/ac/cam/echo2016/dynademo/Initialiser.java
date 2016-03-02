@@ -97,21 +97,21 @@ public class Initialiser {
         tDoor = extractDoor(app, 0);
         tDoor.setLocalTranslation(-59, 0, -12.5f);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
         tRoute.objects.add(tDoorObj);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-67.5f, 0, -30);
         tDoor.rotate(0, -FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
         tRoute.objects.add(tDoorObj);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-72.5f, 0, 0);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj3", tDoor, 1, true, null, 0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
         tRoute.objects.add(tDoorObj);
         
@@ -222,21 +222,27 @@ public class Initialiser {
         // OBJECTS
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-69, 0, 32.5f);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("EntryCorridorLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-57.5f, 0, 29);
         tDoor.rotate(0,FastMath.HALF_PI, 0);
-        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("EntryCorridorLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-22.5f, 0, -21);
         tDoor.rotate(0, FastMath.HALF_PI, 0);
-        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3, false);
         tDoorObj.getLights().add(lightMap.get("ButtonRoomLight"));
         tDoorObj.getLights().add(lightMap.get("ExitCorridorLight"));
         tRoute.objects.add(tDoorObj);
@@ -331,27 +337,36 @@ public class Initialiser {
         tDoor = extractDoor(app, 1);
         tDoor.setLocalTranslation(-50, 0, -32.5f);
         tDoor.rotate(0, FastMath.PI, 0);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-2.5f, 0, 15);
         tDoor.rotate(0, FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("dorrObj2", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("dorrObj2", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
         tRoute.objects.add(tDoorObj);
         
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(11, 0, -2.5f);
-        tDoorObj = new DoorObject("dorrObj3", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("dorrObj3", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("MeetingRoomLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,1);
         tDoor.setLocalTranslation(2.5f, 0, -16);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        final DoorObject doorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, -FastMath.PI*2/3);
+        final DoorObject doorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, -FastMath.PI*2/3, false);
         doorObj.getLights().add(lightMap.get("CorridorLight"));
         doorObj.getLights().add(lightMap.get("MeetingRoomLight"));
         tRoute.objects.add(doorObj);
@@ -363,6 +378,7 @@ public class Initialiser {
         tLocEvent = new LocationEvent("doorSlam", true,new BoundingBox(new Vector3f(0,0,-10), 5,10,5)) {
             @Override
             public void performAction(MainApplication app) {
+                System.out.println(doorObj.locked);
                 doorObj.interact(app);
                 doorObj.deactivate();
             }
@@ -486,26 +502,35 @@ public class Initialiser {
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-132.5f, 0, -45);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("DoorsCorridorLight"));
         tRoute.objects.add(tDoorObj);
         
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
         tDoor = extractDoor(app, 0);
         tDoor.setLocalTranslation(-9, 0, -67.5f);
-        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(15, 0, -2.5f);
         tDoor.rotate(0,FastMath.PI,0);
-        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(tDoorObj);
         
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(0, 0, -32.5f);
-        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, FastMath.PI*2/3, false);
         tDoorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
         tDoorObj.getLights().add(lightMap.get("DoorsCorridorLight"));
         tRoute.objects.add(tDoorObj);
@@ -516,7 +541,7 @@ public class Initialiser {
         tDoor = extractDoor(app, 1);
         tDoor.setLocalTranslation(2.5f, 0, -15f);
         tDoor.rotate(0, -FastMath.HALF_PI, 0);
-        final DoorObject doorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, -FastMath.PI * 2 / 3);
+        final DoorObject doorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, -FastMath.PI * 2 / 3, false);
         doorObj.getLights().add(lightMap.get("RoomLight"));
         doorObj.getLights().add(lightMap.get("ObserveCorridorLight"));
         tRoute.objects.add(doorObj);
@@ -570,29 +595,38 @@ public class Initialiser {
         // OBJECTS
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(80, 0, -2.5f);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-2.5f, 0, -20);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-2.5f, 9f, 19);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(tDoorObj);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(130, 0, 32.5f);
-        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLeftLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         // EVENTS
         tSyncPointEvent = new SyncPointEvent("Fate Decider", false, new BoundingBox(new Vector3f(10, 1, 35), 5, 14, 5));
@@ -624,29 +658,44 @@ public class Initialiser {
 
         // OBJECTS
         tDoor = extractDoor(app,0);
+        tDoor.setLocalTranslation(130, 0, 32.5f);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, 0, true);
+        tDoorObj.getLights().add(lightMap.get("CorridorRightLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
+        tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(80, 0, -2.5f);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, false);
         tDoorObj.getLights().add(lightMap.get("CorridorLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-2.5f, 9, -20);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(tDoorObj);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-2.5f, 0, 19);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-2.5f, 0, -55);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorOjc4", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorOjc4", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorRightLight"));
         tRoute.objects.add(tDoorObj);
         
@@ -687,21 +736,27 @@ public class Initialiser {
         tDoor = extractDoor(app,1);
         tDoor.setLocalTranslation(92.5f, 0, -5);
         tDoor.rotate(0,-FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorFromPuzzleLight2"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,1);
         tDoor.setLocalTranslation(-2.5f, 0, 45);
         tDoor.rotate(0,-FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null,0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorFromDoorsLight"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,2);
         tDoor.setLocalTranslation(-40, 0, 2.5f);
         tDoor.rotate(0,FastMath.PI*5/6,0);
-        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight"));
         tRoute.objects.add(tDoorObj);
         
@@ -740,14 +795,14 @@ public class Initialiser {
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-50, 0, 2.5f);
         tDoor.rotate(0,FastMath.PI,0);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight"));
         tRoute.objects.add(tDoorObj);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-21, 0, 2.5f);
         tDoor.rotate(0,FastMath.PI,0);
-        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, FastMath.PI*2/3, false);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tDoorObj.getLights().add(lightMap.get("CorridorLight"));
         tRoute.objects.add(tDoorObj);
@@ -816,21 +871,27 @@ public class Initialiser {
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(37.5f, 0, -40);
         tDoor.rotate(0, FastMath.HALF_PI, 0);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor= extractDoor(app,0);
         tDoor.setLocalTranslation(-1, 0, -27.5f);
         tDoor.rotate(0, FastMath.PI, 0);
-        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
 
         tDoor = extractDoor(app, 1);
         tDoor.setLocalTranslation(2.5f, 0, -15f);
         tDoor.rotate(0, -FastMath.HALF_PI, 0);
-        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, -FastMath.PI * 2 / 3);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, -FastMath.PI * 2 / 3, false);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
         tRoute.objects.add(tDoorObj);
@@ -893,20 +954,26 @@ public class Initialiser {
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-2.5f, 0, -50);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
         tRoute.objects.add(tDoorObj);
         
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
+        
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(-14, 0, 67.5f);
-        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null, 0, true);
         tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
         tRoute.objects.add(tDoorObj);
+        
+        tInterEvent = new InteractionEvent("doorInteraction", tDoorObj);
+        tRoute.setInteractable(tDoor, tInterEvent);
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(2.5f, 0, -20);
         tDoor.rotate(0,-FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, FastMath.PI*2/3, false);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tDoorObj.getLights().add(lightMap.get("CorridorLight1"));
         tRoute.objects.add(tDoorObj);
@@ -917,7 +984,7 @@ public class Initialiser {
         tDoor = extractDoor(app,1);
         tDoor.setLocalTranslation(2.5f, 0, 20);
         tDoor.rotate(0,FastMath.HALF_PI,0);
-        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, -FastMath.PI*2/3);
+        tDoorObj = new DoorObject("doorObj4", tDoor, 1f, true, null, -FastMath.PI*2/3, false);
         tDoorObj.getLights().add(lightMap.get("RoomLight"));
         tDoorObj.getLights().add(lightMap.get("CorridorLight2"));
         tRoute.objects.add(tDoorObj);
@@ -927,7 +994,7 @@ public class Initialiser {
         
         tDoor = extractDoor(app,0);
         tDoor.setLocalTranslation(51, 0, -7.5f);
-        tDoorObj = new DoorObject("doorObj5", tDoor, 1f, true, null, FastMath.PI*2/3);
+        tDoorObj = new DoorObject("doorObj5", tDoor, 1f, true, null, FastMath.PI*2/3, false);
         tDoorObj.getLights().add(lightMap.get("TallCorridorLight2"));
         tDoorObj.getLights().add(lightMap.get("EscapeCorridorLight"));
         tRoute.objects.add(tDoorObj);
