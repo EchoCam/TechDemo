@@ -45,8 +45,19 @@ public class HeadMoveTask extends DemoTask {
             break;
         case 3:
             toMove.multLocal(1f/2f);
+            Vector3f displacement3 = app.getPlayerControl().getPhysicsLocation().subtract(headObj.getSpatial().getLocalTranslation()).add(new Vector3f(0,MainApplication.HALFCHARHEIGHT*3/4,0));
+            displacement3.crossLocal(Vector3f.UNIT_Y);
+            displacement3.crossLocal(toMove);
+            System.out.println(displacement3);
+            app.getCamera().lookAtDirection(toMove.negate(), displacement3);
+            app.getFlyByCamera().setEnabled(false);
+            app.setSpeed(0);
+            app.getInputManager().setCursorVisible(false);
             break;
         default:
+            app.setFlickering(false);
+            app.setSpeed(1);
+            app.getInputManager().setCursorVisible(true);
             toMove.multLocal(0f);
             callBack.performAction(app);
         }

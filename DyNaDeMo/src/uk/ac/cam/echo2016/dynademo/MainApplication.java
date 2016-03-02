@@ -79,6 +79,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     private boolean lightsOn = true;
     private boolean isFlickering = false;
     private int lightsOffCount = 0;
+    private int walkSpeed = 1;
     
     private Node playerNode;
     private BulletAppState bulletAppState;
@@ -448,7 +449,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             if (keyDown) {
                 walkDirection.addLocal(-camDir.x, 0, -camDir.z);
             }
-            playerControl.setWalkDirection(walkDirection.normalize().mult(25f * tpf));
+            playerControl.setWalkDirection(walkDirection.normalize().mult(25f * tpf * walkSpeed));
             // Move camera to correspond to player
             cam.setLocation(playerControl.getPhysicsLocation().add(0, HALFCHARHEIGHT * 3 / 4, 0));
             listener.setLocation(cam.getLocation());
@@ -633,6 +634,14 @@ public class MainApplication extends SimpleApplication implements ActionListener
         this.music = music;
     }
 
+    public void setSpeed(int speed) {
+        walkSpeed = speed;
+    }
+    
+    public int getSpeed() {
+        return walkSpeed;
+    }
+    
     public CharacterControl getPlayerControl() {
         return playerControl;
     }
@@ -663,7 +672,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void chooseLocation(String routeName) {
-        DemoScene route = routes.get(routeName);
+        DemoScene route = routes.get("Char2DeathRoute");
         if (route == null) {
             throw new RuntimeException("Error: No route found with name: " + routeName);
         }
