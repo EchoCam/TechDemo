@@ -614,18 +614,44 @@ public class Initialiser {
         tRoute = new DemoScene("EscapeRoute", "Scenes/EscapeRoute.j3o", locList, dirList);
 
         // LIGHTS
-        tLightNames = new String[]{"RoomLight", "CorridorLight", "CorridorFromDoorsLight", "CorridorFromPuzzleLight"};
+        tLightNames = new String[]{"RoomLight", "CorridorLight", "CorridorFromDoorsLight", "CorridorFromPuzzleLight1",
+        "CorridorFromPuzzleLight2"};
 
         tLightCoords = new Vector3f[]{
-            new Vector3f(0, 8, 0), new Vector3f(0, 8, 25), new Vector3f(-25, 8, 0), new Vector3f(25, 8, 0)
+            new Vector3f(0, 8, 0), new Vector3f(-25, 8, 0), new Vector3f(0, 8, 30), 
+            new Vector3f(0, 8, -35), new Vector3f(115,8,-35)
         };
 
         tLightAffected = new String[][]{
-            {"EscapeRoom"}, {"EscapeC"}, {"DoorsEscapeC"}, {"PuzzleEscapeC"}
+            {"EscapeRoom"}, {"EscapeC"}, {"DoorsEscapeC"}, {"PuzzleEscapeC"}, {"PuzzleEscapeC"}
         };
 
         lightMap = addLights(app, tRoute, tLightNames, tLightCoords, tLightAffected);
 
+        // OBJECTS
+        tDoor = extractDoor(app,1);
+        tDoor.setLocalTranslation(102.5f, 0, -5);
+        tDoor.rotate(0,-FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj1", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorFromPuzzleLight2"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,1);
+        tDoor.setLocalTranslation(-2.5f, 0, 45);
+        tDoor.rotate(0,-FastMath.HALF_PI,0);
+        tDoorObj = new DoorObject("doorObj2", tDoor, 1f, true, null,0);
+        tDoorObj.getLights().add(lightMap.get("CorridorFromDoorsLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        tDoor = extractDoor(app,2);
+        tDoor.setLocalTranslation(-40, 0, 2.5f);
+        tDoor.rotate(0,FastMath.PI*5/6,0);
+        tDoorObj = new DoorObject("doorObj3", tDoor, 1f, true, null, 0);
+        tDoorObj.getLights().add(lightMap.get("CorridorLight"));
+        tRoute.objects.add(tDoorObj);
+        
+        
+        
         // EVENTS
         tSyncPointEvent = new SyncPointEvent("To Endings", false, new BoundingBox(new Vector3f(-35, 1, 0), 5, 14, 5));
         tRoute.condEvents.add(tSyncPointEvent);
@@ -978,6 +1004,8 @@ public class Initialiser {
             return ((Node) doors).descendantMatches("BlankDoor").get(0);
         case 1:
             return ((Node) doors).descendantMatches("MirroredBlankDoor").get(0);
+        case 2:
+            return ((Node) doors).descendantMatches("DoubledHandledDoor").get(0);
         default:
             throw new RuntimeException("Option not available");
         }
