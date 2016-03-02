@@ -14,6 +14,7 @@ import uk.ac.cam.echo2016.dynademo.screens.DialogueScreen;
 import uk.ac.cam.echo2016.dynademo.screens.GameScreen;
 import uk.ac.cam.echo2016.dynademo.screens.MainMenuScreen;
 import uk.ac.cam.echo2016.dynademo.screens.PauseMenuScreen;
+import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 import uk.ac.cam.echo2016.multinarrative.InvalidGraphException;
 import uk.ac.cam.echo2016.multinarrative.NarrativeInstance;
 import uk.ac.cam.echo2016.multinarrative.NarrativeTemplate;
@@ -33,13 +34,12 @@ import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -47,13 +47,11 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.shape.Box;
 import com.jme3.shadow.AbstractShadowRenderer;
 import com.jme3.system.AppSettings;
 
 import de.lessvoid.nifty.Nifty;
-import uk.ac.cam.echo2016.multinarrative.GraphElementNotFoundException;
 
 /**
  * The God class of the game.
@@ -168,6 +166,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
             setDisplayFps(false);
             setDisplayStatView(false);
         }
+        
         // Set-Up for all the screens //
         // initialise nifty gui, the tools we are using for gui elements
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
@@ -598,6 +597,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void pauseDemo() {
+        setCrosshairs(false);
         if (!isPaused) {
             this.isPaused = true;
             bulletAppState.setEnabled(false);
@@ -606,6 +606,7 @@ public class MainApplication extends SimpleApplication implements ActionListener
     }
 
     public void unPauseDemo() {
+        setCrosshairs(true);
         this.isPaused = false;
         bulletAppState.setEnabled(true);
         flyCam.setEnabled(true);
@@ -695,6 +696,19 @@ public class MainApplication extends SimpleApplication implements ActionListener
     
     public void setFlickering(boolean x) {
         isFlickering = x;
+    }
+    public void setCrosshairs(boolean x) {
+        if (x) {
+            guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+            BitmapText ch = new BitmapText(guiFont, false);
+            ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
+            ch.setText("+"); // crosshairs
+            ch.setLocalTranslation( // center
+              settings.getWidth() / 2 - ch.getLineWidth()/2, settings.getHeight() / 2 + ch.getLineHeight()/2, 0);
+            guiNode.attachChild(ch);
+        } else {
+            guiNode.detachAllChildren();
+        }
     }
     
     public void flickerLights() {
