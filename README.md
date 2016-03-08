@@ -1,4 +1,4 @@
-# DyNaDeMo
+![#DyNaDeMo](screens/02.png)
 *Dynamic Narrative Modelling Demo*
 
 This is a techo demo created to demonostrate
@@ -6,6 +6,8 @@ This is a techo demo created to demonostrate
 game developers develop, debug and use multinarrative stories.
 
 Built using the [jMonkeyEngine](http://jmonkeyengine.org/) and DyNaMo.
+
+![#DyNaDeMo](screens/01.png)
 
 Building, Running and Testing
 =============================
